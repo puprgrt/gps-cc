@@ -174,7 +174,7 @@ export const WhatsAppRightQrPanel: React.FC = () => {
 
           <button
             onClick={confirmAuthentication}
-            className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="hidden w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-md transition-all items-center justify-center gap-2 cursor-pointer"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>Simulasikan Pindai QR Berhasil</span>
@@ -272,7 +272,7 @@ export const WhatsAppRightQrPanel: React.FC = () => {
 
           <button
             onClick={confirmAuthentication}
-            className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="hidden w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-md transition-all items-center justify-center gap-2 cursor-pointer"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>Simulasikan Tautan Kode Berhasil</span>
