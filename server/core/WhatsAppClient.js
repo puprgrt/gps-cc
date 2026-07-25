@@ -2,7 +2,8 @@ const {
   default: makeWASocket, 
   useMultiFileAuthState: getMultiFileAuthState, 
   DisconnectReason,
-  fetchLatestBaileysVersion
+  fetchLatestBaileysVersion,
+  Browsers
 } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const fs = require('fs');
@@ -123,7 +124,7 @@ class WhatsAppClient {
         logger,
         printQRInTerminal: true,
         auth: state,
-        browser: ['Mac OS', 'Safari', '10.15.7'], // Fix for 'Invalid QR code' issue
+        browser: Browsers.ubuntu('Chrome'), // Fix for 'Invalid QR code' issue
         markOnlineOnConnect: true,
         syncFullHistory: false,
         connectTimeoutMs: 60000,

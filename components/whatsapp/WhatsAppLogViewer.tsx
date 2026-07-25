@@ -64,14 +64,15 @@ export const WhatsAppLogViewer: React.FC = () => {
       // Check real standalone Baileys server if available
       try {
         const start = Date.now();
-        const res = await fetch('/api/whatsapp/baileys?serverUrl=http://localhost:3001', { method: 'GET' });
+        // If running in browser, we can just call our own Next.js API which routes it.
+        const res = await fetch('/api/whatsapp/baileys', { method: 'GET' });
         const latency = Date.now() - start;
         setPingMs(latency > 0 ? latency : 12);
 
         if (res.ok) {
           const data = await res.json();
           if (data.source === 'standalone_server') {
-            setStandaloneStatus(`Standalone Active (Port 3001) • ${data.status}`);
+            setStandaloneStatus(`Standalone Active • ${data.status}`);
           } else {
             setStandaloneStatus('Internal Simulation Engine (Baileys v6.7.8)');
           }
