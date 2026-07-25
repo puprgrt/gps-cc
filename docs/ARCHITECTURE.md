@@ -1,276 +1,47 @@
-# 🏗️ System Architecture
-## GPS-CC: Garut Public Service AI Command Center
-
----
+# 🏛️ System Architecture: GPS-CC
 
 ## 1. High-Level Architecture
+Sistem ini menggunakan arsitektur hybrid di mana aplikasi Next.js bertindak sebagai UI Dashboard sekaligus penyedia API, sementara *Standalone Node.js Server* menggunakan Baileys menangani koneksi WebSocket WhatsApp yang persisten.
 
 ```mermaid
-graph TB
-    subgraph Users["👥 Users"]
-        Warga["Warga Masyarakat<br/>(WhatsApp)"]
-        Operator["Operator CS<br/>(Web Dashboard)"]
-        Admin["Admin IT<br/>(Web Dashboard)"]
-        Eksekutif["Pejabat Eksekutif<br/>(Web Dashboard)"]
-    end
-
-    subgraph CDN["🌐 CDN & Edge"]
-        Vercel["Vercel Edge Network<br/>(Static Assets + SSR)"]
-    end
-
-    subgraph Frontend["🖥️ Frontend (Next.js 15)"]
-        AppRouter["App Router<br/>(Server + Client Components)"]
-        APIRoutes["API Routes<br/>(Serverless Functions)"]
-    end
-
-    subgraph Backend["🖧 Backend Services"]
-        BaileysServer["Baileys Express Server<br/>(:3001)"]
-    end
-
-    subgraph AI["🤖 AI Services"]
-        Gemini["Google Gemini API<br/>(Chat, RAG, Sentiment)"]
-    end
-
-    subgraph Database["🗄️ Database & Storage"]
-        Firestore["Firebase Firestore<br/>(Document DB)"]
-        FireAuth["Firebase Auth<br/>(Authentication)"]
-        FireStorage["Firebase Storage<br/>(File Upload)"]
-    end
-
-    subgraph External["☁️ External APIs"]
-        MetaWA["Meta WhatsApp<br/>(via Baileys Protocol)"]
-        SocialAPIs["Social Media APIs<br/>(Twitter, IG, FB)"]
-    end
-
-    Warga -->|Chat| MetaWA
-    MetaWA <-->|WebSocket| BaileysServer
-    Operator --> Vercel
-    Admin --> Vercel
-    Eksekutif --> Vercel
-
-    Vercel --> AppRouter
-    Vercel --> APIRoutes
-
-    APIRoutes --> Gemini
-    APIRoutes --> Firestore
-    APIRoutes --> FireAuth
-    APIRoutes --> FireStorage
-    APIRoutes --> BaileysServer
-    APIRoutes --> SocialAPIs
-
-    BaileysServer --> MetaWA
-    BaileysServer --> Firestore
+graph TD
+    A[WhatsApp Mobile/Web] <-->|WebSocket| B(Baileys Bot Server)
+    B <-->|REST API / Events| C(Next.js API Routes)
+    B <-->|Gemini API| D(Google AI: gemini-2.5-flash)
+    B -->|Insert Data| E[(Supabase DB)]
+    C <-->|Query Data| E
+    F[Next.js Dashboard Client] <-->|Realtime Subscription| E
+    F <-->|REST API| C
 ```
 
----
+## 2. Directory Structure & Clean Architecture Layers
 
-## 2. Application Layer Architecture
+Proyek ini sangat ketat mematuhi batasan *Clean Architecture* seperti yang tertulis dalam aturan pengembangan (AGENTS.md):
 
-```mermaid
-graph LR
-    subgraph Presentation["Presentation Layer"]
-        Pages["Pages<br/>(app/)"]
-        Components["Components<br/>(components/)"]
-    end
+- `domain/`: Interface dan Typescript Definition murni. **(Tanpa dependensi luar)**
+- `services/`: Lapisan logika bisnis dan API client (contoh: `apiService.ts`).
+- `hooks/`: Custom hooks React & Zustand store (contoh: `useWhatsApp.ts`).
+- `components/`: Komponen presentasional React dengan Tailwind CSS v4 & Shadcn.
+- `app/`: Next.js App Router (Halaman, Layout, dan rute API HTTP backend).
+- `server/`: Jantung bot WhatsApp (Baileys standalone backend).
+  - `server/core/WhatsAppClient.js`: Manajemen siklus hidup koneksi, auto-reconnect, & session purge.
+  - `server/core/MessageHandler.js`: Logika penanganan pesan (Interactive Menu -> Keyword -> AI PURI).
+  - `server/services/`: Modul integrasi pihak ketiga (Supabase, Gemini AI).
 
-    subgraph Application["Application Layer"]
-        Hooks["Hooks & Stores<br/>(hooks/)"]
-        Services["Services<br/>(services/)"]
-    end
+## 3. Hybrid Response Flow (Menu -> Keyword -> AI)
+Sistem memiliki hierarki respon yang ketat untuk memastikan user mendapat jawaban terpandu sebelum diberikan ke AI:
+1. Pesan masuk dievaluasi untuk **Menu Interaktif** (Pilihan list/button standar).
+2. Jika tidak cocok, sistem mencari **Keyword Spesifik** dari database.
+3. Jika masih tidak ada kecocokan, pesan dilempar ke **Gemini AI**, yang diformat dengan header identitas **PURI** secara otomatis.
 
-    subgraph Domain["Domain Layer"]
-        Models["Models & Types<br/>(domain/)"]
-        Constants["Constants<br/>(constants/)"]
-    end
+## 4. Realtime Dashboard Flow
+Untuk mengatasi masalah latensi atau *page reload flicker*:
+1. Pesan dikirim oleh User.
+2. `MessageHandler` di Baileys langsung menyimpan pesan masuk (dan balasannya) ke Supabase `wa_messages`.
+3. Komponen `WhatsAppDashboard` di Next.js berlangganan ke *Supabase Channel*.
+4. Event `INSERT` diterima klien, state React di-update, daftar pesan bertambah seketika tanpa perlu *polling HTTP GET*.
 
-    subgraph Infrastructure["Infrastructure Layer"]
-        Firebase["Firebase Client<br/>(lib/firebase.ts)"]
-        APIClient["API Routes<br/>(app/api/)"]
-        BaileysBackend["Baileys Server<br/>(server/)"]
-    end
-
-    Pages --> Components
-    Components --> Hooks
-    Hooks --> Services
-    Services --> Models
-    Services --> APIClient
-    Services --> Firebase
-    APIClient --> BaileysBackend
-    Constants --> Components
-```
-
----
-
-## 3. Baileys Server Internal Architecture
-
-```mermaid
-graph TB
-    subgraph Express["Express Server (:3001)"]
-        Middleware["Middleware<br/>(CORS, JSON Parser,<br/>Error Handler)"]
-        Routes["Routes<br/>(baileysRoutes.js)"]
-        Controller["Controller<br/>(baileysController.js)"]
-    end
-
-    subgraph Core["Baileys Core"]
-        WASocket["WASocket Service<br/>(waSocket.js)"]
-        AuthState["Multi-File Auth State<br/>(baileys_auth_garut/)"]
-    end
-
-    subgraph InMemory["In-Memory Cache"]
-        MsgCache["Messages Cache<br/>(max 100)"]
-        ContactCache["Contacts Cache<br/>(Map)"]
-        PresenceCache["Presence Cache<br/>(Map)"]
-        LogCache["Socket Logs<br/>(max 200)"]
-    end
-
-    subgraph EventListeners["Event Listeners"]
-        CredUpdate["creds.update"]
-        ConnUpdate["connection.update"]
-        MsgUpsert["messages.upsert"]
-        MsgUpdate["messages.update"]
-        ContactSync["contacts.upsert"]
-        Presence["presence.update"]
-        GroupEvent["group-participants.update"]
-    end
-
-    Middleware --> Routes
-    Routes --> Controller
-    Controller --> WASocket
-    WASocket --> AuthState
-    WASocket --> EventListeners
-    EventListeners --> InMemory
-
-    WASocket -->|"Reconnect Strategy<br/>(Exponential Backoff<br/>Max 15 attempts)"| WASocket
-```
-
----
-
-## 4. Data Flow Architecture
-
-```mermaid
-sequenceDiagram
-    participant W as Warga (WhatsApp)
-    participant B as Baileys Server
-    participant N as Next.js API
-    participant G as Gemini AI
-    participant F as Firestore
-    participant D as Dashboard
-
-    W->>B: Kirim pesan WhatsApp
-    B->>B: messages.upsert event
-    B->>F: Simpan pesan ke wa_conversations
-    B->>N: Webhook / polling
-    N->>G: Analisis intent + generate reply
-    G-->>N: AI Reply + confidence
-    N->>F: Simpan AI suggestion
-    N-->>B: Send auto-reply (jika confidence > 80%)
-    B-->>W: Kirim balasan
-
-    D->>N: Poll dashboard data
-    N->>F: Query metrics
-    F-->>N: Aggregated data
-    N-->>D: Render dashboard
-```
-
----
-
-## 5. Deployment Architecture
-
-```mermaid
-graph TB
-    subgraph Production["Production Environment"]
-        subgraph Vercel["Vercel"]
-            NextApp["Next.js App<br/>(Auto-scaled)"]
-            ServerlessFn["Serverless Functions<br/>(API Routes)"]
-            EdgeFn["Edge Functions<br/>(Middleware)"]
-        end
-
-        subgraph VPS["VPS / Cloud Run"]
-            BaileysApp["Baileys Server<br/>(Docker Container)"]
-            AuthFiles["Auth Session Files<br/>(Persistent Volume)"]
-        end
-
-        subgraph Firebase["Firebase"]
-            FS["Firestore"]
-            FA["Firebase Auth"]
-            FSt["Firebase Storage"]
-        end
-    end
-
-    subgraph Monitoring["Monitoring"]
-        Sentry["Sentry<br/>(Error Tracking)"]
-        Analytics["Firebase Analytics"]
-    end
-
-    NextApp --> ServerlessFn
-    ServerlessFn --> BaileysApp
-    ServerlessFn --> FS
-    ServerlessFn --> FA
-    BaileysApp --> AuthFiles
-    NextApp --> Sentry
-    BaileysApp --> Sentry
-    NextApp --> Analytics
-```
-
----
-
-## 6. Security Architecture
-
-```mermaid
-graph TB
-    subgraph Client["Client Browser"]
-        JWT["JWT Token<br/>(Firebase Auth)"]
-    end
-
-    subgraph Edge["Edge Layer"]
-        CORS["CORS Policy"]
-        RateLimit["Rate Limiting"]
-        CSP["Content Security Policy"]
-    end
-
-    subgraph Auth["Authentication"]
-        FireAuth["Firebase Auth<br/>(Email/OTP)"]
-        RBAC["RBAC Middleware<br/>(Role Check)"]
-    end
-
-    subgraph Data["Data Security"]
-        Rules["Firestore Rules<br/>(Auth + Role)"]
-        Validation["Input Validation<br/>(Zod Schema)"]
-        Sanitize["Input Sanitization"]
-    end
-
-    subgraph Secrets["Secret Management"]
-        EnvVars["Environment Variables<br/>(.env - NOT committed)"]
-    end
-
-    Client -->|Bearer Token| CORS
-    CORS --> RateLimit
-    RateLimit --> FireAuth
-    FireAuth --> RBAC
-    RBAC --> Validation
-    Validation --> Sanitize
-    Sanitize --> Rules
-    EnvVars -.->|"API Keys,<br/>Firebase Config"| Auth
-```
-
----
-
-## 7. Technology Stack Summary
-
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **Frontend** | Next.js 15 (App Router) | SSR, routing, API routes |
-| **UI** | React 19 + Tailwind CSS 4 | Component rendering + styling |
-| **State** | Zustand 5 | Client-side state management |
-| **Charts** | Recharts 3 | Data visualization |
-| **Maps** | Leaflet + React-Leaflet | GIS mapping |
-| **Animation** | Motion 12 | UI animations |
-| **Icons** | Lucide React | Icon system |
-| **AI** | Google Gemini API | NLP, chatbot, sentiment |
-| **Database** | Firebase Firestore | NoSQL document store |
-| **Auth** | Firebase Authentication | User auth + JWT |
-| **Storage** | Firebase Storage | File uploads |
-| **WhatsApp** | Baileys (WebSocket) | WA Business API |
-| **Backend WA** | Express 5 | REST API for Baileys |
-| **Logging** | Pino | Structured logging |
-| **QR Code** | qrcode.react | QR rendering |
+## 5. Stability Mechanism (24/7 Operation)
+- **Auto-Reconnect**: Jika koneksi WebSocket terputus dari pihak WhatsApp, Baileys akan menyambung ulang dengan *exponential backoff*.
+- **Session Purge (Error 440)**: Jika kode 440 (Conflict) terdeteksi, folder autentikasi (`./baileys_auth_garut`) dihapus bersih agar proses bisa berjalan dari awal dan tidak stuck dalam loop error.
+- **Silent Fetch**: *Data-fetching* awal atau paginasi di Next.js dilakukan secara asinkron tanpa men-trigger `isLoading` penuh, agar layar chat tidak *flicker/reload* saat sedang digunakan.

@@ -76,9 +76,10 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
     loadSettings();
     loadMenuFlows();
     loadKeywords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadSettings = async () => {
+  async function loadSettings() {
     try {
       setIsLoading(true);
       const data = await WhatsAppService.getBotSettings();
@@ -95,25 +96,25 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
-  const loadMenuFlows = async () => {
+  async function loadMenuFlows() {
     try {
       const data = await WhatsAppService.getBotMenuFlows();
       setMenuItems(data || []);
     } catch (err) {
       console.warn('Failed to fetch menu flows:', err);
     }
-  };
+  }
 
-  const loadKeywords = async () => {
+  async function loadKeywords() {
     try {
       const data = await WhatsAppService.getBotKeywords();
       setKeywordItems(data || []);
     } catch (err) {
       console.warn('Failed to fetch keywords:', err);
     }
-  };
+  }
 
   const isAnyActive = isAiActive || isMenuActive || isKeywordActive;
 
@@ -592,7 +593,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="px-2.5 py-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-lg text-xs font-mono font-bold">
-                      Ketik: "{item.menu_key}"
+                      Ketik: &quot;{item.menu_key}&quot;
                     </span>
                     <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${item.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
                       {item.is_active ? 'AKTIF' : 'NON-AKTIF'}
@@ -669,7 +670,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
                 <Key className="w-4 h-4 text-purple-400" />
                 Keyword Reply (Aturan Balasan Otomatis Berdasarkan Kata Kunci)
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">Apabila pesan warga mengandung kata kunci spesifik (misal: "pbg", "lokasi", "jalan rusak"), bot PURI akan merespons langsung.</p>
+              <p className="text-xs text-slate-400 mt-0.5">Apabila pesan warga mengandung kata kunci spesifik (misal: &quot;pbg&quot;, &quot;lokasi&quot;, &quot;jalan rusak&quot;), bot PURI akan merespons langsung.</p>
             </div>
 
             <div className="flex items-center gap-2">
@@ -710,7 +711,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="px-2.5 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-lg text-xs font-mono font-bold flex items-center gap-1">
-                      <Hash className="w-3 h-3 text-purple-400" /> "{item.keyword}"
+                      <Hash className="w-3 h-3 text-purple-400" /> &quot;{item.keyword}&quot;
                     </span>
                     <div className="flex items-center gap-1">
                       <span className="px-2 py-0.5 rounded bg-slate-800 text-[9px] font-mono text-slate-300 border border-white/10">
