@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DB_DIR = path.join(__dirname, '../../.data');
+const DB_DIR = process.env.BAILEYS_DB_PATH || path.join(__dirname, '../../.data');
 const CONV_FILE = path.join(DB_DIR, 'conversations.json');
 const LOG_FILE = path.join(DB_DIR, 'logs.json');
 
