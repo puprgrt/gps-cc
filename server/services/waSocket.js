@@ -15,6 +15,9 @@ let currentPairingCode = null;
 let connectionState = 'disconnected'; // 'disconnected' | 'qr_ready' | 'connecting' | 'connected'
 let userInfo = null;
 
+const { saveMessage, saveLog, getActiveConversations } = require('./firestoreService');
+const { GoogleGenAI } = require('@google/genai');
+
 // Store in-memory cache for live telemetry, messages, contacts, and presence
 const inboundMessagesCache = [];
 const contactsCache = new Map();
@@ -27,7 +30,7 @@ const MAX_RECONNECT_ATTEMPTS = 15;
 let reconnectTimer = null;
 let isReconnecting = false;
 
-function addSocketLog(event, details, level = 'info') {
+async function addSocketLog(event, details, level = 'info') {
   const logEntry = {
     id: `slog-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
     timestamp: new Date().toISOString(),
@@ -37,6 +40,54 @@ function addSocketLog(event, details, level = 'info') {
   };
   socketLogs.unshift(logEntry);
   if (socketLogs.length > 200) socketLogs.pop();
+  
+  // Persist to Firestore
+  await saveLog(event, details, level);
+}
+
+// ... helper function to handle AI Reply
+async function handleGeminiAiReply(senderJid, messageText, pushName) {
+  try {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) return null;
+    
+    const ai = new GoogleGenAI({ apiKey });
+    const prompt = `Anda adalah Asisten Virtual Resmi Dinas Pekerjaan Umum dan Penataan Ruang (PUPR) Kabupaten Garut untuk Layanan WhatsApp Center.
+Jawablah pertanyaan warga berikut dengan sopan, akurat, dan ringkas dalam Bahasa Indonesia berdasarkan standar pelayanan PBG (Persetujuan Bangunan Gedung) dan SLF (Sertifikat Laik Fungsi) PUPR Garut:
+
+Pertanyaan Warga (${pushName}): "${messageText}"`;
+
+    const res = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+    });
+    
+    if (res?.text && waSocket && connectionState === 'connected') {
+      const aiResponse = res.text;
+      
+      // 1. Send via Socket
+      await waSocket.sendMessage(senderJid, { text: aiResponse });
+      
+      // 2. Save to Firestore
+      const botMsg = {
+        id: `msg-ai-${Date.now()}`,
+        sender: 'bot',
+        senderName: 'AI Assistant PUPR (Gemini 2.5)',
+        text: aiResponse,
+        timestamp: new Date().toISOString(),
+        status: 'sent'
+      };
+      
+      const cleanPhone = '+' + senderJid.split('@')[0];
+      await saveMessage(`conv-${senderJid}`, botMsg, { name: pushName, phoneNumber: cleanPhone });
+      
+      addSocketLog('AI_GEMINI_REPLY', `Jawaban AI Gemini dikirimkan secara otomatis ke ${pushName}`);
+      return true;
+    }
+  } catch (error) {
+    console.error('[Gemini AI] Error:', error);
+  }
+  return false;
 }
 
 const logger = pino({ level: 'silent' });
@@ -112,12 +163,14 @@ async function initBaileysSocket(phoneNumber = null) {
     addSocketLog('SOCKET_INITIALIZING', `Memulai engine Baileys MD version ${version.join('.')}`);
     connectionState = 'connecting';
 
+    const { Browsers } = require('@whiskeysockets/baileys');
+    
     waSocket = makeWASocket({
       version,
       logger,
       printQRInTerminal: true,
       auth: state,
-      browser: ['PUPR Garut Command Center', 'Chrome', '1.0.0'],
+      browser: Browsers.ubuntu('Chrome'),
       markOnlineOnConnect: true,
       syncFullHistory: false,
       connectTimeoutMs: 60000,
@@ -197,6 +250,8 @@ async function initBaileysSocket(phoneNumber = null) {
         if (!msg.message || msg.key.fromMe) continue;
 
         const senderJid = msg.key.remoteJid;
+        const pushName = msg.pushName || 'Warga PUPR';
+        const cleanPhone = '+' + senderJid.split('@')[0];
         const messageText = 
           msg.message.conversation ||
           msg.message.extendedTextMessage?.text ||
@@ -205,18 +260,25 @@ async function initBaileysSocket(phoneNumber = null) {
 
         const inboundData = {
           id: msg.key.id,
-          jid: senderJid,
-          pushName: msg.pushName || 'Warga PUPR',
+          sender: 'user',
           text: messageText,
           timestamp: new Date((msg.messageTimestamp || Date.now() / 1000) * 1000).toISOString(),
-          type: Object.keys(msg.message)[0] || 'unknown',
+          status: 'read',
         };
 
-        inboundMessagesCache.unshift(inboundData);
+        inboundMessagesCache.unshift({ jid: senderJid, pushName, ...inboundData });
         if (inboundMessagesCache.length > 100) inboundMessagesCache.pop();
 
-        console.log(`[PUPR Baileys Inbound] Pesan baru dari ${msg.pushName} (${senderJid}): "${messageText}"`);
-        addSocketLog('INBOUND_MESSAGE', `Pesan masuk dari ${msg.pushName || senderJid}: "${messageText.slice(0, 50)}..."`);
+        console.log(`[PUPR Baileys Inbound] Pesan baru dari ${pushName} (${senderJid}): "${messageText}"`);
+        addSocketLog('INBOUND_MESSAGE', `Pesan masuk dari ${pushName || senderJid}: "${messageText.slice(0, 50)}..."`);
+        
+        // Save to Firestore
+        await saveMessage(`conv-${senderJid}`, inboundData, { name: pushName, phoneNumber: cleanPhone });
+        
+        // Trigger AI Auto-reply
+        if (messageText.length > 3) {
+           await handleGeminiAiReply(senderJid, messageText, pushName);
+        }
       }
     });
 

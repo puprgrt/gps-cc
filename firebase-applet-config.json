@@ -1,12 +1,12 @@
 {
-  "projectId": "big-outrider-b40ks",
-  "appId": "1:820728979520:web:6e4508d962b955936d3fa5",
-  "apiKey": "AIzaSyCwbUaXf1-N6ce8xUN8zF96_Zlgpg1PJUI",
-  "authDomain": "big-outrider-b40ks.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-gpsccdashboard-ffc73381-f406-4736-8dce-b4d69d0fb32c",
-  "storageBucket": "big-outrider-b40ks.firebasestorage.app",
-  "messagingSenderId": "820728979520",
+  "projectId": "${NEXT_PUBLIC_FIREBASE_PROJECT_ID}",
+  "appId": "${NEXT_PUBLIC_FIREBASE_APP_ID}",
+  "apiKey": "${NEXT_PUBLIC_FIREBASE_API_KEY}",
+  "authDomain": "${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}",
+  "firestoreDatabaseId": "${NEXT_PUBLIC_FIRESTORE_DATABASE_ID}",
+  "storageBucket": "${NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}",
+  "messagingSenderId": "${NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}",
   "measurementId": "",
-  "oAuthClientId": "820728979520-0kdi372v3ut7nak9qp07ik1u7eq7mpj4.apps.googleusercontent.com",
+  "oAuthClientId": "",
   "recaptchaSiteKey": ""
 }

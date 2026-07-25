@@ -28,7 +28,21 @@ async function handleSendMessage(req, res) {
   const { to, text, options } = req.body;
   try {
     const result = await waSocketService.sendMessage(to, text, options);
-    res.json({ success: true, messageId: result.key.id });
+    
+    // Save outbound message to Firestore
+    const { saveMessage } = require('../services/firestoreService');
+    const outMsg = {
+      id: result.key?.id || `msg-${Date.now()}`,
+      sender: 'operator',
+      senderName: 'Admin Operator PUPR',
+      text,
+      timestamp: new Date().toISOString(),
+      status: 'sent'
+    };
+    const cleanPhone = '+' + to.split('@')[0];
+    await saveMessage(`conv-${to}`, outMsg, { name: cleanPhone, phoneNumber: cleanPhone });
+
+    res.json({ success: true, messageId: result.key?.id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -3,7 +3,11 @@ import type {NextConfig} from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
+  },
+  webpack: (config) => {
+    config.resolve.symlinks = false;
+    return config;
   },
   typescript: {
     ignoreBuildErrors: false,

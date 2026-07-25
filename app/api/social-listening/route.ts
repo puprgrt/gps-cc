@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 
 const MOCK_MENTIONS = [
   {
@@ -16,7 +16,7 @@ const MOCK_MENTIONS = [
     id: 2,
     platform: 'instagram',
     author: 'GarutUpdate',
-    content: 'Apresiasi untuk Dinas PUPR Kabupaten Garut yang merespon cepat perbaikan gorong-gorong di Tarogong. Mantap! 👍 #DinasPUPRGarut',
+    content: 'Apresiasi untuk Dinas PUPR Kabupaten Garut yang merespon cepat perbaikan gorong-gorong di Tarogong. Mantap! ðŸ‘ #DinasPUPRGarut',
     sentiment: 'positive',
     topic: 'Dinas PUPR Garut',
     timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
