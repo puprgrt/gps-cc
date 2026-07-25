@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: gps-cc-whatsapp-bot
+    env: node
+    buildCommand: "npm install"
+    startCommand: "npm run server:baileys"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Tambahkan environment variables lain yang dibutuhkan Baileys/Firebase di dashboard Render
