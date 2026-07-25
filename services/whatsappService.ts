@@ -38,8 +38,8 @@ export class WhatsAppService {
       const res = await fetch('/api/whatsapp/messages', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data.conversations)) {
-          return data.conversations.map((c: any) => ({
+        if (Array.isArray(data)) {
+          return data.map((c: any) => ({
             ...c,
             timestamp: new Date(c.timestamp),
             messages: (c.messages || []).map((m: any) => ({
@@ -122,11 +122,7 @@ export class WhatsAppService {
 
   static async getOperators(): Promise<OperatorStatus[]> {
     return [
-      { id: 'op-1', name: 'Admin PUPR', status: 'online', activeTask: 'Super Admin Operator' },
-      { id: 'op-2', name: 'Dinda Sekar', status: 'busy', activeTask: 'Membalas Chat PBG' },
-      { id: 'op-3', name: 'Rizky Maulana', status: 'online', activeTask: 'Verifikasi Dokumen' },
-      { id: 'op-4', name: 'Siti Aisyah', status: 'offline', activeTask: 'Shift Pagi' },
-      { id: 'op-5', name: 'Agus Setiawan', status: 'busy', activeTask: 'Tim Teknis SLF' },
+      { id: 'op-1', name: 'Admin PUPR (Anda)', status: 'online', activeTask: 'Super Admin Operator' }
     ];
   }
 

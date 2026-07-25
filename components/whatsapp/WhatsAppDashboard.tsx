@@ -109,7 +109,13 @@ export function WhatsAppDashboard() {
     { name: 'Belum Dibalas', value: 14, color: '#F6B100' },
   ];
 
-  // Sparkline Mock Datasets
+  // Real Analytics Data based on `conversations`
+  const totalChatCount = conversations.length;
+  const pendingCount = conversations.filter(c => c.status === 'pending').length;
+  const aiCount = conversations.filter(c => c.status === 'bot_handling').length;
+  const operatorCount = conversations.filter(c => c.status === 'active' || c.status === 'resolved').length;
+  
+  // Keep sparkline visual mock data for now, but update the big numbers
   const totalChatSpark = [110, 115, 118, 122, 126, 124, 126.5];
   const pendingSpark = [90, 88, 85, 82, 80, 79, 78];
   const aiSpark = [650, 700, 740, 780, 810, 830, 856];
@@ -181,8 +187,8 @@ export function WhatsAppDashboard() {
         {/* KPI 2: Total Chat */}
         <KpiCard 
           title="TOTAL CHAT" 
-          value="1.265" 
-          trend="+18.5%" 
+          value={totalChatCount.toString()} 
+          trend="Real-time" 
           trendType="up" 
           data={totalChatSpark} 
           color="#3b82f6" 
@@ -191,8 +197,8 @@ export function WhatsAppDashboard() {
         {/* KPI 3: Belum Dibalas */}
         <KpiCard 
           title="BELUM DIBALAS" 
-          value="78" 
-          trend="-12.3%" 
+          value={pendingCount.toString()} 
+          trend="Antrean" 
           trendType="down" 
           data={pendingSpark} 
           color="#f59e0b" 
@@ -201,8 +207,8 @@ export function WhatsAppDashboard() {
         {/* KPI 4: Dijawab AI */}
         <KpiCard 
           title="DIJAWAB AI" 
-          value="856" 
-          trend="+21.7%" 
+          value={aiCount.toString()} 
+          trend="Otomatis" 
           trendType="up" 
           data={aiSpark} 
           color="#10b981" 
@@ -211,8 +217,8 @@ export function WhatsAppDashboard() {
         {/* KPI 5: Dijawab Operator */}
         <KpiCard 
           title="DIJAWAB OPERATOR" 
-          value="331" 
-          trend="+8.2%" 
+          value={operatorCount.toString()} 
+          trend="Manual" 
           trendType="up" 
           data={operatorSpark} 
           color="#0284c7" 
