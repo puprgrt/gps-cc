@@ -127,6 +127,7 @@ export function WhatsAppDashboard() {
           regenerateBaileysQr={regenerateBaileysQr}
           confirmAuthentication={confirmAuthentication}
           connect={connect}
+          refreshConnection={refreshConnection}
           logs={logs}
         />
       </div>

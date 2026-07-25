@@ -15,6 +15,7 @@ interface WhatsAppFrontLoginProps {
   regenerateBaileysQr: () => void;
   confirmAuthentication: () => Promise<void>;
   connect: (mode?: 'qr' | 'pairing', phoneNumber?: string) => Promise<void>;
+  refreshConnection?: () => Promise<void>;
   logs: WhatsAppBotLog[];
 }
 
@@ -25,6 +26,7 @@ export function WhatsAppFrontLogin({
   regenerateBaileysQr,
   confirmAuthentication,
   connect,
+  refreshConnection,
   logs
 }: WhatsAppFrontLoginProps) {
   const [countdown, setCountdown] = useState(45);
@@ -50,6 +52,15 @@ export function WhatsAppFrontLogin({
 
     return () => clearInterval(timer);
   }, [pairingMode, regenerateBaileysQr]);
+
+  // Auto-poll connection status every 3 seconds
+  useEffect(() => {
+    if (!refreshConnection) return;
+    const pollTimer = setInterval(() => {
+      refreshConnection();
+    }, 3000);
+    return () => clearInterval(pollTimer);
+  }, [refreshConnection]);
 
   const handleManualRefresh = () => {
     setIsRefreshing(true);
