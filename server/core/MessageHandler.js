@@ -191,12 +191,7 @@ class MessageHandler {
   async handleGeminiAiReply(senderJid, messageText, pushName, botSettings = {}) {
     try {
       const systemPrompt = botSettings.system_prompt || `Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.`;
-      let modelName = botSettings.model || 'gemini-2.5-flash';
-
-      // Fallback valid model names for Google GenAI SDK
-      if (modelName.includes('3.6') || modelName.includes('3.5') || modelName.includes('3.0')) {
-        modelName = 'gemini-2.5-flash';
-      }
+      let modelName = botSettings.model || 'gemini-3.6-flash';
 
       const fullPrompt = `${systemPrompt}\n\nPertanyaan Warga (${pushName}): "${messageText}"`;
 
