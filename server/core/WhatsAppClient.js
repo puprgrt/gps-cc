@@ -7,6 +7,7 @@ const {
 const pino = require('pino');
 const fs = require('fs');
 const path = require('path');
+const qrcodeTerminal = require('qrcode-terminal');
 const { SESSION_PATH } = require('../config/baileys');
 const localDb = require('../services/localDbService');
 
@@ -142,6 +143,7 @@ class WhatsAppClient {
           this.connectionState = 'qr_ready';
           this.isReconnecting = false;
           console.log('[PUPR Baileys] QR Code baru dihasilkan dari Meta!');
+          qrcodeTerminal.generate(qr, { small: true });
           this.addLog('QR_RECEIVED', 'QR Code autentikasi baru diterima dari Meta WhatsApp');
         }
 
