@@ -1,32 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { collection, doc, getDocs, getDoc, updateDoc, query, orderBy, arrayUnion } from 'firebase/firestore';
 
-const CONV_COLLECTION = 'whatsapp_conversations';
-const LOG_COLLECTION = 'whatsapp_logs';
+const BAILEYS_URL = process.env.BAILEYS_API_URL || 'http://localhost:3001';
 
 export async function GET() {
   try {
-    const convQuery = query(collection(db, CONV_COLLECTION), orderBy('timestamp', 'desc'));
-    const convSnapshot = await getDocs(convQuery);
-    const conversationsStore = [];
-    convSnapshot.forEach(doc => {
-      conversationsStore.push(doc.data());
-    });
-
-    const logQuery = query(collection(db, LOG_COLLECTION), orderBy('timestamp', 'desc'));
-    const logSnapshot = await getDocs(logQuery);
-    const botLogsStore = [];
-    logSnapshot.forEach(doc => {
-      botLogsStore.push(doc.data());
-    });
-
-    return NextResponse.json({
-      conversations: conversationsStore,
-      logs: botLogsStore.slice(0, 100),
-    });
-  } catch (error) {
-    console.error('Error fetching whatsapp messages from Firestore:', error);
+    const res = await fetch(`${BAILEYS_URL}/api/conversations`, { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      return NextResponse.json(data);
+    }
+    return NextResponse.json({ error: 'Failed to fetch conversations' }, { status: 500 });
+  } catch (error: any) {
+    console.error('Error fetching whatsapp messages from Baileys Server:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -37,19 +22,9 @@ export async function POST(req: NextRequest) {
     const { action, conversationId, text, sender, note, tag } = body;
 
     if (action === 'send_message') {
-      const convRef = doc(db, CONV_COLLECTION, conversationId);
-      const convSnap = await getDoc(convRef);
-      
-      if (!convSnap.exists()) {
-        return NextResponse.json({ error: 'Percakapan tidak ditemukan' }, { status: 404 });
-      }
-
-      const conv = convSnap.data();
-
-      // Trigger Baileys Standalone endpoint
       try {
         const jid = conversationId.replace('conv-', '');
-        const baileysRes = await fetch('http://localhost:3001/api/send-message', {
+        const baileysRes = await fetch(`${BAILEYS_URL}/api/send-message`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ to: jid, text }),
@@ -57,25 +32,22 @@ export async function POST(req: NextRequest) {
         
         if (!baileysRes.ok) {
            console.error('Failed to send to Baileys:', await baileysRes.text());
+           return NextResponse.json({ error: 'Failed to send message' }, { status: 500 });
         }
-      } catch (e) {
+      } catch (e: any) {
          console.error('Baileys Standalone not reachable:', e);
+         return NextResponse.json({ error: e.message }, { status: 500 });
       }
 
-      // Note: The Baileys server's controller handleSendMessage now handles saving to Firestore!
-      // So we don't need to do it here, but wait, the client expects the updated message in the response right away.
-      // It's fine, let's just return success: true. The frontend will re-fetch data or use optimistic UI.
-      
-      return NextResponse.json({
-        success: true,
-      });
+      return NextResponse.json({ success: true });
     }
 
     if (action === 'add_note') {
       if (conversationId && note) {
-        const convRef = doc(db, CONV_COLLECTION, conversationId);
-        await updateDoc(convRef, {
-          notes: arrayUnion(note)
+        await fetch(`${BAILEYS_URL}/api/add-note`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ conversationId, note }),
         });
         return NextResponse.json({ success: true });
       }
@@ -83,9 +55,10 @@ export async function POST(req: NextRequest) {
 
     if (action === 'add_tag') {
       if (conversationId && tag) {
-        const convRef = doc(db, CONV_COLLECTION, conversationId);
-        await updateDoc(convRef, {
-          tags: arrayUnion(tag)
+        await fetch(`${BAILEYS_URL}/api/add-tag`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ conversationId, tag }),
         });
         return NextResponse.json({ success: true });
       }

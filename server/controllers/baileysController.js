@@ -1,4 +1,5 @@
 const waSocketService = require('../services/waSocket');
+const localDb = require('../services/localDbService');
 
 function getStatus(req, res) {
   res.json(waSocketService.getSocketStatus());
@@ -29,8 +30,7 @@ async function handleSendMessage(req, res) {
   try {
     const result = await waSocketService.sendMessage(to, text, options);
     
-    // Save outbound message to Firestore
-    const { saveMessage } = require('../services/firestoreService');
+    // Save outbound message to local DB
     const outMsg = {
       id: result.key?.id || `msg-${Date.now()}`,
       sender: 'operator',
@@ -40,7 +40,7 @@ async function handleSendMessage(req, res) {
       status: 'sent'
     };
     const cleanPhone = '+' + to.split('@')[0];
-    await saveMessage(`conv-${to}`, outMsg, { name: cleanPhone, phoneNumber: cleanPhone });
+    await localDb.saveMessage(`conv-${to}`, outMsg, { name: cleanPhone, phoneNumber: cleanPhone });
 
     res.json({ success: true, messageId: result.key?.id });
   } catch (err) {
@@ -52,7 +52,7 @@ async function handleSendMedia(req, res) {
   const { to, mediaUrl, caption, mediaType } = req.body;
   try {
     const result = await waSocketService.sendMediaMessage(to, mediaUrl, caption, mediaType);
-    res.json({ success: true, messageId: result.key.id });
+    res.json({ success: true, messageId: result.key?.id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -98,6 +98,29 @@ async function handleGetGroupMetadata(req, res) {
   }
 }
 
+// Data Fetching from Local DB
+async function handleGetConversations(req, res) {
+  try {
+    const conversations = await localDb.getActiveConversations();
+    const logs = await localDb.getRecentLogs();
+    res.json({ conversations, logs });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function handleAddNote(req, res) {
+  const { conversationId, note } = req.body;
+  const success = await localDb.addNote(conversationId, note);
+  res.json({ success });
+}
+
+async function handleAddTag(req, res) {
+  const { conversationId, tag } = req.body;
+  const success = await localDb.addTag(conversationId, tag);
+  res.json({ success });
+}
+
 function handleGetInboundMessages(req, res) {
   res.json({ success: true, messages: waSocketService.getInboundMessages() });
 }
@@ -117,6 +140,9 @@ module.exports = {
   handleMarkRead,
   handleGetProfilePicture,
   handleGetGroupMetadata,
+  handleGetConversations,
+  handleAddNote,
+  handleAddTag,
   handleGetInboundMessages,
   handleGetContacts,
 };

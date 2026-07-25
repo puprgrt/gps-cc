@@ -15,7 +15,7 @@ let currentPairingCode = null;
 let connectionState = 'disconnected'; // 'disconnected' | 'qr_ready' | 'connecting' | 'connected'
 let userInfo = null;
 
-const { saveMessage, saveLog, getActiveConversations } = require('./firestoreService');
+const { saveMessage, saveLog } = require('./localDbService');
 const { GoogleGenAI } = require('@google/genai');
 
 // Store in-memory cache for live telemetry, messages, contacts, and presence
