@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const qrcodeTerminal = require('qrcode-terminal');
 const { SESSION_PATH } = require('../config/baileys');
+const supabaseService = require('../services/supabaseService');
 const localDb = require('../services/localDbService');
 
 const MessageHandler = require('./MessageHandler');

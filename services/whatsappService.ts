@@ -1,4 +1,5 @@
 import { WhatsAppConnectionStatus, WhatsAppConversation, WhatsAppBotLog, OperatorStatus } from '../domain/whatsapp';
+import { supabase } from '../lib/supabase';
 
 export class WhatsAppService {
   static async getConnectionStatus(): Promise<WhatsAppConnectionStatus> {
@@ -35,22 +36,46 @@ export class WhatsAppService {
 
   static async getActiveConversations(): Promise<WhatsAppConversation[]> {
     try {
-      const res = await fetch('/api/whatsapp/messages', { cache: 'no-store' });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          return data.map((c: any) => ({
-            ...c,
-            timestamp: new Date(c.timestamp),
-            messages: (c.messages || []).map((m: any) => ({
-              ...m,
-              timestamp: new Date(m.timestamp),
-            })),
-          }));
-        }
+      const { data, error } = await supabase
+        .from('wa_conversations')
+        .select(`
+          id,
+          contact_id,
+          last_message,
+          unread_count,
+          status,
+          category,
+          updated_at,
+          created_at,
+          wa_messages(id, sender_type, text, media_url, media_type, status, timestamp)
+        `)
+        .order('updated_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase error fetching conversations:', error);
+        return [];
+      }
+
+      if (data) {
+        return data.map((c: any) => ({
+          id: c.id,
+          contactName: c.id.split('@')[0], // Simplified since we don't join wa_contacts in this query yet
+          contactNumber: c.id.split('@')[0],
+          lastMessage: c.last_message,
+          timestamp: new Date(c.updated_at),
+          unreadCount: c.unread_count,
+          status: c.status === 'pending' ? 'pending' : (c.status === 'bot_handling' ? 'bot_handling' : 'active'),
+          messages: (c.wa_messages || []).map((m: any) => ({
+            id: m.id,
+            sender: m.sender_type,
+            text: m.text,
+            timestamp: new Date(m.timestamp),
+            status: m.status
+          })).sort((a: any, b: any) => a.timestamp.getTime() - b.timestamp.getTime()),
+        }));
       }
     } catch (e) {
-      console.warn('Failed to fetch conversations from API:', e);
+      console.warn('Failed to fetch conversations from Supabase:', e);
     }
     return [];
   }

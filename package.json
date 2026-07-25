@@ -18,6 +18,7 @@
     "@base-ui/react": "^1.6.0",
     "@google/genai": "^2.4.0",
     "@hookform/resolvers": "^5.2.1",
+    "@supabase/supabase-js": "^2.110.8",
     "@whiskeysockets/baileys": "^7.0.0-rc13",
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",

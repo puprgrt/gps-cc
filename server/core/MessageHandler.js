@@ -1,5 +1,6 @@
 const { GoogleGenAI } = require('@google/genai');
-const localDb = require('../services/localDbService');
+const supabaseService = require('../services/supabaseService');
+const localDb = require('../services/localDbService'); // Keep for logs if needed
 
 class MessageHandler {
   constructor(client) {
@@ -33,8 +34,8 @@ class MessageHandler {
 
       this.client.addLog('INBOUND_MESSAGE', `Pesan masuk dari ${pushName || senderJid} [${type}]: "${text.slice(0, 50)}..."`);
       
-      // Save to local DB
-      await localDb.saveMessage(`conv-${senderJid}`, inboundData, { name: pushName, phoneNumber: cleanPhone });
+      // Save to Supabase
+      await supabaseService.saveMessage(`conv-${senderJid}`, inboundData, { name: pushName, phoneNumber: cleanPhone });
       
       // Auto reply with Gemini (only if text is long enough and it's a standard text message)
       if (type === 'text' && text.length > 3 && this.ai) {
@@ -133,7 +134,7 @@ Pertanyaan Warga (${pushName}): "${messageText}"`;
         await this.client.waSocket.sendMessage(senderJid, { text: replyText });
         
         const cleanPhone = '+' + senderJid.split('@')[0];
-        await localDb.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
+        await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
         
         this.client.addLog('AI_GEMINI_REPLY', `Jawaban otomatis AI dikirim ke ${pushName}`);
         return true;

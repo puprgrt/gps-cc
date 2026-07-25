@@ -1,5 +1,6 @@
 const whatsappClient = require('../core/WhatsAppClient');
 const localDb = require('../services/localDbService');
+const supabaseService = require('../services/supabaseService');
 
 exports.getStatus = (req, res) => {
   res.json(whatsappClient.getSocketStatus());
@@ -65,7 +66,7 @@ exports.handleSendMessage = async (req, res) => {
       type: 'text'
     };
     
-    await localDb.saveMessage(`conv-${targetJid}`, botMsgObj, { name: cleanPhone, phoneNumber: cleanPhone });
+    await supabaseService.saveMessage(`conv-${targetJid}`, botMsgObj, { name: cleanPhone, phoneNumber: cleanPhone });
     await whatsappClient.addLog('SEND_MESSAGE', `Pesan Teks ke ${targetJid}: "${text.slice(0, 50)}..."`);
     
     res.json({ message: 'Pesan Teks berhasil dikirim.', data: result, saved: botMsgObj });
@@ -110,7 +111,7 @@ exports.handleSendMedia = async (req, res) => {
       metadata: { fileName, mimetype }
     };
     
-    await localDb.saveMessage(`conv-${targetJid}`, botMsgObj, { name: cleanPhone, phoneNumber: cleanPhone });
+    await supabaseService.saveMessage(`conv-${targetJid}`, botMsgObj, { name: cleanPhone, phoneNumber: cleanPhone });
     res.json({ message: 'Pesan Media berhasil dikirim.', data: result });
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { WhatsAppConnectionStatus, WhatsAppConversation, WhatsAppBotLog, OperatorStatus, WhatsAppMessage } from '../domain/whatsapp';
 import { WhatsAppService } from '../services/whatsappService';
 import { BaileysService } from '../services/baileysService';
+import { supabase } from '../lib/supabase';
 
 interface WhatsAppState {
   activeTab: string;
@@ -273,6 +274,32 @@ export function useWhatsApp() {
     if (!store.conversations.length) {
       store.fetchData();
     }
+
+    // Supabase Realtime Subscription
+    const channel = supabase.channel('whatsapp_realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'wa_messages' },
+        (payload) => {
+          console.log('[Supabase Realtime] Pesan baru:', payload);
+          // Fetch ulang data agar data conversation dan message terbaru termuat 
+          // (ideal nya di-merge ke state lokal untuk optimasi)
+          store.fetchData();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'wa_conversations' },
+        (payload) => {
+          console.log('[Supabase Realtime] Update percakapan:', payload);
+          store.fetchData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
