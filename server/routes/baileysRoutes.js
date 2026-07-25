@@ -11,9 +11,11 @@ router.post('/disconnect', baileysController.disconnectSocket);
 router.post('/send-message', baileysController.handleSendMessage);
 router.post('/send-media', baileysController.handleSendMedia);
 
-// Data
+// Data & Settings
 router.get('/conversations', baileysController.handleGetConversations);
 router.get('/contacts', baileysController.handleGetContacts);
 router.get('/logs', baileysController.handleGetLogs);
+router.get('/bot-settings', baileysController.handleGetBotSettings);
+router.post('/bot-settings', baileysController.handleUpdateBotSettings);
 
 module.exports = router;

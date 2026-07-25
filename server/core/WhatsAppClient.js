@@ -157,12 +157,12 @@ class WhatsAppClient {
           this.connectionState = 'disconnected';
           this.currentQrCode = null;
 
-          if (isLoggedOut) {
-            console.warn('[PUPR Baileys] Sesi ditolak / Dilogout dari aplikasi utama.');
-            this.addLog('DISCONNECTED_LOGGED_OUT', 'Sesi ditolak oleh Meta atau dilogout. Memerlukan scan ulang.', 'error');
+          if (isLoggedOut || statusCode === 440) {
+            console.warn(`[PUPR Baileys] Sesi ditolak / Dilogout dari WhatsApp (Kode: ${statusCode}). Membersihkan sesi lama.`);
+            this.addLog('DISCONNECTED_LOGGED_OUT', `Sesi ditolak oleh Meta WhatsApp (Kode: ${statusCode}). Memerlukan scan QR baru.`, 'error');
             this.clearSessionAuth();
             this.isReconnecting = false;
-            // Kita inisialisasi ulang agar QR baru segera muncul
+            // Inisialisasi ulang agar QR Code baru segera muncul
             this.scheduleAutoReconnect(statusCode, 2000);
           } else {
             console.log(`[PUPR Baileys] Koneksi tertutup. Status Code: ${statusCode}`);

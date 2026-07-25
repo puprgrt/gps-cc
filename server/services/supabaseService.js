@@ -103,9 +103,112 @@ async function upsertContacts(contactsArray) {
   }
 }
 
+async function getBotSettings() {
+  try {
+    const { data, error } = await supabase
+      .from('wa_bot_settings')
+      .select('*')
+      .eq('id', 'default')
+      .single();
+
+    if (error && error.code === 'PGRST116') {
+      // Row not found, create default
+      const defaultSettings = {
+        id: 'default',
+        is_active: true,
+        is_menu_active: true,
+        is_keyword_active: true,
+        model: 'gemini-3.6-flash',
+        system_prompt: 'Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.',
+        min_text_length: 2
+      };
+      await supabase.from('wa_bot_settings').upsert(defaultSettings);
+      return defaultSettings;
+    }
+
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error('[SupabaseService] Error getting bot settings:', err);
+    return {
+      is_active: true,
+      is_menu_active: true,
+      is_keyword_active: true,
+      model: 'gemini-3.6-flash',
+      system_prompt: 'Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.',
+      min_text_length: 2
+    };
+  }
+}
+
+async function updateBotSettings(settings) {
+  try {
+    const payload = {
+      id: 'default',
+      is_active: settings.is_active ?? true,
+      model: settings.model || 'gemini-2.0-flash',
+      system_prompt: settings.system_prompt,
+      min_text_length: settings.min_text_length || 2,
+      updated_at: new Date().toISOString()
+    };
+    const { data, error } = await supabase
+      .from('wa_bot_settings')
+      .upsert(payload, { onConflict: 'id' })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error('[SupabaseService] Error updating bot settings:', err);
+    throw err;
+  }
+}
+
+async function getBotMenuFlows() {
+  try {
+    const { data, error } = await supabase
+      .from('wa_bot_menu_flows')
+      .select('*')
+      .eq('is_active', true)
+      .order('display_order', { ascending: true });
+
+    if (error && error.code === '42P01') {
+      return [];
+    }
+    if (error) throw error;
+    return data || [];
+  } catch (err) {
+    console.error('[SupabaseService] Error getting bot menu flows:', err);
+    return [];
+  }
+}
+
+async function getBotKeywords() {
+  try {
+    const { data, error } = await supabase
+      .from('wa_bot_keywords')
+      .select('*')
+      .eq('is_active', true);
+
+    if (error && (error.code === '42P01' || error.code === 'PGRST205')) {
+      return [];
+    }
+    if (error) throw error;
+    return data || [];
+  } catch (err) {
+    console.error('[SupabaseService] Error getting bot keywords:', err);
+    return [];
+  }
+}
+
 module.exports = {
   supabase,
   saveMessage,
   getActiveConversations,
-  upsertContacts
+  upsertContacts,
+  getBotSettings,
+  updateBotSettings,
+  getBotMenuFlows,
+  getBotKeywords
 };

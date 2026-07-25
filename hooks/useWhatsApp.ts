@@ -21,7 +21,7 @@ interface WhatsAppState {
   setActiveConversationId: (id: string | null) => void;
   setShowQrModal: (show: boolean) => void;
   setPairingMode: (mode: 'qr' | 'pairing') => void;
-  fetchData: () => Promise<void>;
+  fetchData: (silent?: boolean) => Promise<void>;
   sendMessage: (conversationId: string, text: string, sender?: 'user' | 'bot' | 'operator') => void;
   sendMedia: (conversationId: string, file: File, caption?: string) => Promise<void>;
   addInternalNote: (conversationId: string, note: string) => void;
@@ -51,9 +51,9 @@ export const useWhatsAppStore = create<WhatsAppState>((set, get) => ({
   setShowQrModal: (show) => set({ showQrModal: show }),
   setPairingMode: (mode) => set({ pairingMode: mode }),
 
-  fetchData: async () => {
+  fetchData: async (silent = false) => {
     try {
-      set({ loading: true, error: null });
+      if (!silent) set({ loading: true, error: null });
       const [statusData, convData, logsData, opData] = await Promise.all([
         WhatsAppService.getConnectionStatus(),
         WhatsAppService.getActiveConversations(),
@@ -282,9 +282,8 @@ export function useWhatsApp() {
         { event: '*', schema: 'public', table: 'wa_messages' },
         (payload) => {
           console.log('[Supabase Realtime] Pesan baru:', payload);
-          // Fetch ulang data agar data conversation dan message terbaru termuat 
-          // (ideal nya di-merge ke state lokal untuk optimasi)
-          store.fetchData();
+          // Silent fetch to prevent UI reload/flicker
+          store.fetchData(true);
         }
       )
       .on(
@@ -292,7 +291,7 @@ export function useWhatsApp() {
         { event: '*', schema: 'public', table: 'wa_conversations' },
         (payload) => {
           console.log('[Supabase Realtime] Update percakapan:', payload);
-          store.fetchData();
+          store.fetchData(true);
         }
       )
       .subscribe();

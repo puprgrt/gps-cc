@@ -74,7 +74,47 @@ CREATE TABLE IF NOT EXISTS wa_bot_flows (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 7. Bot AI Settings
+CREATE TABLE IF NOT EXISTS wa_bot_settings (
+  id VARCHAR(50) PRIMARY KEY DEFAULT 'default',
+  is_active BOOLEAN DEFAULT TRUE,
+  is_menu_active BOOLEAN DEFAULT TRUE,
+  is_keyword_active BOOLEAN DEFAULT TRUE,
+  model VARCHAR(50) DEFAULT 'gemini-3.6-flash',
+  system_prompt TEXT,
+  min_text_length INT DEFAULT 2,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 8. Menu Interaktif & Sub-Menu Flow
+CREATE TABLE IF NOT EXISTS wa_bot_menu_flows (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  parent_id UUID REFERENCES wa_bot_menu_flows(id) ON DELETE CASCADE,
+  menu_key VARCHAR(50) UNIQUE NOT NULL, -- Contoh: 'menu', '1', '1.1', '2', '3'
+  title VARCHAR(100) NOT NULL,
+  description TEXT,
+  reply_text TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT TRUE,
+  display_order INT DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 9. Keyword Reply Rules (Auto-Response Kata Kunci)
+CREATE TABLE IF NOT EXISTS wa_bot_keywords (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  keyword VARCHAR(100) UNIQUE NOT NULL,
+  match_type VARCHAR(30) DEFAULT 'CONTAINS', -- CONTAINS, EXACT, STARTS_WITH
+  reply_text TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Realtime Configuration
 -- Mengaktifkan pengiriman event realtime untuk tabel-tabel penting ke Frontend (Vercel)
 ALTER PUBLICATION supabase_realtime ADD TABLE wa_conversations;
 ALTER PUBLICATION supabase_realtime ADD TABLE wa_messages;
+ALTER PUBLICATION supabase_realtime ADD TABLE wa_bot_settings;
+ALTER PUBLICATION supabase_realtime ADD TABLE wa_bot_menu_flows;
+ALTER PUBLICATION supabase_realtime ADD TABLE wa_bot_keywords;

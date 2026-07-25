@@ -5,7 +5,14 @@ const localDb = require('../services/localDbService'); // Keep for logs if neede
 class MessageHandler {
   constructor(client) {
     this.client = client;
-    this.ai = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null;
+    this.ai = null;
+  }
+
+  getAiInstance() {
+    if (!this.ai && process.env.GEMINI_API_KEY) {
+      this.ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    }
+    return this.ai;
   }
 
   async handleIncoming(messages) {
@@ -37,9 +44,76 @@ class MessageHandler {
       // Save to Supabase
       await supabaseService.saveMessage(`conv-${senderJid}`, inboundData, { name: pushName, phoneNumber: cleanPhone });
       
-      // Auto reply with Gemini (only if text is long enough and it's a standard text message)
-      if (type === 'text' && text.length > 3 && this.ai) {
-         await this.handleGeminiAiReply(senderJid, text, pushName);
+      // Fetch dynamic Bot Settings, Menu Flows, & Keyword Rules
+      const botSettings = await supabaseService.getBotSettings();
+      const menuFlows = await supabaseService.getBotMenuFlows();
+      const keywordRules = await supabaseService.getBotKeywords();
+
+      let handledByBot = false;
+      const cleanInput = text.trim().toLowerCase();
+
+      // Priority 1: Interactive Menu Key (Check if is_menu_active is enabled)
+      const isMenuEnabled = botSettings.is_menu_active ?? true;
+      if (isMenuEnabled && type === 'text' && menuFlows.length > 0) {
+        const matchedFlow = menuFlows.find(f => 
+          f.menu_key.toLowerCase() === cleanInput || 
+          (cleanInput === '0' && f.menu_key.toLowerCase() === 'menu') ||
+          (cleanInput === 'bantuan' && f.menu_key.toLowerCase() === 'menu') ||
+          (cleanInput === 'help' && f.menu_key.toLowerCase() === 'menu')
+        );
+
+        if (matchedFlow) {
+          handledByBot = true;
+          const replyText = matchedFlow.reply_text;
+          const botMsgObj = {
+            id: `msg-menu-${Date.now()}`,
+            sender: 'bot',
+            senderName: 'PURI',
+            text: replyText,
+            timestamp: new Date().toISOString(),
+            status: 'sent',
+            type: 'text'
+          };
+
+          await this.client.waSocket.sendMessage(senderJid, { text: replyText });
+          await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
+          this.client.addLog('MENU_REPLY', `Respon Menu Interaktif [${matchedFlow.menu_key}] dikirim ke ${pushName}`);
+        }
+      }
+
+      // Priority 2: Keyword Reply Rules (Check if is_keyword_active is enabled)
+      const isKeywordEnabled = botSettings.is_keyword_active ?? true;
+      if (!handledByBot && isKeywordEnabled && type === 'text' && keywordRules.length > 0) {
+        const matchedKeyword = keywordRules.find(k => {
+          const kw = k.keyword.toLowerCase();
+          if (k.match_type === 'EXACT') return cleanInput === kw;
+          if (k.match_type === 'STARTS_WITH') return cleanInput.startsWith(kw);
+          return cleanInput.includes(kw); // CONTAINS (default)
+        });
+
+        if (matchedKeyword) {
+          handledByBot = true;
+          const replyText = matchedKeyword.reply_text;
+          const botMsgObj = {
+            id: `msg-kw-${Date.now()}`,
+            sender: 'bot',
+            senderName: 'PURI',
+            text: replyText,
+            timestamp: new Date().toISOString(),
+            status: 'sent',
+            type: 'text'
+          };
+
+          await this.client.waSocket.sendMessage(senderJid, { text: replyText });
+          await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
+          this.client.addLog('KEYWORD_REPLY', `Respon Kata Kunci [${matchedKeyword.keyword}] dikirim ke ${pushName}`);
+        }
+      }
+
+      // Priority 3: Gemini AI Fallback (Check if is_active is enabled)
+      const isAiEnabled = botSettings.is_active ?? true;
+      if (!handledByBot && isAiEnabled && type === 'text' && text.length >= (botSettings.min_text_length || 2)) {
+         await this.handleGeminiAiReply(senderJid, text, pushName, botSettings);
       }
     }
   }
@@ -105,16 +179,27 @@ class MessageHandler {
     return { text: '[Pesan Tipe Lain]', type: 'unknown', metadata: null };
   }
 
-  async handleGeminiAiReply(senderJid, messageText, pushName) {
+  async handleGeminiAiReply(senderJid, messageText, pushName, botSettings = {}) {
     try {
-      const prompt = `Anda adalah Asisten Virtual Resmi Dinas Pekerjaan Umum dan Penataan Ruang (PUPR) Kabupaten Garut untuk Layanan WhatsApp Center.
-Jawablah pertanyaan warga berikut dengan sopan, akurat, dan ringkas dalam Bahasa Indonesia berdasarkan standar pelayanan PBG (Persetujuan Bangunan Gedung) dan SLF (Sertifikat Laik Fungsi) PUPR Garut:
+      const systemPrompt = botSettings.system_prompt || `Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.`;
+      let modelName = botSettings.model || 'gemini-2.5-flash';
 
-Pertanyaan Warga (${pushName}): "${messageText}"`;
+      // Fallback valid model names for Google GenAI SDK
+      if (modelName.includes('3.6') || modelName.includes('3.5') || modelName.includes('3.0')) {
+        modelName = 'gemini-2.5-flash';
+      }
 
-      const res = await this.ai.models.generateContent({
-        model: 'gemini-2.0-flash',
-        contents: prompt,
+      const fullPrompt = `${systemPrompt}\n\nPertanyaan Warga (${pushName}): "${messageText}"`;
+
+      const aiClient = this.getAiInstance();
+      if (!aiClient) {
+        console.warn('[MessageHandler] GEMINI_API_KEY tidak ditemukan di .env!');
+        return false;
+      }
+
+      const res = await aiClient.models.generateContent({
+        model: modelName,
+        contents: fullPrompt,
       });
 
       const replyText = res.text;
@@ -124,7 +209,7 @@ Pertanyaan Warga (${pushName}): "${messageText}"`;
         const botMsgObj = {
           id: `msg-${Date.now()}`,
           sender: 'bot',
-          senderName: 'Gemini AI',
+          senderName: 'PURI',
           text: replyText,
           timestamp: new Date().toISOString(),
           status: 'sent',
@@ -140,9 +225,10 @@ Pertanyaan Warga (${pushName}): "${messageText}"`;
         return true;
       }
     } catch (error) {
-      this.client.addLog('GEMINI_ERROR', `Error AI: ${error.message}`, 'error');
+      console.error('[MessageHandler] Gagal mengirim balasan Gemini AI:', error.message);
+      this.client.addLog('AI_GEMINI_ERROR', `Gagal merespons AI: ${error.message}`, 'error');
+      return false;
     }
-    return false;
   }
 }
 

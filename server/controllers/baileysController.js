@@ -59,7 +59,7 @@ exports.handleSendMessage = async (req, res) => {
     const botMsgObj = {
       id: result.key.id,
       sender: sender || 'operator',
-      senderName: sender === 'operator' ? 'Admin PUPR' : 'Gemini AI',
+      senderName: sender === 'operator' ? 'Admin PUPR' : 'PURI',
       text: text,
       timestamp: new Date().toISOString(),
       status: 'sent',
@@ -136,6 +136,24 @@ exports.handleGetLogs = async (req, res) => {
   try {
     const data = await localDb.getLogs();
     res.json({ total: data.length, logs: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.handleGetBotSettings = async (req, res) => {
+  try {
+    const settings = await supabaseService.getBotSettings();
+    res.json(settings);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.handleUpdateBotSettings = async (req, res) => {
+  try {
+    const updated = await supabaseService.updateBotSettings(req.body);
+    res.json({ success: true, settings: updated });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

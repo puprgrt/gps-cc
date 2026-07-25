@@ -1,4 +1,5 @@
-require('dotenv').config({ path: '../.env' }); // Load .env if running standalone
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') }); // Load .env accurately
 const express = require('express');
 const cors = require('cors');
 const { PORT, CORS_WHITELIST } = require('./config/baileys');

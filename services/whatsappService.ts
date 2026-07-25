@@ -168,6 +168,133 @@ export class WhatsAppService {
     }
     return [];
   }
+
+  static async getBotSettings() {
+    try {
+      const res = await fetch('/api/whatsapp/bot-settings', { cache: 'no-store' });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      console.warn('Failed to fetch bot settings via API:', e);
+    }
+
+    return {
+      is_active: true,
+      model: 'gemini-2.0-flash',
+      system_prompt: 'Anda adalah Asisten Virtual Resmi Dinas Pekerjaan Umum dan Penataan Ruang (PUPR) Kabupaten Garut untuk Layanan WhatsApp Center. Jawablah pertanyaan warga dengan sopan, akurat, dan ringkas dalam Bahasa Indonesia berdasarkan standar pelayanan PBG dan SLF PUPR Garut.',
+      min_text_length: 2
+    };
+  }
+
+  static async updateBotSettings(settings: any) {
+    const res = await fetch('/api/whatsapp/bot-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings)
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || 'Gagal menyimpan pengaturan bot.');
+  }
+
+  static async getBotMenuFlows() {
+    try {
+      const res = await fetch('/api/whatsapp/bot-flows', { cache: 'no-store' });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      console.warn('Failed fetching bot flows:', e);
+    }
+    return [];
+  }
+
+  static async saveBotMenuFlowItem(item: any) {
+    const res = await fetch('/api/whatsapp/bot-flows', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save_item', item })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    throw new Error('Gagal menyimpan menu item');
+  }
+
+  static async deleteBotMenuFlowItem(item: any) {
+    const res = await fetch('/api/whatsapp/bot-flows', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete_item', item })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    throw new Error('Gagal menghapus menu item');
+  }
+
+  static async seedDefaultBotMenuFlows() {
+    const res = await fetch('/api/whatsapp/bot-flows', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'seed_defaults' })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    throw new Error('Gagal memuat template menu default');
+  }
+
+  static async getBotKeywords() {
+    try {
+      const res = await fetch('/api/whatsapp/bot-keywords', { cache: 'no-store' });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      console.warn('Failed fetching bot keywords:', e);
+    }
+    return [];
+  }
+
+  static async saveBotKeywordItem(item: any) {
+    const res = await fetch('/api/whatsapp/bot-keywords', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save_item', item })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    throw new Error('Gagal menyimpan kata kunci');
+  }
+
+  static async deleteBotKeywordItem(item: any) {
+    const res = await fetch('/api/whatsapp/bot-keywords', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete_item', item })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    throw new Error('Gagal menghapus kata kunci');
+  }
+
+  static async seedDefaultBotKeywords() {
+    const res = await fetch('/api/whatsapp/bot-keywords', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'seed_defaults' })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    throw new Error('Gagal memuat template kata kunci default');
+  }
 }
 
 

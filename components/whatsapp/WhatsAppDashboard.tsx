@@ -6,6 +6,7 @@ import { WhatsAppQrModal } from './WhatsAppQrModal';
 import { WhatsAppFrontLogin } from './WhatsAppFrontLogin';
 import { WhatsAppRightQrPanel } from './WhatsAppRightQrPanel';
 import { WhatsAppLogViewer } from './WhatsAppLogViewer';
+import { WhatsAppBotSettingsModal } from './WhatsAppBotSettingsModal';
 import { Badge } from '@/components/ui/badge';
 import { 
   QrCode, MessageSquare, Terminal, RefreshCw, Phone, CheckCircle, 
@@ -49,7 +50,7 @@ export function WhatsAppDashboard() {
   const [dateFilter, setDateFilter] = useState('Hari Ini');
   const [mobileTab, setMobileTab] = useState<'list' | 'chat' | 'info'>('chat');
   const [rightPanelTab, setRightPanelTab] = useState<'info' | 'qr' | 'logs'>('info');
-  const [dashboardView, setDashboardView] = useState<'chats' | 'logs'>('chats');
+  const [dashboardView, setDashboardView] = useState<'chats' | 'logs' | 'settings'>('chats');
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId) || conversations[0];
 
@@ -167,6 +168,8 @@ export function WhatsAppDashboard() {
           <div className="flex gap-1.5 mt-3">
             <button 
               onClick={() => {
+                setShowQrModal(true);
+                connect('qr');
                 setRightPanelTab('qr');
                 setMobileTab('info');
               }}
@@ -292,6 +295,19 @@ export function WhatsAppDashboard() {
             <span>Terminal Log Baileys Live</span>
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           </button>
+
+          <button
+            onClick={() => setDashboardView('settings')}
+            className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              dashboardView === 'settings'
+                ? 'bg-emerald-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white hover:bg-white/5 border border-white/10'
+            }`}
+          >
+            <Bot className="w-4 h-4 text-emerald-400" />
+            <span>Pengaturan Bot AI</span>
+            <Sparkles className="w-3 h-3 text-amber-400" />
+          </button>
         </div>
 
         <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-400 px-2 font-mono">
@@ -305,6 +321,9 @@ export function WhatsAppDashboard() {
         <div className="animate-fade-in">
           <WhatsAppLogViewer />
         </div>
+      ) : dashboardView === 'settings' ? (
+        /* Full-width Dynamic Bot AI Settings View */
+        <WhatsAppBotSettingsModal onBack={() => setDashboardView('chats')} />
       ) : (
         /* 3-Column Command Center Chat View */
         <div>
@@ -777,13 +796,20 @@ export function WhatsAppDashboard() {
                   <div className="flex items-center gap-1.5 text-emerald-400 font-bold text-xs uppercase tracking-wider">
                     <Sparkles className="w-4 h-4" /> AI SUGGESTED REPLY
                   </div>
-                  <button
-                    onClick={() => activeConversation && applyAiSuggestedReply(activeConversation.id)}
-                    className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-[10px] font-bold transition-colors cursor-pointer"
-                  >
-                    Gunakan
-                  </button>
-
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setDashboardView('settings')}
+                      className="px-2 py-1 bg-white/10 hover:bg-white/20 text-slate-200 rounded text-[10px] font-semibold transition-colors cursor-pointer"
+                    >
+                      Kustom Bot
+                    </button>
+                    <button
+                      onClick={() => activeConversation && applyAiSuggestedReply(activeConversation.id)}
+                      className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-[10px] font-bold transition-colors cursor-pointer"
+                    >
+                      Gunakan
+                    </button>
+                  </div>
                 </div>
 
                 <p className="text-xs text-slate-200 leading-relaxed bg-black/30 p-2.5 rounded-lg border border-white/5 font-mono whitespace-pre-line max-h-36 overflow-y-auto">
@@ -875,6 +901,9 @@ export function WhatsAppDashboard() {
       </div>
       </div>
       )}
+
+      {/* QR CODE POPUP MODAL */}
+      <WhatsAppQrModal />
     </div>
   );
 }
