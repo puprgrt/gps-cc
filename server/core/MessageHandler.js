@@ -15,6 +15,15 @@ class MessageHandler {
     return this.ai;
   }
 
+  formatPuriReply(text) {
+    if (!text) return '';
+    const cleanText = text.trim();
+    if (cleanText.startsWith('🤖') || cleanText.startsWith('*PURI') || cleanText.startsWith('PURI:')) {
+      return cleanText;
+    }
+    return `🤖 *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\n${cleanText}`;
+  }
+
   async handleIncoming(messages) {
     for (const msg of messages) {
       if (!msg.message || msg.key.fromMe) continue;
@@ -64,7 +73,7 @@ class MessageHandler {
 
         if (matchedFlow) {
           handledByBot = true;
-          const replyText = matchedFlow.reply_text;
+          const replyText = this.formatPuriReply(matchedFlow.reply_text);
           const botMsgObj = {
             id: `msg-menu-${Date.now()}`,
             sender: 'bot',
@@ -93,7 +102,7 @@ class MessageHandler {
 
         if (matchedKeyword) {
           handledByBot = true;
-          const replyText = matchedKeyword.reply_text;
+          const replyText = this.formatPuriReply(matchedKeyword.reply_text);
           const botMsgObj = {
             id: `msg-kw-${Date.now()}`,
             sender: 'bot',
@@ -202,9 +211,10 @@ class MessageHandler {
         contents: fullPrompt,
       });
 
-      const replyText = res.text;
+      const rawReply = res.text;
       
-      if (replyText) {
+      if (rawReply) {
+        const replyText = this.formatPuriReply(rawReply);
         // Automatically send the reply
         const botMsgObj = {
           id: `msg-${Date.now()}`,
@@ -221,7 +231,7 @@ class MessageHandler {
         const cleanPhone = '+' + senderJid.split('@')[0];
         await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
         
-        this.client.addLog('AI_GEMINI_REPLY', `Jawaban otomatis AI dikirim ke ${pushName}`);
+        this.client.addLog('AI_GEMINI_REPLY', `Respon Gemini AI dikirim ke ${pushName}`);
         return true;
       }
     } catch (error) {
