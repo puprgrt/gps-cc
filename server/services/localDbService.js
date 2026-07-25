@@ -5,12 +5,13 @@ const DB_DIR = path.join(__dirname, '../../.data');
 const CONV_FILE = path.join(DB_DIR, 'conversations.json');
 const LOG_FILE = path.join(DB_DIR, 'logs.json');
 
-// Ensure directory exists
-if (!fs.existsSync(DB_DIR)) {
-  fs.mkdirSync(DB_DIR, { recursive: true });
+async function init() {
+  if (!fs.existsSync(DB_DIR)) {
+    fs.mkdirSync(DB_DIR, { recursive: true });
+  }
+  if (!fs.existsSync(CONV_FILE)) fs.writeFileSync(CONV_FILE, JSON.stringify([]));
+  if (!fs.existsSync(LOG_FILE)) fs.writeFileSync(LOG_FILE, JSON.stringify([]));
 }
-if (!fs.existsSync(CONV_FILE)) fs.writeFileSync(CONV_FILE, JSON.stringify([]));
-if (!fs.existsSync(LOG_FILE)) fs.writeFileSync(LOG_FILE, JSON.stringify([]));
 
 function readDb(file) {
   try {
@@ -128,6 +129,7 @@ async function addTag(conversationId, tag) {
 }
 
 module.exports = {
+  init,
   saveMessage,
   saveLog,
   getActiveConversations,
