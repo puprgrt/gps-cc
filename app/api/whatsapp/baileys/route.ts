@@ -4,7 +4,18 @@ const BAILEYS_URL = process.env.BAILEYS_API_URL || 'http://localhost:3001';
 
 export async function GET(req: NextRequest) {
   try {
-    const res = await fetch(`${BAILEYS_URL}/api/status`, { cache: 'no-store' });
+    let targetUrl = process.env.BAILEYS_API_URL || 'http://localhost:3001';
+    
+    // Allow frontend to override for testing
+    const providedUrl = req.nextUrl.searchParams.get('serverUrl');
+    if (providedUrl) {
+      targetUrl = providedUrl;
+    }
+    
+    // Remove trailing slash if any
+    targetUrl = targetUrl.replace(/\/$/, '');
+
+    const res = await fetch(`${targetUrl}/api/status`, { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
       return NextResponse.json({ source: 'standalone_server', ...data });
@@ -26,13 +37,17 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { action, mode, phoneNumber } = body;
+    const { action, mode, phoneNumber, serverUrl } = body;
+
+    let targetUrl = process.env.BAILEYS_API_URL || 'http://localhost:3001';
+    if (serverUrl) targetUrl = serverUrl;
+    targetUrl = targetUrl.replace(/\/$/, '');
 
     let targetEndpoint = '/api/connect';
     if (action === 'disconnect') targetEndpoint = '/api/disconnect';
     if (action === 'reconnect') targetEndpoint = '/api/reconnect';
 
-    const res = await fetch(`${BAILEYS_URL}${targetEndpoint}`, {
+    const res = await fetch(`${targetUrl}${targetEndpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mode, phoneNumber }),
