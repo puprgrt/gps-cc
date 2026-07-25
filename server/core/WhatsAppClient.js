@@ -207,12 +207,23 @@ class WhatsAppClient {
       });
 
       // 5. Contacts and Presence
-      this.waSocket.ev.on('contacts.upsert', (contacts) => {
+      this.waSocket.ev.on('contacts.upsert', async (contacts) => {
+        const validContacts = [];
         for (const contact of contacts) {
-          this.contactsCache.set(contact.id, {
+          const formatted = {
             id: contact.id,
             name: contact.name || contact.notify || contact.verifiedName || contact.id.split('@')[0],
             imgUrl: contact.imgUrl || null,
+          };
+          this.contactsCache.set(contact.id, formatted);
+          if (contact.id.endsWith('@s.whatsapp.net')) {
+            validContacts.push(formatted);
+          }
+        }
+        // Sync to Supabase in background
+        if (validContacts.length > 0) {
+          supabaseService.upsertContacts(validContacts).catch(err => {
+            console.error('[PUPR Baileys] Error syncing contacts to Supabase:', err);
           });
         }
       });

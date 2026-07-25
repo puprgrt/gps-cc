@@ -84,8 +84,28 @@ async function getActiveConversations() {
   return data;
 }
 
+async function upsertContacts(contactsArray) {
+  if (!contactsArray || contactsArray.length === 0) return;
+  try {
+    const formatted = contactsArray.map(c => ({
+      phone_number: c.id.split('@')[0],
+      name: c.name,
+      last_active_at: new Date().toISOString()
+    }));
+    // Bulk upsert to wa_contacts
+    const { error } = await supabase
+      .from('wa_contacts')
+      .upsert(formatted, { onConflict: 'phone_number', ignoreDuplicates: false });
+    
+    if (error) console.error('[SupabaseService] Error syncing contacts:', error);
+  } catch (err) {
+    console.error('[SupabaseService] Error in upsertContacts:', err);
+  }
+}
+
 module.exports = {
   supabase,
   saveMessage,
-  getActiveConversations
+  getActiveConversations,
+  upsertContacts
 };
