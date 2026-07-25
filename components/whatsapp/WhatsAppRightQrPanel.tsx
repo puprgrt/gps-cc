@@ -13,6 +13,7 @@ export const WhatsAppRightQrPanel: React.FC = () => {
     connectionStatus, 
     pairingMode, 
     setPairingMode, 
+    refreshConnection,
     regenerateBaileysQr, 
     confirmAuthentication, 
     connect,
@@ -54,20 +55,20 @@ export const WhatsAppRightQrPanel: React.FC = () => {
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          regenerateBaileysQr();
+          refreshConnection();
           return 45;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [regenerateBaileysQr]);
+  }, [refreshConnection]);
 
-  const handleRefreshQr = () => {
+  const handleRefreshQr = async () => {
     setIsRefreshing(true);
-    regenerateBaileysQr();
+    await refreshConnection();
     setCountdown(45);
-    setTimeout(() => setIsRefreshing(false), 600);
+    setIsRefreshing(false);
   };
 
   const handleGeneratePairingCode = (e: React.FormEvent) => {
