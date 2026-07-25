@@ -42,6 +42,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
+    if (action === 'send_media') {
+      const { base64Data, caption, mimetype, fileName, type } = body;
+      try {
+        const jid = conversationId.replace('conv-', '');
+        const baileysRes = await fetch(`${BAILEYS_URL}/api/send-media`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: jid, base64Data, caption, mimetype, fileName, type }),
+        });
+        
+        if (!baileysRes.ok) {
+           console.error('Failed to send media to Baileys:', await baileysRes.text());
+           return NextResponse.json({ error: 'Failed to send media' }, { status: 500 });
+        }
+      } catch (e: any) {
+         return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      return NextResponse.json({ success: true });
+    }
+
     if (action === 'add_note') {
       if (conversationId && note) {
         await fetch(`${BAILEYS_URL}/api/add-note`, {

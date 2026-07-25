@@ -76,6 +76,30 @@ export class WhatsAppService {
     return null;
   }
 
+  static async sendMediaApi(conversationId: string, base64Data: string, type: 'image' | 'document', caption: string, fileName?: string, mimetype?: string) {
+    try {
+      const res = await fetch('/api/whatsapp/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'send_media',
+          conversationId,
+          base64Data,
+          type,
+          caption,
+          fileName,
+          mimetype,
+        }),
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      console.error('Failed sending media via API:', e);
+    }
+    return null;
+  }
+
   static async addNoteApi(conversationId: string, note: string) {
     try {
       const res = await fetch('/api/whatsapp/messages', {

@@ -1,149 +1,141 @@
-const waSocketService = require('../services/waSocket');
+const whatsappClient = require('../core/WhatsAppClient');
 const localDb = require('../services/localDbService');
 
-function getStatus(req, res) {
-  res.json(waSocketService.getSocketStatus());
-}
-
-async function connectSocket(req, res) {
-  const { mode, phoneNumber } = req.body;
-  await waSocketService.initBaileysSocket(phoneNumber);
-  res.json({ message: 'Proses inisialisasi socket dimulai', mode });
-}
-
-async function reconnectSocket(req, res) {
-  try {
-    await waSocketService.manualReconnect();
-    res.json({ success: true, message: 'Proses reconnect manual berhasil dipicu' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-async function disconnectSocket(req, res) {
-  await waSocketService.logoutSocket();
-  res.json({ message: 'Sesi WhatsApp berhasil diputuskan' });
-}
-
-async function handleSendMessage(req, res) {
-  const { to, text, options } = req.body;
-  try {
-    const result = await waSocketService.sendMessage(to, text, options);
-    
-    // Save outbound message to local DB
-    const outMsg = {
-      id: result.key?.id || `msg-${Date.now()}`,
-      sender: 'operator',
-      senderName: 'Admin Operator PUPR',
-      text,
-      timestamp: new Date().toISOString(),
-      status: 'sent'
-    };
-    const cleanPhone = '+' + to.split('@')[0];
-    await localDb.saveMessage(`conv-${to}`, outMsg, { name: cleanPhone, phoneNumber: cleanPhone });
-
-    res.json({ success: true, messageId: result.key?.id });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-async function handleSendMedia(req, res) {
-  const { to, mediaUrl, caption, mediaType } = req.body;
-  try {
-    const result = await waSocketService.sendMediaMessage(to, mediaUrl, caption, mediaType);
-    res.json({ success: true, messageId: result.key?.id });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-async function handleSendPresence(req, res) {
-  const { to, state } = req.body;
-  try {
-    await waSocketService.sendPresence(to, state || 'composing');
-    res.json({ success: true, state });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-async function handleMarkRead(req, res) {
-  const { to } = req.body;
-  try {
-    await waSocketService.markAsRead(to);
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-async function handleGetProfilePicture(req, res) {
-  const { jid } = req.query;
-  try {
-    const url = await waSocketService.getProfilePicture(jid);
-    res.json({ success: true, url });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-async function handleGetGroupMetadata(req, res) {
-  const { groupId } = req.query;
-  try {
-    const metadata = await waSocketService.getGroupMetadata(groupId);
-    res.json({ success: true, metadata });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-// Data Fetching from Local DB
-async function handleGetConversations(req, res) {
-  try {
-    const conversations = await localDb.getActiveConversations();
-    const logs = await localDb.getRecentLogs();
-    res.json({ conversations, logs });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-async function handleAddNote(req, res) {
-  const { conversationId, note } = req.body;
-  const success = await localDb.addNote(conversationId, note);
-  res.json({ success });
-}
-
-async function handleAddTag(req, res) {
-  const { conversationId, tag } = req.body;
-  const success = await localDb.addTag(conversationId, tag);
-  res.json({ success });
-}
-
-function handleGetInboundMessages(req, res) {
-  res.json({ success: true, messages: waSocketService.getInboundMessages() });
-}
-
-function handleGetContacts(req, res) {
-  res.json({ success: true, contacts: waSocketService.getContactsList() });
-}
-
-module.exports = {
-  getStatus,
-  connectSocket,
-  reconnectSocket,
-  disconnectSocket,
-  handleSendMessage,
-  handleSendMedia,
-  handleSendPresence,
-  handleMarkRead,
-  handleGetProfilePicture,
-  handleGetGroupMetadata,
-  handleGetConversations,
-  handleAddNote,
-  handleAddTag,
-  handleGetInboundMessages,
-  handleGetContacts,
+exports.getStatus = (req, res) => {
+  res.json(whatsappClient.getSocketStatus());
 };
 
+exports.connectSocket = async (req, res) => {
+  try {
+    const { phoneNumber } = req.body;
+    await whatsappClient.init(phoneNumber);
+    res.json({ message: 'Proses inisialisasi / permintaan QR (atau pairing code) dimulai.', status: whatsappClient.connectionState });
+  } catch (error) {
+    console.error('Connect Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.disconnectSocket = async (req, res) => {
+  try {
+    await whatsappClient.logout();
+    res.json({ message: 'Sesi WhatsApp berhasil diputuskan (Logged Out).', status: 'disconnected' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.reconnectSocket = async (req, res) => {
+  try {
+    // Memaksa tutup socket tapi tidak menghapus auth
+    if (whatsappClient.waSocket) {
+      whatsappClient.waSocket.end(new Error('Manual reconnect'));
+    }
+    whatsappClient.scheduleAutoReconnect(null, 1000);
+    res.json({ message: 'Menjadwalkan ulang koneksi (Reconnect)...', status: 'connecting' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.handleSendMessage = async (req, res) => {
+  try {
+    const { to, text, sender } = req.body;
+    if (!whatsappClient.waSocket || whatsappClient.connectionState !== 'connected') {
+      return res.status(400).json({ error: 'WhatsApp belum terhubung.' });
+    }
+
+    if (!to || !text) {
+      return res.status(400).json({ error: 'Parameter "to" (nomor tujuan) dan "text" harus diisi.' });
+    }
+
+    let targetJid = to.includes('@s.whatsapp.net') || to.includes('@g.us') ? to : `${to}@s.whatsapp.net`;
+    const cleanPhone = '+' + targetJid.split('@')[0];
+
+    const result = await whatsappClient.waSocket.sendMessage(targetJid, { text });
+    
+    // Simpan ke database
+    const botMsgObj = {
+      id: result.key.id,
+      sender: sender || 'operator',
+      senderName: sender === 'operator' ? 'Admin PUPR' : 'Gemini AI',
+      text: text,
+      timestamp: new Date().toISOString(),
+      status: 'sent',
+      type: 'text'
+    };
+    
+    await localDb.saveMessage(`conv-${targetJid}`, botMsgObj, { name: cleanPhone, phoneNumber: cleanPhone });
+    await whatsappClient.addLog('SEND_MESSAGE', `Pesan Teks ke ${targetJid}: "${text.slice(0, 50)}..."`);
+    
+    res.json({ message: 'Pesan Teks berhasil dikirim.', data: result, saved: botMsgObj });
+  } catch (error) {
+    console.error('Error Send Message:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Handle mengirim dokumen PDF/Image via base64 (Contoh minimalis)
+exports.handleSendMedia = async (req, res) => {
+  try {
+    const { to, base64Data, caption, mimetype, fileName, type } = req.body;
+    
+    if (!whatsappClient.waSocket || whatsappClient.connectionState !== 'connected') {
+      return res.status(400).json({ error: 'WhatsApp belum terhubung.' });
+    }
+
+    let targetJid = to.includes('@s.whatsapp.net') || to.includes('@g.us') ? to : `${to}@s.whatsapp.net`;
+    const cleanPhone = '+' + targetJid.split('@')[0];
+    const buffer = Buffer.from(base64Data, 'base64');
+    
+    let msgOptions = {};
+    if (type === 'image') {
+      msgOptions = { image: buffer, caption: caption || '' };
+    } else if (type === 'document') {
+      msgOptions = { document: buffer, mimetype, fileName: fileName || 'document.pdf', caption: caption || '' };
+    } else {
+      return res.status(400).json({ error: 'Tipe media tidak didukung' });
+    }
+
+    const result = await whatsappClient.waSocket.sendMessage(targetJid, msgOptions);
+    
+    const botMsgObj = {
+      id: result.key.id,
+      sender: 'operator',
+      senderName: 'Admin PUPR',
+      text: caption || `[Mengirim ${type}]`,
+      timestamp: new Date().toISOString(),
+      status: 'sent',
+      type: type,
+      metadata: { fileName, mimetype }
+    };
+    
+    await localDb.saveMessage(`conv-${targetJid}`, botMsgObj, { name: cleanPhone, phoneNumber: cleanPhone });
+    res.json({ message: 'Pesan Media berhasil dikirim.', data: result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.handleGetConversations = async (req, res) => {
+  try {
+    const data = await localDb.getConversations();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.handleGetContacts = (req, res) => {
+  const contacts = Array.from(whatsappClient.contactsCache.values());
+  res.json({ total: contacts.length, contacts });
+};
+
+exports.handleGetLogs = async (req, res) => {
+  try {
+    const data = await localDb.getLogs();
+    res.json({ total: data.length, logs: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

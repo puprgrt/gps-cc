@@ -27,6 +27,7 @@ export function WhatsAppDashboard() {
     operators,
     logs,
     sendMessage,
+    sendMedia,
     addInternalNote,
     applyAiSuggestedReply,
     refreshConnection,
@@ -76,6 +77,23 @@ export function WhatsAppDashboard() {
     if (!messageText.trim() || !activeConversation) return;
     sendMessage(activeConversation.id, messageText, 'operator');
     setMessageText('');
+  };
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !activeConversation) return;
+    try {
+      setIsUploading(true);
+      await sendMedia(activeConversation.id, file, `File: ${file.name}`);
+    } catch (error) {
+      console.error('Failed to upload', error);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const handleSaveInternalNote = () => {
@@ -216,7 +234,7 @@ export function WhatsAppDashboard() {
             <div className="relative">
               <select 
                 value={dateFilter} 
-                onChange={(e) => setDateFilter(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setDateFilter(e.target.value)}
                 className="bg-slate-900 border border-white/10 rounded px-1.5 py-0.5 text-[10px] text-slate-300 focus:outline-none"
               >
                 <option>Hari Ini</option>
@@ -349,7 +367,7 @@ export function WhatsAppDashboard() {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                 placeholder="Cari kontak atau pesan..."
                 className="w-full bg-slate-950/80 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500/50"
               />
@@ -617,24 +635,23 @@ export function WhatsAppDashboard() {
                   <form onSubmit={handleSendMessage} className="space-y-2">
                     <textarea
                       value={messageText}
-                      onChange={(e) => setMessageText(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessageText(e.target.value)}
                       placeholder="Ketik pesan..."
                       rows={2}
                       className="w-full bg-slate-950/80 border border-white/10 rounded-xl p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50 resize-none"
                     />
                     <div className="flex items-center justify-between pt-1">
                       <div className="flex items-center gap-2 text-slate-400">
-                        <button type="button" className="hover:text-white transition-colors"><Smile className="w-4 h-4" /></button>
-                        <button type="button" className="hover:text-white transition-colors"><Paperclip className="w-4 h-4" /></button>
-                        <button type="button" className="hover:text-white transition-colors"><ImageIcon className="w-4 h-4" /></button>
-                        <button type="button" className="hover:text-white transition-colors"><FileText className="w-4 h-4" /></button>
+                        <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
+                        <button type="button" onClick={() => fileInputRef.current?.click()} className="hover:text-white transition-colors" title="Lampirkan File"><Paperclip className="w-4 h-4" /></button>
+                        <button type="button" onClick={() => fileInputRef.current?.click()} className="hover:text-white transition-colors" title="Kirim Gambar"><ImageIcon className="w-4 h-4" /></button>
                       </div>
                       <button
                         type="submit"
-                        disabled={!messageText.trim()}
+                        disabled={!messageText.trim() || isUploading}
                         className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                       >
-                        <Send className="w-3.5 h-3.5" /> Kirim
+                        <Send className="w-3.5 h-3.5" /> {isUploading ? 'Mengirim...' : 'Kirim'}
                       </button>
                     </div>
                   </form>
@@ -642,7 +659,7 @@ export function WhatsAppDashboard() {
                   <div className="space-y-2">
                     <textarea
                       value={internalNoteText}
-                      onChange={(e) => setInternalNoteText(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInternalNoteText(e.target.value)}
                       placeholder="Tulis catatan internal untuk tim operator..."
                       rows={2}
                       className="w-full bg-amber-500/10 border border-amber-500/20 rounded-xl p-2.5 text-xs text-white placeholder-slate-400 focus:outline-none resize-none"

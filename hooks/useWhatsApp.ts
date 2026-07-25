@@ -22,6 +22,7 @@ interface WhatsAppState {
   setPairingMode: (mode: 'qr' | 'pairing') => void;
   fetchData: () => Promise<void>;
   sendMessage: (conversationId: string, text: string, sender?: 'user' | 'bot' | 'operator') => void;
+  sendMedia: (conversationId: string, file: File, caption?: string) => Promise<void>;
   addInternalNote: (conversationId: string, note: string) => void;
   applyAiSuggestedReply: (conversationId: string) => void;
   connect: (mode?: 'qr' | 'pairing', phoneNumber?: string) => Promise<void>;
@@ -119,6 +120,52 @@ export const useWhatsAppStore = create<WhatsAppState>((set, get) => ({
     } catch (e) {
       console.warn('Error syncing message with backend:', e);
     }
+  },
+
+  sendMedia: async (conversationId, file, caption = '') => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          const base64Data = (reader.result as string).split(',')[1];
+          const type = file.type.startsWith('image/') ? 'image' : 'document';
+          const apiResult = await WhatsAppService.sendMediaApi(
+            conversationId, 
+            base64Data, 
+            type, 
+            caption, 
+            file.name, 
+            file.type
+          );
+          
+          if (apiResult?.saved) {
+             // Append visually
+             set((state) => ({
+                conversations: state.conversations.map((c) => {
+                  if (c.id === conversationId) {
+                    return {
+                      ...c,
+                      lastMessage: caption || '[Media]',
+                      timestamp: new Date(),
+                      messages: [...c.messages, {
+                        ...apiResult.saved,
+                        timestamp: new Date(apiResult.saved.timestamp)
+                      }],
+                    };
+                  }
+                  return c;
+                }),
+              }));
+          }
+          resolve();
+        } catch (e) {
+          console.error(e);
+          reject(e);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   },
 
   addInternalNote: async (conversationId, note) => {
