@@ -1,19 +1,31 @@
 /**
  * ============================================================================
- * LOCAL OPEN-SOURCE MODEL PROVIDER (OLLAMA / vLLM - QWEN 3 / LLAMA 4 / DEEPSEEK)
+ * LOCAL OPEN-SOURCE MODEL PROVIDER (OLLAMA / vLLM) (2026 EDITION)
  * PURI Multi-Modal AI Orchestrator 2026 - Dinas PUPR Kabupaten Garut
  * ============================================================================
  *
  * Ultimate fallback provider running open-weight models locally via Ollama or vLLM.
  * Guarantees 100% service uptime with zero cloud rate limit and zero API cost.
+ *
+ * Model Status (Juli 2026):
+ * - qwen2.5:7b: ✅ Open-weight, no limits, always available
+ * - Also supports qwen3, llama3.2, deepseek-r1
+ *
+ * Anti-Limit: Inherits timeout protection from base. No rate limit concern
+ * since it runs locally, but timeout protection prevents hanging requests.
  */
 
 const AIProviderInterface = require('./aiProviderInterface');
 
 class LocalAIProvider extends AIProviderInterface {
   constructor() {
-    super('LOCAL', 'qwen2.5:7b'); // Supports qwen3, qwen2.5, llama3.2, deepseek-r1
+    super('LOCAL', 'qwen2.5:7b');
+    this.name = 'Local AI Cluster (Ollama)';
     this.baseUrl = process.env.LOCAL_AI_URL || 'http://localhost:11434';
+    // Local AI has no rate limits, but needs longer timeout for inference
+    this.requestTimeoutMs = 60000; // 60 seconds for local inference
+    // Disable circuit breaker for local (it should always be attempted as last resort)
+    this._circuitBreakerThreshold = 999;
   }
 
   async generateResponse(payload, options = {}) {
@@ -37,7 +49,8 @@ class LocalAIProvider extends AIProviderInterface {
       messages.push({ role: 'user', content: userText });
     }
 
-    try {
+    // Use executeWithRetry with a single retry (local server might just be starting up)
+    return this.executeWithRetry(async () => {
       const response = await fetch(`${this.baseUrl}/api/chat`, {
         method: 'POST',
         headers: {
@@ -52,6 +65,7 @@ class LocalAIProvider extends AIProviderInterface {
             num_predict: options.maxTokens || 1024,
           },
         }),
+        signal: this.createTimeoutSignal(),
       });
 
       if (!response.ok) {
@@ -71,11 +85,7 @@ class LocalAIProvider extends AIProviderInterface {
         tokensUsed: tokensUsed || Math.ceil((systemPrompt.length + userText.length + text.length) / 4),
         latencyMs,
       };
-    } catch (error) {
-      const err = new Error(`[LOCAL_AI] Gagal menghubungi Local AI Cluster (${this.baseUrl}): ${error.message}`);
-      err.isOffline = true;
-      throw err;
-    }
+    }, { maxRetries: 1 }); // Only 1 retry for local to avoid long waits
   }
 }
 

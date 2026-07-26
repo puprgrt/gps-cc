@@ -164,7 +164,7 @@ export default function AIOrchestratorDashboard() {
     handleLoadSettings();
   }, []);
 
-  const handleLoadSettings = async () => {
+  async function handleLoadSettings() {
     try {
       const res = await fetch('/api/ai/settings');
       if (res.ok) {
@@ -210,7 +210,7 @@ export default function AIOrchestratorDashboard() {
   };
 
   // d. Event handlers
-  const handleRefreshHealth = async () => {
+  async function handleRefreshHealth() {
     setIsLoadingHealth(true);
     try {
       const [resStatus, resCost] = await Promise.all([

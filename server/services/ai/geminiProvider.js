@@ -1,20 +1,38 @@
 /**
  * ============================================================================
- * GEMINI AI PROVIDER
+ * GEMINI AI PROVIDER (2026 EDITION)
  * PURI Multi-Modal AI Orchestrator 2026 - Dinas PUPR Kabupaten Garut
  * ============================================================================
  *
  * Google Gemini adapter using official @google/genai SDK.
  * Primary choice for reading large PDF documents, RAG synthesis, and Vision.
- * Features automatic fallback between valid Gemini models (gemini-2.0-flash -> gemini-1.5-flash).
+ *
+ * Model Updates (Juli 2026):
+ * - gemini-2.0-flash DISCONTINUED (1 Juni 2026)
+ * - Default: gemini-2.5-flash (GA, stable)
+ * - Fallback: gemini-2.5-flash-lite (cost-efficient)
+ *
+ * Anti-Limit: Inherits retry, timeout, rate limiter, circuit breaker from base.
  */
 
 const { GoogleGenAI } = require('@google/genai');
 const AIProviderInterface = require('./aiProviderInterface');
 
+// Map of deprecated/discontinued models to their current replacements
+const MODEL_MIGRATION_MAP = {
+  'gemini-2.0-flash': 'gemini-2.5-flash',
+  'gemini-2.0-flash-lite': 'gemini-2.5-flash-lite',
+  'gemini-2.0-flash-lite-preview-02-05': 'gemini-2.5-flash-lite',
+  'gemini-pro': 'gemini-2.5-flash',
+  'gemini-1.5-flash': 'gemini-2.5-flash',
+  'gemini-1.5-pro': 'gemini-2.5-flash',
+  'gemini-2.5-flash-preview': 'gemini-2.5-flash',
+};
+
 class GeminiProvider extends AIProviderInterface {
   constructor() {
-    super('GEMINI', 'gemini-2.0-flash');
+    super('GEMINI', 'gemini-2.5-flash');
+    this.name = 'Google Gemini AI';
     this.client = null;
   }
 
@@ -25,6 +43,20 @@ class GeminiProvider extends AIProviderInterface {
     return this.client;
   }
 
+  /**
+   * Migrate deprecated model names to current GA models
+   * @param {string} modelName
+   * @returns {string}
+   */
+  migrateModelName(modelName) {
+    const migrated = MODEL_MIGRATION_MAP[modelName];
+    if (migrated) {
+      console.info(`[GEMINI] Auto-migrated deprecated model "${modelName}" → "${migrated}"`);
+      return migrated;
+    }
+    return modelName;
+  }
+
   async generateResponse(payload, options = {}) {
     const start = Date.now();
     const aiClient = this.getClient();
@@ -32,12 +64,7 @@ class GeminiProvider extends AIProviderInterface {
       throw new Error('[GEMINI] API Key (GEMINI_API_KEY) is not configured in .env.');
     }
 
-    let primaryModel = options.model || this.defaultModel;
-    // Map any legacy/deprecated model names to the latest supported GA model
-    if (primaryModel === 'gemini-2.5-flash' || primaryModel === 'gemini-pro') {
-      primaryModel = 'gemini-2.0-flash';
-    }
-
+    let primaryModel = this.migrateModelName(options.model || this.defaultModel);
     const systemPrompt = payload.systemPrompt || 'Anda adalah PURI, Asisten Virtual AI Dinas PUPR Kabupaten Garut.';
     const userText = payload.userText || '';
     const media = payload.media;
@@ -67,33 +94,40 @@ class GeminiProvider extends AIProviderInterface {
       contentsPayload = `${enrichedSystemPrompt}\n\n${userText}`;
     }
 
-    // Attempt generation with auto-retry fallback for model compatibility
-    const modelsToTry = [...new Set([primaryModel, 'gemini-2.0-flash', 'gemini-2.0-flash-lite-preview-02-05'])];
+    // Fallback chain: primary model → gemini-2.5-flash → gemini-2.5-flash-lite
+    const modelsToTry = [...new Set([primaryModel, 'gemini-2.5-flash', 'gemini-2.5-flash-lite'])];
     let lastError = null;
 
     for (const modelName of modelsToTry) {
       try {
-        const response = await aiClient.models.generateContent({
-          model: modelName,
-          contents: contentsPayload,
+        // Use executeWithRetry for automatic retry + rate limit + circuit breaker
+        const result = await this.executeWithRetry(async () => {
+          const response = await aiClient.models.generateContent({
+            model: modelName,
+            contents: contentsPayload,
+          });
+
+          const text = response.text || '';
+          const latencyMs = Date.now() - start;
+          const estimatedTokens = Math.ceil((enrichedSystemPrompt.length + userText.length + text.length) / 4);
+
+          return {
+            text,
+            confidence: 96,
+            modelName,
+            tokensUsed: estimatedTokens,
+            latencyMs,
+          };
         });
 
-        const text = response.text || '';
-        const latencyMs = Date.now() - start;
-
-        // Estimate tokens (roughly 4 chars per token)
-        const estimatedTokens = Math.ceil((enrichedSystemPrompt.length + userText.length + text.length) / 4);
-
-        return {
-          text,
-          confidence: 96,
-          modelName,
-          tokensUsed: estimatedTokens,
-          latencyMs,
-        };
+        return result;
       } catch (err) {
         lastError = err;
-        console.warn(`[GEMINI] Model ${modelName} failed: ${err.message}. Trying next fallback model...`);
+        // If circuit breaker is open, don't try other models in this provider
+        if (err.isCircuitOpen) {
+          throw err;
+        }
+        console.warn(`[GEMINI] Model ${modelName} failed after retries: ${err.message}. Trying next fallback model...`);
       }
     }
 

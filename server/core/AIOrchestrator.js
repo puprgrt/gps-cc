@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * PURI MULTI-MODAL AI ORCHESTRATOR 2026 - CORE GATEWAY
+ * PURI MULTI-MODAL AI ORCHESTRATOR 2026 - CORE GATEWAY (ANTI-LIMIT EDITION)
  * Dinas Pekerjaan Umum dan Penataan Ruang (PUPR) Kabupaten Garut
  * ============================================================================
  *
@@ -11,6 +11,14 @@
  * 4. AI Confidence Engine & Consensus for Regulatory/Critical cases
  * 5. 6-Tier Hierarchical PURI Routing Engine (Bidang->Layanan->Intent->Priority->Operator->SLA)
  * 6. Health Monitoring & Cost Metrics tracking
+ * 7. Anti-Limit Protection: exponential backoff, timeout, rate limiter, circuit breaker
+ *
+ * Model Versions (Juli 2026 - All Current GA):
+ * - OPENAI: gpt-4o-mini
+ * - GEMINI: gemini-2.5-flash
+ * - CLAUDE: claude-sonnet-5
+ * - KIMI: kimi-k2.6
+ * - LOCAL: qwen2.5:7b (open-weight, zero limits)
  */
 
 const OpenAIProvider = require('../services/ai/openAiProvider');
@@ -214,6 +222,7 @@ class AIOrchestrator {
 
   /**
    * Main Orchestrator Entry Point: Process User Message with 100% Free Tier / Local Resilience
+   * Enhanced with Anti-Limit Protection: circuit breaker skip, structured error logging
    * @param {Object} request
    * @param {string} request.conversationId
    * @param {string} [request.senderName]
@@ -270,7 +279,7 @@ class AIOrchestrator {
       systemPrompt += `Gunakan referensi resmi di atas untuk menjawab pertanyaan warga secara spesifik dan akurat.`;
     }
 
-    // 4. Circuit Breaker Fallback Execution (Dynamic AI Settings integrated)
+    // 4. Circuit Breaker-Aware Fallback Execution (Dynamic AI Settings integrated)
     let preferredProviders = [...(this.routingTable[taskCategory] || ['OPENAI', 'GEMINI', 'CLAUDE', 'KIMI', 'LOCAL'])];
     if (request.preferredModel && request.preferredModel !== 'auto') {
       const pm = request.preferredModel.toLowerCase();
@@ -295,15 +304,27 @@ class AIOrchestrator {
       const provider = this.providers[providerKey];
       if (!provider) continue;
 
+      // Check if provider is disabled in AI Settings
       const setting = allAiSettings[providerKey];
       if (setting && setting.isActive === false) {
         console.info(`[AIOrchestrator] Provider ${providerKey} is disabled in AI Settings. Skipping...`);
         continue;
       }
 
+      // ★ Anti-Limit: Check circuit breaker BEFORE making request
+      if (provider.isCircuitOpen()) {
+        const cbStatus = provider.getCircuitBreakerStatus();
+        console.warn(
+          `[AIOrchestrator] Provider ${providerKey} circuit breaker is OPEN ` +
+          `(${cbStatus.consecutiveFailures} failures, cooldown: ${Math.ceil(cbStatus.cooldownRemainingMs / 1000)}s). Skipping...`
+        );
+        fallbackHistory.push(`${providerKey}:CIRCUIT_OPEN`);
+        this.metricsMap[providerKey].fallbackCount += 1;
+        continue;
+      }
+
       const activeModel = (setting && setting.model) ? setting.model : provider.defaultModel;
       const activeTemperature = (setting && setting.temperature !== undefined) ? setting.temperature : 0.7;
-      provider.defaultModel = activeModel;
 
       this.metricsMap[providerKey].totalRequests += 1;
       try {
@@ -348,8 +369,9 @@ class AIOrchestrator {
 
         break; // Successfully generated!
       } catch (err) {
-        console.warn(`[AIOrchestrator] Provider [${providerKey}] failed: ${err.message}. Switching to fallback...`);
-        fallbackHistory.push(providerKey);
+        const errorType = err.isCircuitOpen ? 'Circuit Open' : err.isRateLimit ? 'Rate Limited' : 'Error';
+        console.warn(`[AIOrchestrator] Provider [${providerKey}] failed (${errorType}): ${err.message}. Switching to fallback...`);
+        fallbackHistory.push(`${providerKey}:${errorType.toUpperCase().replace(' ', '_')}`);
         this.metricsMap[providerKey].fallbackCount += 1;
         // Loop continues to next fallback model automatically
       }
@@ -396,9 +418,14 @@ class AIOrchestrator {
           userText.toLowerCase().includes('provider') ||
           userText.toLowerCase().includes('cek model');
 
+        // Build informative fallback including which providers were tried
+        const triedProviders = fallbackHistory.length > 0
+          ? `\n• *Provider dicoba*: ${fallbackHistory.join(' → ')}`
+          : '';
+
         const fallbackReplyText = isModelQuery
-          ? `🤖 *Status Model PURI AI Orchestrator 2026*\n────────────────────────\nSaat ini sistem berada dalam mode *Ultimate Offline Protection* (Zero-Cloud Mode).\n• *Provider Aktif*: LOCAL FALLBACK ENGINE\n• *Model*: PURI-Offline-Safe-Reply\n• *Status*: Memastikan seluruh pengaduan & permohonan warga tetap tercatat secara lokal dalam antrean GPS-CC meskipun jaringan eksternal sedang pemeliharaan.`
-          : '🙏 Mohon maaf, sistem Asisten Virtual PURI saat ini sedang dalam pemeliharaan jaringan eksternal. Silakan hubungi operator kami melalui WhatsApp atau tinggalkan pesan laporan Anda agar dicatat di sistem GPS-CC.';
+          ? `🤖 *Status Model PURI AI Orchestrator 2026*\n────────────────────────\nSaat ini sistem berada dalam mode *Ultimate Offline Protection* (Zero-Cloud Mode).\n• *Provider Aktif*: LOCAL FALLBACK ENGINE\n• *Model*: PURI-Offline-Safe-Reply\n• *Status*: Memastikan seluruh pengaduan & permohonan warga tetap tercatat secara lokal dalam antrean GPS-CC meskipun jaringan eksternal sedang pemeliharaan.${triedProviders}`
+          : `🙏 Mohon maaf, sistem Asisten Virtual PURI saat ini sedang dalam pemeliharaan jaringan. Pesan Anda telah tercatat di sistem GPS-CC dan akan direspon oleh operator kami segera.\n\nSilakan hubungi operator melalui WhatsApp atau tinggalkan pesan laporan Anda.${triedProviders}`;
 
         selectedResponse = {
           text: fallbackReplyText,
@@ -412,7 +439,7 @@ class AIOrchestrator {
     }
 
     // 6. AI Confidence Check (< 95% -> flag for supervisor review)
-    let finalConfidence = selectedResponse.confidenceScore;
+    const finalConfidence = selectedResponse.confidenceScore;
     if (finalConfidence < 95 && preferredProviders.length > 1) {
       // Confidence < 95%, noted in decision for supervisor validation
     }
@@ -446,7 +473,7 @@ class AIOrchestrator {
   }
 
   /**
-   * Check real-time health of all AI Providers
+   * Check real-time health of all AI Providers (includes circuit breaker status)
    * @returns {Promise<Array<import('../domain/aiOrchestrator').AIProviderHealthStatus>>}
    */
   async getHealthDashboard() {
@@ -456,14 +483,19 @@ class AIOrchestrator {
     for (const key of providerKeys) {
       const provider = this.providers[key];
       if (!provider) continue;
+
+      const cbStatus = provider.getCircuitBreakerStatus();
       const statusObj = await provider.checkHealth();
+
       results.push({
         provider: key,
         status: statusObj.status,
         latencyMs: statusObj.latencyMs,
         successRate: this.calculateSuccessRate(key),
         lastCheckedAt: new Date().toISOString(),
-        consecutiveErrors: 0,
+        consecutiveErrors: cbStatus.consecutiveFailures,
+        circuitBreakerOpen: cbStatus.isOpen,
+        cooldownRemainingMs: cbStatus.cooldownRemainingMs,
       });
     }
 

@@ -5,11 +5,11 @@
  * ============================================================================
  *
  * Manages configuration and default models for all 5 PURI AI Engines:
- * - GEMINI (Google Gemini 2.0 Flash / 1.5 Flash)
+ * - GEMINI (Google Gemini 2.5 Flash / 3.5 Flash-Lite)
  * - OPENAI (OpenAI GPT-4o-mini / GPT-4o)
- * - DEEPSEEK (DeepSeek Chat / Reasoner)
- * - CLAUDE (Anthropic Claude 3.5 Sonnet / Haiku)
- * - LOCAL_AI (Ollama Qwen 2.5 / Gemma 2 / Llama 3)
+ * - CLAUDE (Anthropic Claude Sonnet 5 / Haiku 3.5)
+ * - KIMI (Moonshot Kimi K2.6 / K3)
+ * - LOCAL (Ollama Qwen 2.5 / Gemma 2 / Llama 3)
  *
  * Employs Hybrid Persistence: Supabase Default DB + Local JSON File Fallback.
  */
@@ -20,11 +20,12 @@ const supabaseService = require('./supabaseService');
 
 const LOCAL_FILE_PATH = path.join(__dirname, '../data/puri_ai_settings.json');
 
+// Default Models Updated for Juli 2026
 const DEFAULT_AI_SETTINGS = {
   GEMINI: {
     provider: 'GEMINI',
     name: 'Google Gemini AI',
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     isActive: true,
     temperature: 0.7,
     maxTokens: 2048,
@@ -42,7 +43,7 @@ const DEFAULT_AI_SETTINGS = {
   CLAUDE: {
     provider: 'CLAUDE',
     name: 'Anthropic Claude',
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-sonnet-5',
     isActive: true,
     temperature: 0.5,
     maxTokens: 2048,
@@ -51,7 +52,7 @@ const DEFAULT_AI_SETTINGS = {
   KIMI: {
     provider: 'KIMI',
     name: 'Moonshot Kimi',
-    model: 'moonshot-v1-8k',
+    model: 'kimi-k2.6',
     isActive: true,
     temperature: 0.6,
     maxTokens: 2048,
@@ -92,7 +93,16 @@ class AISettingsService {
         const raw = fs.readFileSync(LOCAL_FILE_PATH, 'utf-8');
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') {
-          settings = { ...settings, ...parsed };
+          // Merge while ensuring new 2026 default models are respected if the local file has old discontinued ones
+          for (const key of Object.keys(settings)) {
+            if (parsed[key]) {
+              settings[key] = { ...settings[key], ...parsed[key] };
+              // Auto-migrate legacy models in local JSON
+              if (settings[key].model === 'gemini-2.0-flash') settings[key].model = 'gemini-2.5-flash';
+              if (settings[key].model === 'claude-3-5-sonnet-20241022') settings[key].model = 'claude-sonnet-5';
+              if (settings[key].model === 'moonshot-v1-8k') settings[key].model = 'kimi-k2.6';
+            }
+          }
         }
       }
     } catch (err) {
@@ -124,10 +134,16 @@ class AISettingsService {
           const cloudSettings = { ...DEFAULT_AI_SETTINGS };
           for (const row of data) {
             if (row.provider && DEFAULT_AI_SETTINGS[row.provider]) {
+              let activeModel = row.model || DEFAULT_AI_SETTINGS[row.provider].model;
+              // Auto-migrate legacy models in Supabase DB
+              if (activeModel === 'gemini-2.0-flash') activeModel = 'gemini-2.5-flash';
+              if (activeModel === 'claude-3-5-sonnet-20241022') activeModel = 'claude-sonnet-5';
+              if (activeModel === 'moonshot-v1-8k') activeModel = 'kimi-k2.6';
+
               cloudSettings[row.provider] = {
                 provider: row.provider,
                 name: row.name || DEFAULT_AI_SETTINGS[row.provider].name,
-                model: row.model || DEFAULT_AI_SETTINGS[row.provider].model,
+                model: activeModel,
                 isActive: row.is_active !== false,
                 temperature: row.temperature ?? 0.7,
                 maxTokens: row.max_tokens ?? 2048,
@@ -149,7 +165,7 @@ class AISettingsService {
 
   /**
    * Get setting for a specific provider
-   * @param {string} providerName - GEMINI | OPENAI | DEEPSEEK | CLAUDE | LOCAL_AI
+   * @param {string} providerName - GEMINI | OPENAI | CLAUDE | KIMI | LOCAL
    */
   async getProviderSetting(providerName) {
     const all = await this.getAllSettings();

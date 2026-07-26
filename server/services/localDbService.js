@@ -134,6 +134,17 @@ class LocalDBService {
       // Silent fail — logging should not crash the server
     }
   }
+
+  getLogs() {
+    try {
+      if (!fs.existsSync(LOG_DB_FILE)) return [];
+      const raw = fs.readFileSync(LOG_DB_FILE, 'utf8');
+      return JSON.parse(raw);
+    } catch (err) {
+      console.error('[LocalDB] Error reading Logs DB file:', err.message);
+      return [];
+    }
+  }
 }
 
 module.exports = new LocalDBService();

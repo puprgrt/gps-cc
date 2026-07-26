@@ -1,18 +1,25 @@
 /**
  * ============================================================================
- * OPENAI (CHATGPT FREE / GPT-5.6 TERRA COMPATIBLE) PROVIDER
+ * OPENAI (CHATGPT) PROVIDER (2026 EDITION)
  * PURI Multi-Modal AI Orchestrator 2026 - Dinas PUPR Kabupaten Garut
  * ============================================================================
  *
  * OpenAI adapter via standard REST API fetch.
  * Primary AI for general chat, reasoning, and public service conversations.
+ *
+ * Model Status (Juli 2026):
+ * - gpt-4o-mini: ✅ Still active (core model not deprecated)
+ * - Some snapshot previews deprecated on July 23, 2026
+ *
+ * Anti-Limit: Inherits retry, timeout, rate limiter, circuit breaker from base.
  */
 
 const AIProviderInterface = require('./aiProviderInterface');
 
 class OpenAIProvider extends AIProviderInterface {
   constructor() {
-    super('OPENAI', 'gpt-4o-mini'); // Uses fast free-tier compatible OpenAI endpoint by default
+    super('OPENAI', 'gpt-4o-mini');
+    this.name = 'OpenAI ChatGPT';
     this.apiUrl = 'https://api.openai.com/v1/chat/completions';
   }
 
@@ -49,7 +56,8 @@ class OpenAIProvider extends AIProviderInterface {
       messages.push({ role: 'user', content: userText });
     }
 
-    try {
+    // Use executeWithRetry for automatic retry + rate limit + circuit breaker
+    return this.executeWithRetry(async () => {
       const response = await fetch(this.apiUrl, {
         method: 'POST',
         headers: {
@@ -60,8 +68,9 @@ class OpenAIProvider extends AIProviderInterface {
           model: modelName,
           messages,
           temperature: options.temperature || 0.4,
-          max_tokens: options.maxTokens || 1024,
+          max_tokens: options.maxTokens || 2048,
         }),
+        signal: this.createTimeoutSignal(),
       });
 
       if (!response.ok) {
@@ -81,17 +90,12 @@ class OpenAIProvider extends AIProviderInterface {
 
       return {
         text,
-        confidence: 95, // ChatGPT Free default baseline confidence
+        confidence: 95,
         modelName,
         tokensUsed,
         latencyMs,
       };
-    } catch (error) {
-      if (this.isRateLimitError(error)) {
-        error.isRateLimit = true;
-      }
-      throw error;
-    }
+    });
   }
 }
 

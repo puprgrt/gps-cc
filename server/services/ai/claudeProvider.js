@@ -1,19 +1,51 @@
 /**
  * ============================================================================
- * ANTHROPIC CLAUDE PROVIDER
+ * ANTHROPIC CLAUDE PROVIDER (2026 EDITION)
  * PURI Multi-Modal AI Orchestrator 2026 - Dinas PUPR Kabupaten Garut
  * ============================================================================
  *
  * Anthropic Claude adapter via standard REST API fetch.
  * Preferred model for Regulatory Analysis, Policy Compliance, and Summaries.
+ *
+ * Model Updates (Juli 2026):
+ * - claude-3-5-sonnet-20241022 RETIRED (28 Oktober 2025)
+ * - Default: claude-sonnet-5 (current GA)
+ * - Fallback: claude-haiku-3.5 (fast, lightweight)
+ *
+ * Anti-Limit: Inherits retry, timeout, rate limiter, circuit breaker from base.
  */
 
 const AIProviderInterface = require('./aiProviderInterface');
 
+// Map deprecated Claude model IDs to current equivalents
+const MODEL_MIGRATION_MAP = {
+  'claude-3-5-sonnet-20241022': 'claude-sonnet-5',
+  'claude-3.5-sonnet': 'claude-sonnet-5',
+  'claude-3-sonnet-20240229': 'claude-sonnet-5',
+  'claude-3-haiku-20240307': 'claude-haiku-3.5',
+  'claude-3-opus-20240229': 'claude-opus-5',
+  'claude-3.5-haiku': 'claude-haiku-3.5',
+};
+
 class ClaudeProvider extends AIProviderInterface {
   constructor() {
-    super('CLAUDE', 'claude-3-5-sonnet-20241022');
+    super('CLAUDE', 'claude-sonnet-5');
+    this.name = 'Anthropic Claude AI';
     this.apiUrl = 'https://api.anthropic.com/v1/messages';
+  }
+
+  /**
+   * Migrate deprecated model names to current GA models
+   * @param {string} modelName
+   * @returns {string}
+   */
+  migrateModelName(modelName) {
+    const migrated = MODEL_MIGRATION_MAP[modelName];
+    if (migrated) {
+      console.info(`[CLAUDE] Auto-migrated deprecated model "${modelName}" → "${migrated}"`);
+      return migrated;
+    }
+    return modelName;
   }
 
   async generateResponse(payload, options = {}) {
@@ -23,7 +55,7 @@ class ClaudeProvider extends AIProviderInterface {
       throw new Error('[CLAUDE] API Key (ANTHROPIC_API_KEY) is not configured.');
     }
 
-    const modelName = options.model || this.defaultModel;
+    const modelName = this.migrateModelName(options.model || this.defaultModel);
     const systemPrompt = payload.systemPrompt || 'Anda adalah PURI, Asisten Virtual AI Dinas PUPR Kabupaten Garut.';
     const userText = payload.userText || '';
     const media = payload.media;
@@ -48,21 +80,23 @@ class ClaudeProvider extends AIProviderInterface {
       messages.push({ role: 'user', content: userText });
     }
 
-    try {
+    // Use executeWithRetry for automatic retry + rate limit + circuit breaker
+    return this.executeWithRetry(async () => {
       const response = await fetch(this.apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
+          'anthropic-version': '2025-01-01',
         },
         body: JSON.stringify({
           model: modelName,
           system: systemPrompt,
           messages,
-          max_tokens: options.maxTokens || 1024,
+          max_tokens: options.maxTokens || 2048,
           temperature: options.temperature || 0.3,
         }),
+        signal: this.createTimeoutSignal(),
       });
 
       if (!response.ok) {
@@ -87,12 +121,7 @@ class ClaudeProvider extends AIProviderInterface {
         tokensUsed: tokensUsed || Math.ceil((systemPrompt.length + userText.length + text.length) / 4),
         latencyMs,
       };
-    } catch (error) {
-      if (this.isRateLimitError(error)) {
-        error.isRateLimit = true;
-      }
-      throw error;
-    }
+    });
   }
 }
 

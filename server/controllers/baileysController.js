@@ -57,7 +57,7 @@ exports.handleSendMessage = async (req, res) => {
     
     // Simpan ke database
     const botMsgObj = {
-      id: result.key.id,
+      id: result?.key?.id || `msg-${Date.now()}`,
       sender: sender || 'operator',
       senderName: sender === 'operator' ? 'Admin PUPR' : 'PURI',
       text: text,
@@ -101,7 +101,7 @@ exports.handleSendMedia = async (req, res) => {
     const result = await whatsappClient.waSocket.sendMessage(targetJid, msgOptions);
     
     const botMsgObj = {
-      id: result.key.id,
+      id: result?.key?.id || `msg-${Date.now()}`,
       sender: 'operator',
       senderName: 'Admin PUPR',
       text: caption || `[Mengirim ${type}]`,
@@ -120,7 +120,7 @@ exports.handleSendMedia = async (req, res) => {
 
 exports.handleGetConversations = async (req, res) => {
   try {
-    const data = await localDb.getConversations();
+    const data = await supabaseService.getActiveConversations();
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });

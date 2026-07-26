@@ -1,5 +1,54 @@
 [
   {
+    "id": "log-1785065141467",
+    "timestamp": "2026-07-26T11:25:41.467Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785065121448",
+    "timestamp": "2026-07-26T11:25:21.448Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785065101435",
+    "timestamp": "2026-07-26T11:25:01.435Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785065081419",
+    "timestamp": "2026-07-26T11:24:41.419Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785065061401",
+    "timestamp": "2026-07-26T11:24:21.401Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785065001364",
+    "timestamp": "2026-07-26T11:23:21.364Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785065000205",
+    "timestamp": "2026-07-26T11:23:20.205Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD version 2.3000.1035194821",
+    "level": "info"
+  },
+  {
     "id": "log-1785061611628",
     "timestamp": "2026-07-26T10:26:51.628Z",
     "event": "QR_RECEIVED",
