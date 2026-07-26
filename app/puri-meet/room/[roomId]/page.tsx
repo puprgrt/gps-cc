@@ -4,8 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { usePuriMeetStore } from '@/hooks/usePuriMeet';
 import { MeetingRoom } from '@/components/puri-meet/MeetingRoom';
-import { ArrowLeft, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Loader2, AlertCircle, ExternalLink, MessageSquare, FileText, Mic, Info } from 'lucide-react';
 import { MeetingParticipants } from '@/components/puri-meet/MeetingParticipants';
+import { MeetingChat } from '@/components/puri-meet/MeetingChat';
+import { MeetingFileShare } from '@/components/puri-meet/MeetingFileShare';
+import { MeetingTranscription } from '@/components/puri-meet/MeetingTranscription';
 import { PuriMeetService } from '@/services/puriMeetService';
 import type { MeetingParticipant } from '@/domain/puriMeet';
 import { cn } from '@/lib/utils';
@@ -20,6 +23,7 @@ export default function MeetingRoomPage() {
   const [error, setError] = useState<string | null>(null);
   const [participants, setParticipants] = useState<MeetingParticipant[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState<'info' | 'chat' | 'files' | 'transcript'>('info');
   const [isEnding, setIsEnding] = useState(false);
 
   // TODO: Use real auth session
@@ -170,34 +174,118 @@ export default function MeetingRoomPage() {
         </div>
 
         {/* Sidebar Info & Participants */}
-        {isSidebarOpen && (
-          <div className="w-80 bg-black/80 border-l border-white/10 flex flex-col overflow-y-auto custom-scrollbar shrink-0">
-            {/* Agenda section */}
-            {activeMeeting.agenda.length > 0 && (
-              <div className="p-4 border-b border-white/10">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Agenda</h3>
-                <ul className="space-y-2">
-                  {activeMeeting.agenda.map((item, i) => (
-                    <li key={i} className="text-xs text-slate-300 flex items-start gap-2">
-                      <span className="text-blue-400 mt-0.5">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            
-            {/* Notes section */}
-            {activeMeeting.description && (
-              <div className="p-4 border-b border-white/10">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Catatan</h3>
-                <p className="text-xs text-slate-300 whitespace-pre-wrap">{activeMeeting.description}</p>
-              </div>
-            )}
+        {isSidebarOpen && isHost && (
+          <div className="w-[340px] bg-black/80 border-l border-white/10 flex flex-col shrink-0">
+            {/* Tabs Header */}
+            <div className="flex items-center p-2 gap-1 border-b border-white/10 bg-slate-900/50">
+              <button
+                onClick={() => setActiveTab('info')}
+                className={cn(
+                  "flex-1 flex flex-col items-center justify-center p-2 rounded-lg text-[10px] font-medium transition-colors",
+                  activeTab === 'info' ? "bg-slate-800 text-white shadow-sm" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                )}
+              >
+                <Info className="w-4 h-4 mb-1" />
+                Info
+              </button>
+              <button
+                onClick={() => setActiveTab('chat')}
+                className={cn(
+                  "flex-1 flex flex-col items-center justify-center p-2 rounded-lg text-[10px] font-medium transition-colors",
+                  activeTab === 'chat' ? "bg-slate-800 text-white shadow-sm" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                )}
+              >
+                <MessageSquare className="w-4 h-4 mb-1" />
+                Chat
+              </button>
+              <button
+                onClick={() => setActiveTab('files')}
+                className={cn(
+                  "flex-1 flex flex-col items-center justify-center p-2 rounded-lg text-[10px] font-medium transition-colors",
+                  activeTab === 'files' ? "bg-slate-800 text-white shadow-sm" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                )}
+              >
+                <FileText className="w-4 h-4 mb-1" />
+                File
+              </button>
+              <button
+                onClick={() => setActiveTab('transcript')}
+                className={cn(
+                  "flex-1 flex flex-col items-center justify-center p-2 rounded-lg text-[10px] font-medium transition-colors",
+                  activeTab === 'transcript' ? "bg-slate-800 text-white shadow-sm" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                )}
+              >
+                <Mic className="w-4 h-4 mb-1" />
+                Notulen
+              </button>
+            </div>
 
-            {/* Participants Component */}
-            <div className="p-4 flex-1">
-              <MeetingParticipants participants={participants} />
+            {/* Tab Content */}
+            <div className="flex-1 overflow-hidden flex flex-col">
+              {activeTab === 'info' && (
+                <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+                  {/* Agenda section */}
+                  {activeMeeting.agenda.length > 0 && (
+                    <div className="p-4 border-b border-white/10">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Agenda</h3>
+                      <ul className="space-y-2">
+                        {activeMeeting.agenda.map((item, i) => (
+                          <li key={i} className="text-xs text-slate-300 flex items-start gap-2">
+                            <span className="text-blue-400 mt-0.5">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {/* Notes section */}
+                  {activeMeeting.description && (
+                    <div className="p-4 border-b border-white/10">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Catatan</h3>
+                      <p className="text-xs text-slate-300 whitespace-pre-wrap">{activeMeeting.description}</p>
+                    </div>
+                  )}
+
+                  {/* Participants Component */}
+                  <div className="p-4 flex-1">
+                    <MeetingParticipants participants={participants} />
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'chat' && (
+                <div className="flex-1 p-2">
+                  <MeetingChat
+                    meetingId={activeMeeting.id}
+                    userName={currentUser.name}
+                    userRole="HOST"
+                    className="h-full border-none rounded-none"
+                  />
+                </div>
+              )}
+
+              {activeTab === 'files' && (
+                <div className="flex-1 p-2">
+                  <MeetingFileShare
+                    meetingId={activeMeeting.id}
+                    userName={currentUser.name}
+                    userRole="HOST"
+                    className="h-full border-none rounded-none"
+                  />
+                </div>
+              )}
+
+              {activeTab === 'transcript' && (
+                <div className="flex-1 p-2">
+                  <MeetingTranscription
+                    meetingId={activeMeeting.id}
+                    userName={currentUser.name}
+                    userRole="HOST"
+                    className="h-full border-none rounded-none"
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
