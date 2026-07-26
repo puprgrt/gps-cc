@@ -355,6 +355,24 @@ Semua dokumentasi proyek berada di folder `docs/`:
 | `docs/ARCHITECTURE.md` | System Architecture |
 | `docs/DESIGN.md` | Design System & UI Guidelines |
 | `docs/ROADMAP.md` | Development Roadmap |
+| `docs/AI_SMART_ROUTING_ENGINE.md` | AI Smart Routing Engine (PURI 6-Tier Hierarchical Rules) |
+
+---
+
+## 🤖 AI Smart Routing Engine (PURI Standards)
+
+Setiap pengembangan fitur percakapan AI atau routing pesan warga WAJIB mengikuti spesifikasi **Hierarchical AI Routing Engine** yang ditetapkan pada [AI_SMART_ROUTING_ENGINE.md](../docs/AI_SMART_ROUTING_ENGINE.md):
+
+1. **6-Tier Classification Hierarchy**: `Bidang → Layanan → Jenis Permohonan → Prioritas → Operator → SLA`.
+2. **7 Bidang Resmi Dinas PUPR Kab. Garut**:
+   - `SEKRETARIAT`, `PENATAAN_RUANG`, `BANGUNAN_GEDUNG`, `BINA_MARGA`, `SDA`, `JASA_KONSTRUKSI`, `AMPL`.
+3. **AI Decision Rules**:
+   - Single-domain: Auto-assign ke operator bidang online dengan beban kerja minimal.
+   - Multi-domain: 1 tiket utama + sub-tugas ke masing-masing bidang terkait.
+   - Confidence ≥ 95%: AI menyusun draf jawaban lengkap (`draftResponse`) dan merekomendasikan operator.
+   - Confidence < 95%: Masuk antrean validasi **Supervisor** sebelum diteruskan ke operator bidang.
+   - Pengaduan Darurat (Jalan putus, jembatan ambruk, banjir kritis): Prioritas `KRITIS`, memicu notifikasi real-time.
+4. **Domain Types**: Gunakan antarmuka yang terdefinisi di `domain/aiRouting.ts` (`HierarchicalRoutingDecision`, `ComplaintClassification`, `BidangPUPR`, `AIPuriIntent`).
 
 ---
 

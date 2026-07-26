@@ -47,16 +47,25 @@ async function saveMessage(conversationId, messageData, contactData = null) {
     if (convError) throw convError;
 
     // 3. Simpan Pesan Individu
+    const payload = {
+      id: messageData.id,
+      conversation_id: conversationId,
+      sender_type: messageData.sender,
+      text: messageData.text,
+      status: 'sent',
+      timestamp: new Date().toISOString()
+    };
+
+    if (messageData.metadata && (messageData.metadata.fileUrl || messageData.metadata.base64)) {
+      payload.media_url = messageData.metadata.fileUrl || `data:${messageData.metadata.mimetype || 'application/octet-stream'};base64,${messageData.metadata.base64}`;
+      payload.media_type = messageData.metadata.mimetype || messageData.type;
+    } else if (messageData.type === 'image' || messageData.type === 'document' || messageData.type === 'video' || messageData.type === 'audio') {
+      payload.media_type = messageData.metadata?.mimetype || messageData.type;
+    }
+
     const { error: msgError } = await supabase
       .from('wa_messages')
-      .insert({
-        id: messageData.id,
-        conversation_id: conversationId,
-        sender_type: messageData.sender,
-        text: messageData.text,
-        status: 'sent',
-        timestamp: new Date().toISOString()
-      });
+      .insert(payload);
 
     if (msgError) throw msgError;
 

@@ -1,4 +1,5 @@
 const { GoogleGenAI } = require('@google/genai');
+const { downloadMediaMessage, normalizeMessageContent, getContentType } = require('@whiskeysockets/baileys');
 const supabaseService = require('../services/supabaseService');
 const localDb = require('../services/localDbService'); // Keep for logs if needed
 
@@ -34,12 +35,63 @@ class MessageHandler {
       
       const { text, type, metadata } = this.extractMessageContent(msg);
 
+      let mediaBase64 = null;
+      let enrichedMetadata = { ...(metadata || {}) };
+      if (type === 'document' || type === 'image') {
+        try {
+          let mediaBuffer = null;
+          try {
+            mediaBuffer = await downloadMediaMessage(
+              msg,
+              'buffer',
+              {},
+              { 
+                logger: this.client.waSocket?.logger,
+                reuploadRequest: this.client.waSocket?.updateMediaMessage ? this.client.waSocket.updateMediaMessage.bind(this.client.waSocket) : undefined
+              }
+            );
+          } catch (innerErr) {
+            mediaBuffer = await downloadMediaMessage(msg, 'buffer');
+          }
+
+          if (mediaBuffer) {
+            mediaBase64 = mediaBuffer.toString('base64');
+            enrichedMetadata.size = mediaBuffer.length;
+            enrichedMetadata.base64 = mediaBase64;
+            const mime = enrichedMetadata.mimetype || (type === 'image' ? 'image/jpeg' : 'application/pdf');
+            const dataUrl = `data:${mime};base64,${mediaBase64}`;
+
+            const fs = require('fs');
+            const path = require('path');
+            try {
+              const publicDir = path.join(process.cwd(), 'public', 'wa-media');
+              if (!fs.existsSync(publicDir)) {
+                fs.mkdirSync(publicDir, { recursive: true });
+              }
+              const ext = type === 'image' ? (mime.includes('png') ? 'png' : 'jpg') : 'pdf';
+              const safeName = `${Date.now()}_${msg.key.id.replace(/[^a-zA-Z0-9]/g, '')}.${ext}`;
+              const filePath = path.join(publicDir, safeName);
+              fs.writeFileSync(filePath, mediaBuffer);
+              enrichedMetadata.fileUrl = `/wa-media/${safeName}`;
+              enrichedMetadata.fileName = enrichedMetadata.fileName || `Lampiran_${type === 'image' ? 'Foto' : 'Dokumen'}.${ext}`;
+            } catch (fsErr) {
+              this.client.addLog('MEDIA_FS_ERROR', `Gagal menyimpan file ke public/wa-media: ${fsErr.message}`);
+              enrichedMetadata.fileUrl = dataUrl;
+            }
+
+            this.client.addLog('MEDIA_DOWNLOAD', `Berhasil mengunduh lampiran ${type} (${(mediaBuffer.length / 1024).toFixed(1)} KB) dari ${pushName}`);
+          }
+        } catch (downloadErr) {
+          this.client.addLog('MEDIA_ERROR', `Gagal mengunduh media dari ${pushName}: ${downloadErr.message}`);
+        }
+      }
+
       const inboundData = {
         id: msg.key.id,
         sender: 'user',
         text,
         type,
-        metadata,
+        metadata: enrichedMetadata,
         timestamp: new Date((msg.messageTimestamp || Date.now() / 1000) * 1000).toISOString(),
         status: 'read',
       };
@@ -121,53 +173,73 @@ class MessageHandler {
 
       // Priority 3: Gemini AI Fallback (Check if is_active is enabled)
       const isAiEnabled = botSettings.is_active ?? true;
-      if (!handledByBot && isAiEnabled && type === 'text' && text.length >= (botSettings.min_text_length || 2)) {
-         await this.handleGeminiAiReply(senderJid, text, pushName, botSettings);
+      const isValidText = text && text.length >= (botSettings.min_text_length || 2);
+      const isMediaMessage = (type === 'document' || type === 'image');
+      if (!handledByBot && isAiEnabled && (isValidText || isMediaMessage)) {
+         const mediaPayload = (isMediaMessage && mediaBase64) ? {
+           base64: mediaBase64,
+           mimetype: enrichedMetadata?.mimetype || (type === 'image' ? 'image/jpeg' : 'application/pdf'),
+           fileName: enrichedMetadata?.fileName || `lampiran.${type === 'image' ? 'jpg' : 'pdf'}`
+         } : null;
+         await this.handleGeminiAiReply(senderJid, text || `[Lampiran ${type}]`, pushName, botSettings, mediaPayload);
       }
     }
   }
 
   extractMessageContent(msg) {
-    const m = msg.message;
-    if (m.conversation || m.extendedTextMessage) {
-      return { 
-        text: m.conversation || m.extendedTextMessage?.text, 
-        type: 'text', 
-        metadata: null 
-      };
+    let rawMessage = msg.message || {};
+    if (rawMessage.messageContextInfo && rawMessage.messageContextInfo.message) {
+      rawMessage = rawMessage.messageContextInfo.message;
     }
-    
-    if (m.imageMessage) {
+    const m = normalizeMessageContent(rawMessage) || rawMessage;
+    const contentType = getContentType(m) || '';
+
+    const imageMsg = m.imageMessage || m.viewOnceMessageV2Extension?.message?.imageMessage;
+    if (imageMsg || contentType === 'imageMessage') {
+      const img = imageMsg || m[contentType];
       return { 
-        text: m.imageMessage.caption || '[Gambar]', 
+        text: img?.caption || img?.text || '[Gambar]', 
         type: 'image', 
-        metadata: { mimetype: m.imageMessage.mimetype } 
+        metadata: { mimetype: img?.mimetype || 'image/jpeg', fileName: img?.fileName || 'Foto_Laporan.jpg' } 
       };
     }
 
-    if (m.videoMessage) {
+    const docMsg = m.documentMessage || m.documentWithCaptionMessage?.message?.documentMessage || m.viewOnceMessageV2Extension?.message?.documentMessage;
+    if (docMsg || contentType === 'documentMessage' || contentType === 'documentWithCaptionMessage') {
+      const doc = docMsg || m.documentMessage || m[contentType];
       return { 
-        text: m.videoMessage.caption || '[Video]', 
-        type: 'video', 
-        metadata: { mimetype: m.videoMessage.mimetype, seconds: m.videoMessage.seconds } 
+        text: doc?.caption || doc?.fileName || '[Dokumen]', 
+        type: 'document', 
+        metadata: { fileName: doc?.fileName || 'Lampiran_Dokumen.pdf', mimetype: doc?.mimetype || 'application/pdf' } 
       };
     }
 
-    if (m.audioMessage) {
+    const vidMsg = m.videoMessage;
+    if (vidMsg || contentType === 'videoMessage') {
+      const vid = vidMsg || m[contentType];
+      return { 
+        text: vid?.caption || '[Video]', 
+        type: 'video', 
+        metadata: { mimetype: vid?.mimetype || 'video/mp4', seconds: vid?.seconds } 
+      };
+    }
+
+    const audioMsg = m.audioMessage;
+    if (audioMsg || contentType === 'audioMessage') {
+      const aud = audioMsg || m[contentType];
       return { 
         text: '[Pesan Suara / Audio]', 
         type: 'audio', 
-        metadata: { ptt: m.audioMessage.ptt, seconds: m.audioMessage.seconds } 
+        metadata: { ptt: aud?.ptt, seconds: aud?.seconds } 
       };
     }
 
-    if (m.documentMessage) {
-      return { 
-        text: m.documentMessage.caption || m.documentMessage.fileName || '[Dokumen]', 
-        type: 'document', 
-        metadata: { fileName: m.documentMessage.fileName, mimetype: m.documentMessage.mimetype } 
-      };
-    }
+    const textMsg = m.conversation || m.extendedTextMessage?.text || m.text || '';
+    return { 
+      text: textMsg || '[Pesan]', 
+      type: 'text', 
+      metadata: null 
+    };
 
     if (m.locationMessage) {
       return { 
@@ -188,12 +260,34 @@ class MessageHandler {
     return { text: '[Pesan Tipe Lain]', type: 'unknown', metadata: null };
   }
 
-  async handleGeminiAiReply(senderJid, messageText, pushName, botSettings = {}) {
+  async handleGeminiAiReply(senderJid, messageText, pushName, botSettings = {}, mediaPayload = null) {
     try {
       const systemPrompt = botSettings.system_prompt || `Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.`;
-      let modelName = botSettings.model || 'gemini-3.6-flash';
+      let modelName = botSettings.model || 'gemini-2.5-flash';
+      if (!modelName || modelName.includes('3.') || modelName === 'default') {
+        modelName = 'gemini-2.5-flash';
+      }
 
-      const fullPrompt = `${systemPrompt}\n\nPertanyaan Warga (${pushName}): "${messageText}"`;
+      let contentsPayload;
+      if (mediaPayload && mediaPayload.base64) {
+        const promptText = `${systemPrompt}\n\nPesan Warga (${pushName}): "${messageText}". Warga melampirkan berkas/gambar (${mediaPayload.fileName || 'Lampiran'}). Mohon baca, analisis, dan berikan penjelasan atau tanggapan terkait isi dokumen/gambar terlampir untuk keperluan pelayanan Dinas PUPR Kabupaten Garut.`;
+        contentsPayload = [
+          {
+            role: 'user',
+            parts: [
+              { text: promptText },
+              {
+                inlineData: {
+                  data: mediaPayload.base64,
+                  mimeType: mediaPayload.mimetype || 'application/octet-stream'
+                }
+              }
+            ]
+          }
+        ];
+      } else {
+        contentsPayload = `${systemPrompt}\n\nPertanyaan Warga (${pushName}): "${messageText}"`;
+      }
 
       const aiClient = this.getAiInstance();
       if (!aiClient) {
@@ -203,7 +297,7 @@ class MessageHandler {
 
       const res = await aiClient.models.generateContent({
         model: modelName,
-        contents: fullPrompt,
+        contents: contentsPayload,
       });
 
       const rawReply = res.text;

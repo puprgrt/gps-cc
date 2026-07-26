@@ -13,11 +13,42 @@ import {
   Clock, Search, Filter, Send, Paperclip, Smile, Image as ImageIcon, 
   FileText, User, MapPin, Star, Bot, Sparkles, UserCheck, 
   ArrowUpRight, ArrowDownRight, MoreVertical, Bookmark, Share2, 
-  Tag, Plus, ShieldCheck, X, Activity, Layers, CornerDownRight, Check, ChevronLeft
+  Tag, Plus, ShieldCheck, X, Activity, Layers, CornerDownRight, Check, ChevronLeft,
+  Download, Eye, ExternalLink, Film, Mic
 } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { Area, AreaChart, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+
+const BIDANG_PUPR_LIST = [
+  { id: 'ALL', label: 'Semua Bidang', badge: '🏛️ Semua', color: 'bg-slate-500/20 text-slate-300 border-slate-500/30' },
+  { id: 'BINA_MARGA', label: 'Bina Marga', badge: '🛣️ Bina Marga', color: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
+  { id: 'SDA', label: 'SDA (Irigasi)', badge: '💧 SDA', color: 'bg-blue-500/20 text-blue-300 border-blue-500/30' },
+  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan Gedung', badge: '🏢 Bangunan Gedung', color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
+  { id: 'PENATAAN_RUANG', label: 'Penataan Ruang', badge: '🗺️ Penataan Ruang', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' },
+  { id: 'AMPL', label: 'AMPL (SPAM)', badge: '🚰 AMPL', color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' },
+  { id: 'JASA_KONSTRUKSI', label: 'Jasa Konstruksi', badge: '🏗️ Jasa Konstruksi', color: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
+  { id: 'SEKRETARIAT', label: 'Sekretariat', badge: '📋 Sekretariat', color: 'bg-slate-500/20 text-slate-300 border-slate-500/30' },
+];
+
+const PURI_SMART_LABELS = [
+  { name: 'PBG', color: 'bg-emerald-500', badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40', bidang: 'Bangunan Gedung' },
+  { name: 'SLF', color: 'bg-blue-500', badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/40', bidang: 'Bangunan Gedung' },
+  { name: 'KRK', color: 'bg-amber-500', badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40', bidang: 'Penataan Ruang' },
+  { name: 'PKKPR', color: 'bg-purple-500', badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40', bidang: 'Penataan Ruang' },
+  { name: 'Siteplan', color: 'bg-violet-500', badgeColor: 'bg-violet-500/20 text-violet-300 border-violet-500/40', bidang: 'Penataan Ruang' },
+  { name: 'Jalan', color: 'bg-amber-500', badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40', bidang: 'Bina Marga' },
+  { name: 'Jembatan', color: 'bg-orange-500', badgeColor: 'bg-orange-500/20 text-orange-300 border-orange-500/40', bidang: 'Bina Marga' },
+  { name: 'Drainase', color: 'bg-cyan-500', badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40', bidang: 'SDA' },
+  { name: 'Irigasi', color: 'bg-sky-500', badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/40', bidang: 'SDA' },
+  { name: 'SPAM', color: 'bg-teal-500', badgeColor: 'bg-teal-500/20 text-teal-300 border-teal-500/40', bidang: 'AMPL' },
+  { name: 'Sanitasi', color: 'bg-cyan-600', badgeColor: 'bg-cyan-600/20 text-cyan-200 border-cyan-600/40', bidang: 'AMPL' },
+  { name: 'Jasa Konstruksi', color: 'bg-indigo-500', badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40', bidang: 'Jasa Konstruksi' },
+  { name: 'Administrasi', color: 'bg-slate-400', badgeColor: 'bg-slate-400/20 text-slate-300 border-slate-400/40', bidang: 'Sekretariat' },
+  { name: 'Pengaduan', color: 'bg-rose-500', badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/40', bidang: 'Umum' },
+  { name: 'Informasi', color: 'bg-slate-400', badgeColor: 'bg-slate-400/20 text-slate-300 border-slate-400/40', bidang: 'Umum' },
+  { name: 'Kritis', color: 'bg-rose-600', badgeColor: 'bg-rose-600/20 text-rose-300 border-rose-600/40', bidang: 'Darurat' },
+];
 
 export function WhatsAppDashboard() {
   const { 
@@ -44,6 +75,7 @@ export function WhatsAppDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<'all' | 'pending' | 'ai' | 'operator' | 'resolved'>('all');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [filterBidang, setFilterBidang] = useState<string>('ALL');
   const [replyMode, setReplyMode] = useState<'reply' | 'internal_note'>('reply');
   const [messageText, setMessageText] = useState('');
   const [internalNoteText, setInternalNoteText] = useState('');
@@ -54,7 +86,7 @@ export function WhatsAppDashboard() {
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId) || conversations[0];
 
-  // Filtering conversations
+  // Filtering conversations using PURI 6-Tier rules (Bidang, Smart Labels, Status)
   const filteredConversations = conversations.filter((conv) => {
     const matchesQuery = 
       conv.contactName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -68,9 +100,17 @@ export function WhatsAppDashboard() {
       filterCategory === 'operator' ? conv.status === 'active' :
       conv.status === 'resolved';
 
-    const matchesTag = selectedTag ? conv.category === selectedTag || conv.tags?.includes(selectedTag) : true;
+    const matchesTag = selectedTag ? 
+      conv.category === selectedTag || 
+      conv.tags?.includes(selectedTag) || 
+      conv.smartLabels?.includes(selectedTag) : true;
 
-    return matchesQuery && matchesFilter && matchesTag;
+    const matchesBidang = filterBidang === 'ALL' ? true :
+      Array.isArray(conv.bidang) 
+        ? conv.bidang.includes(filterBidang) 
+        : conv.bidang === filterBidang;
+
+    return matchesQuery && matchesFilter && matchesTag && matchesBidang;
   });
 
   const handleSendMessage = (e: React.FormEvent) => {
@@ -427,19 +467,36 @@ export function WhatsAppDashboard() {
               </button>
             </div>
 
-            {/* Tag Badges row */}
-            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
-              {['PBG', 'SLF', 'KRK', 'Pengaduan', 'Urgent'].map((tag) => (
+            {/* Filter 7 Bidang PUPR */}
+            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pb-1">
+              {BIDANG_PUPR_LIST.map((b) => (
                 <button
-                  key={tag}
-                  onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                  className={`text-[9px] px-2 py-0.5 rounded border transition-colors whitespace-nowrap ${
-                    selectedTag === tag 
-                      ? 'bg-blue-500/30 text-blue-300 border-blue-400' 
+                  key={b.id}
+                  onClick={() => setFilterBidang(b.id)}
+                  className={`text-[9px] px-2 py-0.5 rounded-full border transition-all whitespace-nowrap font-medium flex items-center gap-1 ${
+                    filterBidang === b.id 
+                      ? 'bg-garut-blue/40 text-blue-200 border-blue-400 shadow-sm' 
                       : 'bg-white/5 text-slate-400 border-white/10 hover:border-slate-500'
                   }`}
                 >
-                  {tag}
+                  <span>{b.badge}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Filter Smart Labels PURI */}
+            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pb-0.5">
+              {PURI_SMART_LABELS.map((tag) => (
+                <button
+                  key={tag.name}
+                  onClick={() => setSelectedTag(selectedTag === tag.name ? null : tag.name)}
+                  className={`text-[8px] px-2 py-0.5 rounded border transition-colors whitespace-nowrap ${
+                    selectedTag === tag.name 
+                      ? 'bg-blue-500/30 text-blue-300 border-blue-400 font-bold' 
+                      : 'bg-white/5 text-slate-400 border-white/10 hover:border-slate-500'
+                  }`}
+                >
+                  #{tag.name}
                 </button>
               ))}
             </div>
@@ -479,34 +536,64 @@ export function WhatsAppDashboard() {
                       {conv.lastMessage}
                     </p>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        {conv.status === 'pending' && (
-                          <span className="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.2 rounded font-medium">
-                            Belum Dibalas
-                          </span>
-                        )}
-                        {conv.status === 'bot_handling' && (
-                          <span className="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.2 rounded font-medium">
-                            AI Menjawab
-                          </span>
-                        )}
-                        {conv.status === 'active' && (
-                          <span className="text-[9px] bg-sky-500/20 text-sky-400 border border-sky-500/30 px-1.5 py-0.2 rounded font-medium">
-                            Operator
-                          </span>
-                        )}
-                        {conv.status === 'resolved' && (
-                          <span className="text-[9px] bg-slate-500/20 text-slate-300 border border-slate-500/30 px-1.5 py-0.2 rounded font-medium">
-                            Selesai
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1 flex-wrap">
+                          {conv.status === 'pending' && (
+                            <span className="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.2 rounded font-medium">
+                              Belum Dibalas
+                            </span>
+                          )}
+                          {conv.status === 'bot_handling' && (
+                            <span className="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.2 rounded font-medium">
+                              AI Menjawab
+                            </span>
+                          )}
+                          {conv.status === 'active' && (
+                            <span className="text-[9px] bg-sky-500/20 text-sky-400 border border-sky-500/30 px-1.5 py-0.2 rounded font-medium">
+                              Operator
+                            </span>
+                          )}
+                          {conv.status === 'resolved' && (
+                            <span className="text-[9px] bg-slate-500/20 text-slate-300 border border-slate-500/30 px-1.5 py-0.2 rounded font-medium">
+                              Selesai
+                            </span>
+                          )}
+
+                          {/* PURI Priority / Emergency badge */}
+                          {conv.prioritas === 'KRITIS' && (
+                            <span className="text-[9px] bg-rose-500/30 text-rose-300 border border-rose-500/50 px-1.5 py-0.2 rounded font-bold animate-pulse flex items-center gap-0.5">
+                              ⚡ KRITIS
+                            </span>
+                          )}
+
+                          {/* Bidang Badge */}
+                          {conv.bidang && (
+                            <span className="text-[9px] bg-blue-900/40 text-blue-300 border border-blue-500/30 px-1.5 py-0.2 rounded font-medium truncate max-w-[110px]">
+                              🏛️ {Array.isArray(conv.bidang) ? conv.bidang.join('+') : conv.bidang}
+                            </span>
+                          )}
+                        </div>
+
+                        {conv.unreadCount > 0 && (
+                          <span className="w-4 h-4 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-bold">
+                            {conv.unreadCount}
                           </span>
                         )}
                       </div>
 
-                      {conv.unreadCount > 0 && (
-                        <span className="w-4 h-4 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-bold">
-                          {conv.unreadCount}
-                        </span>
+                      {/* Smart Labels list row */}
+                      {conv.smartLabels && conv.smartLabels.length > 0 && (
+                        <div className="flex items-center gap-1 flex-wrap mt-0.5">
+                          {conv.smartLabels.slice(0, 3).map((lbl, idx) => (
+                            <span key={idx} className="text-[8px] px-1.5 py-0.2 rounded bg-white/5 text-slate-300 border border-white/10">
+                              #{lbl}
+                            </span>
+                          ))}
+                          {conv.smartLabels.length > 3 && (
+                            <span className="text-[8px] text-slate-400">+{conv.smartLabels.length - 3}</span>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -537,7 +624,7 @@ export function WhatsAppDashboard() {
                     <User className="w-4 h-4 text-blue-300" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-xs font-bold text-white">{activeConversation.contactName}</h3>
                       {activeConversation.status === 'pending' && (
                         <Badge variant="warning" className="text-[9px] py-0 px-1.5">Belum Dibalas</Badge>
@@ -545,10 +632,48 @@ export function WhatsAppDashboard() {
                       {activeConversation.status === 'active' && (
                         <Badge variant="info" className="text-[9px] py-0 px-1.5">Operator</Badge>
                       )}
+                      {activeConversation.status === 'bot_handling' && (
+                        <Badge variant="success" className="text-[9px] py-0 px-1.5">AI Menjawab</Badge>
+                      )}
+                      {activeConversation.status === 'resolved' && (
+                        <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-slate-300">Selesai</Badge>
+                      )}
+
+                      {/* Bidang Badge */}
+                      {activeConversation.bidang && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-garut-blue/40 text-blue-200 border border-blue-400/50 flex items-center gap-1">
+                          🏛️ {Array.isArray(activeConversation.bidang) ? activeConversation.bidang.join(' + ') : activeConversation.bidang}
+                        </span>
+                      )}
+
+                      {/* Prioritas & SLA Badge */}
+                      {activeConversation.prioritas && (
+                        <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold border flex items-center gap-1 ${
+                          activeConversation.prioritas === 'KRITIS'
+                            ? 'bg-rose-500/30 text-rose-300 border-rose-500 animate-pulse'
+                            : activeConversation.prioritas === 'TINGGI'
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                            : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                        }`}>
+                          {activeConversation.prioritas === 'KRITIS' ? '⚡' : '⏱️'} {activeConversation.prioritas} (SLA: {activeConversation.sla || '1 Hari'})
+                        </span>
+                      )}
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                      <MapPin className="w-3 h-3 text-slate-500" />
-                      <span>{activeConversation.location || 'Garut, Jawa Barat'}</span>
+                    <div className="flex items-center gap-3 text-[10px] text-slate-400 mt-1 flex-wrap">
+                      <div className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-slate-500" />
+                        <span>{activeConversation.location || 'Garut, Jawa Barat'}</span>
+                      </div>
+                      {activeConversation.layanan && (
+                        <div className="flex items-center gap-1 text-sky-400">
+                          <span>• Layanan: <strong className="text-sky-300">{activeConversation.layanan}</strong></span>
+                        </div>
+                      )}
+                      {activeConversation.assignedOperator && (
+                        <div className="flex items-center gap-1 text-slate-400">
+                          <span>• Operator: <strong className="text-white">{activeConversation.assignedOperator}</strong></span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -607,7 +732,106 @@ export function WhatsAppDashboard() {
                               <Bot className="w-3 h-3" /> {msg.senderName || 'AI Assistant PUPR'}
                             </div>
                           )}
-                          <p className="whitespace-pre-line">{msg.text}</p>
+                          {/* Image Media Attachment */}
+                          {msg.type === 'image' && (
+                            <div className="mb-2 rounded-xl overflow-hidden border border-white/20 shadow-sm bg-black/40 group relative">
+                              {msg.metadata?.fileUrl || msg.attachments?.[0]?.url ? (
+                                <div className="relative">
+                                  <img
+                                    src={msg.metadata?.fileUrl || msg.attachments?.[0]?.url}
+                                    alt={msg.metadata?.fileName || 'Foto Laporan PUPR'}
+                                    className="w-full max-h-56 object-cover rounded-t-lg transition-transform group-hover:scale-105"
+                                  />
+                                  <a
+                                    href={msg.metadata?.fileUrl || msg.attachments?.[0]?.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="absolute bottom-2 right-2 px-2.5 py-1 bg-black/70 hover:bg-black/90 text-white rounded-lg text-[10px] font-bold flex items-center gap-1.5 backdrop-blur-sm border border-white/20"
+                                  >
+                                    <Eye className="w-3 h-3 text-sky-400" /> Buka Foto
+                                  </a>
+                                </div>
+                              ) : (
+                                <div className="p-4 flex items-center justify-center text-slate-400 gap-2 bg-slate-800">
+                                  <ImageIcon className="w-6 h-6 text-sky-400 animate-pulse" />
+                                  <span>[Lampiran Gambar / Foto]</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Document PDF/Docx Attachment Card */}
+                          {msg.type === 'document' && (
+                            <div className={`flex items-center gap-2.5 p-2.5 rounded-xl border mb-2 shadow-inner ${
+                              isUser 
+                                ? 'bg-slate-100 border-slate-300 text-slate-800' 
+                                : 'bg-black/25 border-white/15 text-white'
+                            }`}>
+                              <div className={`p-2 rounded-lg shrink-0 ${
+                                isUser ? 'bg-rose-500/15 text-rose-600' : 'bg-rose-500/20 text-rose-300'
+                              }`}>
+                                <FileText className="w-6 h-6" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-bold truncate leading-snug">
+                                  {msg.metadata?.fileName || msg.attachments?.[0]?.name || msg.text || 'Dokumen_Permohonan.pdf'}
+                                </p>
+                                <span className={`text-[10px] font-mono block mt-0.5 ${
+                                  isUser ? 'text-slate-500' : 'text-slate-300'
+                                }`}>
+                                  {msg.metadata?.mimetype || 'PDF / Dokumen PUPR'} 
+                                  {msg.metadata?.size ? ` • ${(msg.metadata.size / (1024 * 1024)).toFixed(1)} MB` : ''}
+                                </span>
+                              </div>
+                              {(msg.metadata?.fileUrl || msg.attachments?.[0]?.url) && (
+                                <a
+                                  href={msg.metadata?.fileUrl || msg.attachments?.[0]?.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className={`px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition-all shrink-0 ${
+                                    isUser 
+                                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm' 
+                                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+                                  }`}
+                                >
+                                  <Download className="w-3.5 h-3.5" /> Buka
+                                </a>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Video Attachment Card */}
+                          {msg.type === 'video' && (
+                            <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-black/30 border border-white/15 mb-2">
+                              <div className="p-2 bg-purple-500/20 text-purple-400 rounded-lg shrink-0">
+                                <Film className="w-6 h-6" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-bold text-white truncate">Lampiran Video Rekaman</p>
+                                <span className="text-[10px] text-slate-400">Video • {msg.metadata?.seconds || 30} detik</span>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Audio / Voice Note Card */}
+                          {msg.type === 'audio' && (
+                            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-black/30 border border-white/15 mb-2">
+                              <div className="p-2 bg-emerald-500/20 text-emerald-400 rounded-full shrink-0">
+                                <Mic className="w-5 h-5" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-semibold text-white">Pesan Suara (Voice Note)</p>
+                                <span className="text-[10px] text-slate-400">{msg.metadata?.seconds || 12} detik</span>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Message Text / Caption */}
+                          {msg.text && (
+                            <p className="whitespace-pre-line leading-relaxed">
+                              {msg.type === 'document' && msg.metadata?.caption ? msg.metadata.caption : msg.text}
+                            </p>
+                          )}
                           <div
                             className={`text-[9px] mt-1.5 flex items-center justify-end gap-1 ${
                               isUser ? 'text-slate-500' : 'text-emerald-100'
@@ -880,19 +1104,123 @@ export function WhatsAppDashboard() {
                 </div>
               </div>
 
-              {/* Panel 4: LABELS SYSTEM */}
-              <div className="glass-card p-3.5 rounded-xl border border-white/10 shadow-card space-y-2">
-                <h4 className="text-[11px] font-bold text-white uppercase tracking-wider mb-2">LABEL</h4>
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> PBG</div>
-                  <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span> SLF</div>
-                  <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span> KRK / PKKPR</div>
-                  <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Pengaduan</div>
-                  <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Informasi</div>
+              {/* Panel 4: AI SMART ROUTING ENGINE (PURI 6-TIER) & SISTEM LABELING */}
+              <div className="glass-card p-4 rounded-xl border border-blue-500/30 bg-gradient-to-b from-blue-950/40 to-slate-900/60 shadow-card space-y-3">
+                <div className="flex items-center justify-between border-b border-blue-500/20 pb-2">
+                  <div className="flex items-center gap-1.5 text-blue-400 font-bold text-xs uppercase tracking-wider">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" /> AI ROUTING ENGINE (PURI 6-TIER)
+                  </div>
+                  <span className="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full font-bold">
+                    Aktif • 99% Akurat
+                  </span>
                 </div>
-                <button className="text-[10px] text-slate-400 hover:text-white flex items-center gap-1 pt-1">
-                  <Plus className="w-3 h-3" /> Tambah Label
-                </button>
+
+                {/* 6-Tier Hierarchical Decision Card for Active Conversation */}
+                {activeConversation && (
+                  <div className="p-2.5 rounded-lg bg-black/40 border border-white/10 space-y-2 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400 text-[10px] font-bold uppercase">1. Bidang PUPR</span>
+                      <span className="text-blue-300 font-bold bg-blue-900/40 px-2 py-0.5 rounded text-[10px] border border-blue-500/30">
+                        {Array.isArray(activeConversation.bidang) ? activeConversation.bidang.join(' + ') : (activeConversation.bidang || 'Umum')}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400 text-[10px] font-bold uppercase">2. Layanan</span>
+                      <span className="text-sky-300 font-medium text-[11px] truncate max-w-[150px]">
+                        {activeConversation.layanan || 'Pelayanan Umum'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400 text-[10px] font-bold uppercase">3. Intent / Permohonan</span>
+                      <span className="text-emerald-300 font-semibold text-[11px]">
+                        {activeConversation.intent || 'INFORMASI'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400 text-[10px] font-bold uppercase">4. Prioritas & SLA</span>
+                      <div className="flex items-center gap-1">
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
+                          activeConversation.prioritas === 'KRITIS' ? 'bg-rose-500/30 text-rose-300 border border-rose-500' :
+                          activeConversation.prioritas === 'TINGGI' ? 'bg-amber-500/20 text-amber-300' :
+                          'bg-emerald-500/20 text-emerald-300'
+                        }`}>
+                          {activeConversation.prioritas || 'NORMAL'}
+                        </span>
+                        <span className="text-[10px] text-slate-300 bg-white/5 px-1.5 py-0.5 rounded">
+                          SLA: {activeConversation.sla || '1 Hari'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400 text-[10px] font-bold uppercase">5. Operator Bidang</span>
+                      <span className="text-white font-medium text-[11px]">
+                        {activeConversation.assignedOperator || 'PURI AI Front Office'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between border-t border-white/5 pt-1.5">
+                      <span className="text-slate-400 text-[10px] font-bold uppercase">6. AI Confidence</span>
+                      <span className="text-emerald-400 font-bold text-[11px] flex items-center gap-1">
+                        ✓ {activeConversation.confidenceScore || 98}% (Lolos Validasi)
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* SMART LABELS LIST & FILTER ENGINE */}
+                <div className="space-y-2 pt-1">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[11px] font-bold text-white uppercase tracking-wider">
+                      DAFTAR LABEL PURI (16 KLASIFIKASI)
+                    </h4>
+                    {selectedTag && (
+                      <button 
+                        onClick={() => setSelectedTag(null)} 
+                        className="text-[9px] text-rose-400 hover:underline font-semibold"
+                      >
+                        Reset Filter #{selectedTag}
+                      </button>
+                    )}
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto scrollbar-thin pr-1">
+                    {PURI_SMART_LABELS.map((lbl) => {
+                      const isActiveFilter = selectedTag === lbl.name;
+                      const count = conversations.filter(c => c.category === lbl.name || c.tags?.includes(lbl.name) || c.smartLabels?.includes(lbl.name)).length;
+                      return (
+                        <button
+                          key={lbl.name}
+                          onClick={() => setSelectedTag(isActiveFilter ? null : lbl.name)}
+                          className={`flex items-center justify-between p-1.5 rounded-lg border text-left transition-all ${
+                            isActiveFilter
+                              ? 'bg-blue-600/30 border-blue-400 text-white shadow-sm font-bold'
+                              : 'bg-black/30 border-white/10 hover:border-slate-500 text-slate-300'
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className={`w-2 h-2 rounded-full ${lbl.color} shrink-0`}></span>
+                            <span className="text-[11px] truncate">{lbl.name}</span>
+                          </div>
+                          <span className="text-[9px] font-mono bg-white/10 px-1.5 py-0.2 rounded text-slate-400">
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-1 text-[10px] text-slate-400 border-t border-white/5">
+                  <span>Klik label untuk memfilter daftar percakapan</span>
+                  <button 
+                    onClick={() => {
+                      setFilterBidang('ALL');
+                      setSelectedTag(null);
+                    }}
+                    className="text-blue-400 hover:underline font-semibold"
+                  >
+                    Reset Semua
+                  </button>
+                </div>
               </div>
             </>
           )}

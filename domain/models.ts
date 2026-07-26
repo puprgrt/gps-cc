@@ -40,3 +40,5 @@ export interface User {
   updatedAt?: number | Date;
 }
 
+export * from './aiRouting';
+

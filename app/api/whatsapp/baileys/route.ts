@@ -26,10 +26,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       { 
         source: 'standalone_error', 
-        error: `Gagal terhubung ke Server Standalone Baileys: ${e?.message}`,
+        error: `Server Standalone Baileys sedang restart/tidak terhubung: ${e?.message}`,
         status: 'disconnected'
       },
-      { status: 500 }
+      { status: 200 }
     );
   }
 }

@@ -275,6 +275,12 @@ export function useWhatsApp() {
       store.fetchData();
     }
 
+    // Smart Silent Polling Fallback: Memastikan pesan baru dan status selalu sinkron setiap 5 detik
+    // bahkan jika koneksi WebSocket Supabase Realtime gagal atau belum diaktifkan (Replication).
+    const pollingInterval = setInterval(() => {
+      store.fetchData(true);
+    }, 5000);
+
     // Supabase Realtime Subscription
     const channel = supabase.channel('whatsapp_realtime')
       .on(
@@ -294,9 +300,14 @@ export function useWhatsApp() {
           store.fetchData(true);
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || err) {
+          console.warn('[Supabase Realtime] WebSocket tidak dapat terhubung (menggunakan polling auto-refresh 5 detik sebagai fallback):', status);
+        }
+      });
 
     return () => {
+      clearInterval(pollingInterval);
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
