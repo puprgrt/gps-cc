@@ -27,9 +27,15 @@ export interface WhatsAppMessage {
     fileUrl?: string;
     size?: number;
     caption?: string;
+    seconds?: number;
+    ptt?: boolean;
+    base64?: string;
+    degreesLatitude?: number;
+    degreesLongitude?: number;
+    [key: string]: any;
   };
   attachments?: {
-    type: 'image' | 'pdf' | 'doc' | 'location';
+    type: 'image' | 'pdf' | 'doc' | 'location' | 'video' | 'audio' | string;
     url: string;
     name?: string;
   }[];
