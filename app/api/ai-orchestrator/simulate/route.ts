@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import aiOrchestrator from '@/server/core/AIOrchestrator';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/ai-orchestrator/simulate
  * Simulates an incoming citizen message through PURI Multi-Modal AI Orchestrator 2026.

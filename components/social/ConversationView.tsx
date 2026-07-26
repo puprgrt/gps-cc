@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import { Send, Paperclip, Smile, Image as ImageIcon, CheckCheck, MoreVertical } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';

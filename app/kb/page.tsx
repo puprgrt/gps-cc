@@ -4,7 +4,7 @@
 // 1. IMPORTS (terkelompok dan terurut sesuai aturan AGENTS.md)
 // ============================================================
 // a. React / Next.js core
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 // b. Third-party libraries
 import {
@@ -87,13 +87,8 @@ export default function KnowledgeBaseCommandCenter() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitMsg, setSubmitMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // b. Effects
-  useEffect(() => {
-    fetchKnowledgeBaseData();
-  }, []);
-
   // c. Event handlers & Fetch logic
-  const fetchKnowledgeBaseData = async () => {
+  const fetchKnowledgeBaseData = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch('/api/kb');
@@ -110,7 +105,13 @@ export default function KnowledgeBaseCommandCenter() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  // b. Effects
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchKnowledgeBaseData();
+  }, [fetchKnowledgeBaseData]);
 
   const handleCreateDocument = async (e: React.FormEvent) => {
     e.preventDefault();

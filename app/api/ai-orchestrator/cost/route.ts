@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import aiOrchestrator from '@/server/core/AIOrchestrator';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/ai-orchestrator/cost
  * Returns cost analytics, token estimations, cache hit ratios,

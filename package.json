@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "node --require ./patch.js node_modules/next/dist/bin/next dev",
+    "build": "node --require ./patch.js node_modules/next/dist/bin/next build",
+    "start": "node --require ./patch.js node_modules/next/dist/bin/next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit",
-    "clean": "next clean",
+    "clean": "node --require ./patch.js node_modules/next/dist/bin/next clean",
     "server:baileys": "node server/baileys-server.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server:baileys\"",
     "db:seed": "node scripts/seed-admin.js"
