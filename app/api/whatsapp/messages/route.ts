@@ -56,55 +56,65 @@ export async function GET() {
   }
 }
 
+async function postToBaileysWithRetry(endpoint: string, payload: any, maxRetries = 2): Promise<{ ok: boolean; status: number; data: any; error?: string }> {
+  for (let i = 1; i <= maxRetries; i++) {
+    try {
+      const res = await fetch(`${BAILEYS_URL}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const resData = await res.json().catch(() => ({}));
+      if (res.ok) {
+        return { ok: true, status: res.status, data: resData };
+      }
+
+      const errMsg = resData.error || 'WhatsApp belum terhubung atau koneksi terputus.';
+      const isConnectionErr = res.status >= 500 || errMsg.toLowerCase().includes('connection closed') || errMsg.toLowerCase().includes('closed') || errMsg.toLowerCase().includes('timeout');
+
+      if (i < maxRetries && isConnectionErr) {
+        console.warn(`[API ${endpoint}] Attempt #${i} failed (${errMsg}). Retrying in 1.5s...`);
+        await new Promise(r => setTimeout(r, 1500));
+        continue;
+      }
+
+      return { ok: false, status: isConnectionErr ? 503 : res.status, data: resData, error: errMsg };
+    } catch (err: any) {
+      if (i < maxRetries) {
+        await new Promise(r => setTimeout(r, 1500));
+        continue;
+      }
+      return { ok: false, status: 503, data: {}, error: 'Server Baileys tidak dapat dihubungi. Pastikan server Baileys aktif.' };
+    }
+  }
+  return { ok: false, status: 500, data: {}, error: 'Unknown error' };
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { action, conversationId, text, sender, note, tag } = body;
 
     if (action === 'send_message') {
-      try {
-        const jid = conversationId.replace('conv-', '');
-        const baileysRes = await fetch(`${BAILEYS_URL}/api/send-message`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ to: jid, text, sender }),
-        });
-
-        const resData = await baileysRes.json().catch(() => ({}));
-        
-        if (!baileysRes.ok) {
-           const errMsg = resData.error || 'WhatsApp belum terhubung. Silakan Scan QR Code terlebih dahulu.';
-           console.warn('[API send_message] Baileys returned non-200:', errMsg);
-           return NextResponse.json({ error: errMsg }, { status: 400 });
-        }
-      } catch (e: any) {
-         console.error('Baileys Standalone not reachable:', e.message);
-         return NextResponse.json({ error: 'Server Baileys tidak dapat dihubungi. Pastikan server Baileys aktif.' }, { status: 503 });
+      const jid = conversationId.replace('conv-', '');
+      const result = await postToBaileysWithRetry('/api/send-message', { to: jid, text, sender });
+      if (!result.ok) {
+        console.warn('[API send_message] Baileys returned error:', result.error);
+        return NextResponse.json({ error: result.error }, { status: result.status });
       }
-
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true, data: result.data });
     }
 
     if (action === 'send_media') {
       const { base64Data, caption, mimetype, fileName, type } = body;
-      try {
-        const jid = conversationId.replace('conv-', '');
-        const baileysRes = await fetch(`${BAILEYS_URL}/api/send-media`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ to: jid, base64Data, caption, mimetype, fileName, type }),
-        });
-        
-        const resData = await baileysRes.json().catch(() => ({}));
-
-        if (!baileysRes.ok) {
-           const errMsg = resData.error || 'Gagal mengirim media. Pastikan WhatsApp sudah terhubung.';
-           return NextResponse.json({ error: errMsg }, { status: 400 });
-        }
-      } catch (e: any) {
-         return NextResponse.json({ error: e.message }, { status: 503 });
+      const jid = conversationId.replace('conv-', '');
+      const result = await postToBaileysWithRetry('/api/send-media', { to: jid, base64Data, caption, mimetype, fileName, type });
+      if (!result.ok) {
+        console.warn('[API send_media] Baileys returned error:', result.error);
+        return NextResponse.json({ error: result.error }, { status: result.status });
       }
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true, data: result.data });
     }
 
     if (action === 'add_note') {

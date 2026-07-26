@@ -84,4 +84,19 @@ Google AI bisa membatasi atau menonaktifkan API Key (terutama jika key bocor di 
    - Setiap balasan AI akan memiliki header resmi **"PURI"**.
 
 3. **Mengubah Setting Bot**:
-   - Jika sewaktu-waktu operator perlu mengambil alih chat sepenuhnya (balas manual via HP atau Dashboard), fitur AI dapat dinonaktifkan dari Dashboard. (Pengembangan lebih lanjut)
+   - Jika sewaktu-waktu operator perlu mengambil alih chat sepenuhnya (balas manual via HP atau Dashboard), fitur AI dapat dinonaktifkan dari Dashboard.
+
+---
+
+## 📚 Daftar Dokumentasi Proyek
+
+| File Dokumentasi | Deskripsi |
+|---|---|
+| [PSIC_CONCEPT.md](./PSIC_CONCEPT.md) | **PURI Social Intelligence Center (PSIC)** — Blueprint AI Omnichannel Social Media Command Center |
+| [AI_SMART_ROUTING_ENGINE.md](./AI_SMART_ROUTING_ENGINE.md) | Spesifikasi Teknis & Aturan Hierarchical AI Routing Engine (PURI 6-Tier & 7 Bidang PUPR) |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | Arsitektur Sistem & Clean Architecture GPS-CC |
+| [API.md](./API.md) | Dokumentasi API Endpoint |
+| [DATABASE.md](./DATABASE.md) | Skema Database & Tabel Supabase |
+| [USERFLOW.md](./USERFLOW.md) | Alur Kerja Warga & Operator |
+| [ROADMAP.md](./ROADMAP.md) | Roadmap Pengembangan Sistem |
+

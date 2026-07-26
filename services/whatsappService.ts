@@ -462,13 +462,16 @@ export class WhatsAppService {
           sender,
         }),
       });
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        return await res.json();
+        return data;
       }
-    } catch (e) {
+      console.warn('[WhatsAppService] sendMessageApi error:', data.error || `HTTP ${res.status}`);
+      return { error: data.error || `Gagal mengirim pesan (HTTP ${res.status})`, status: res.status };
+    } catch (e: any) {
       console.error('Failed sending message via API:', e);
+      return { error: e.message || 'Gagal terhubung ke server', status: 500 };
     }
-    return null;
   }
 
   static async sendMediaApi(conversationId: string, base64Data: string, type: 'image' | 'document', caption: string, fileName?: string, mimetype?: string) {
@@ -486,13 +489,16 @@ export class WhatsAppService {
           mimetype,
         }),
       });
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        return await res.json();
+        return data;
       }
-    } catch (e) {
+      console.warn('[WhatsAppService] sendMediaApi error:', data.error || `HTTP ${res.status}`);
+      return { error: data.error || `Gagal mengirim media (HTTP ${res.status})`, status: res.status };
+    } catch (e: any) {
       console.error('Failed sending media via API:', e);
+      return { error: e.message || 'Gagal terhubung ke server', status: 500 };
     }
-    return null;
   }
 
   static async addNoteApi(conversationId: string, note: string) {

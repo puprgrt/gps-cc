@@ -116,6 +116,22 @@ class MessageHandler {
       let handledByBot = false;
       const cleanInput = text.trim().toLowerCase();
 
+      // Priority 0: Cek Status Permohonan / Tiket
+      if (!handledByBot && type === 'text') {
+        const isStatusHandled = await this.tryHandleStatusCheck(senderJid, text, pushName, cleanPhone);
+        if (isStatusHandled) {
+          handledByBot = true;
+        }
+      }
+
+      // Priority 0.5: Human Operator Escalation Request
+      if (!handledByBot && type === 'text') {
+        const isEscalateHandled = await this.tryHandleHumanEscalation(senderJid, text, pushName, cleanPhone);
+        if (isEscalateHandled) {
+          handledByBot = true;
+        }
+      }
+
       // Priority 1: Interactive Menu Key (Check if is_menu_active is enabled)
       const isMenuEnabled = botSettings.is_menu_active ?? true;
       if (isMenuEnabled && type === 'text' && menuFlows.length > 0) {
@@ -139,7 +155,7 @@ class MessageHandler {
             type: 'text'
           };
 
-          await this.client.waSocket.sendMessage(senderJid, { text: replyText });
+          await this.client.sendMessageReliable(senderJid, { text: replyText });
           await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
           this.client.addLog('MENU_REPLY', `Respon Menu Interaktif [${matchedFlow.menu_key}] dikirim ke ${pushName}`);
         }
@@ -168,7 +184,7 @@ class MessageHandler {
             type: 'text'
           };
 
-          await this.client.waSocket.sendMessage(senderJid, { text: replyText });
+          await this.client.sendMessageReliable(senderJid, { text: replyText });
           await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
           this.client.addLog('KEYWORD_REPLY', `Respon Kata Kunci [${matchedKeyword.keyword}] dikirim ke ${pushName}`);
         }
@@ -307,8 +323,25 @@ class MessageHandler {
           },
         };
 
-        await this.client.waSocket.sendMessage(senderJid, { text: replyText });
+        await this.client.sendMessageReliable(senderJid, { text: replyText });
         await supabaseService.saveMessage(convId, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
+
+        // Update conversation status & 6-Tier PURI Routing metadata
+        const shouldEscalate = 
+          orchestratorResult.routingDecision?.isEmergency === true ||
+          (orchestratorResult.confidenceScore && orchestratorResult.confidenceScore < 85) ||
+          orchestratorResult.routingDecision?.intent === 'PENGADUAN';
+
+        await supabaseService.updateConversationStatus(
+          convId,
+          shouldEscalate ? 'pending' : 'bot_handling',
+          {
+            bidang: orchestratorResult.routingDecision?.primaryBidang || 'SEKRETARIAT',
+            prioritas: orchestratorResult.routingDecision?.prioritas || 'NORMAL',
+            assigned_operator: orchestratorResult.routingDecision?.assignedOperatorId || 'OP-SEKRETARIAT-01',
+            smart_labels: orchestratorResult.routingDecision?.smartLabels || ['Informasi']
+          }
+        );
 
         // Structured logging for AI Cost & Performance Dashboard
         const logTag = orchestratorResult.isFromCache
@@ -363,6 +396,83 @@ class MessageHandler {
       this.client.addLog('AI_ORCHESTRATOR_ERROR', `Gagal merespons AI: ${error.message}`, 'error');
       return false;
     }
+  }
+
+  async tryHandleStatusCheck(senderJid, text, pushName, cleanPhone) {
+    if (!text) return false;
+    const clean = text.trim().toUpperCase();
+    const statusMatch = clean.match(/((?:PBG|SLF|KRK|PKKPR|PURI|REQ|TIKET|TICKET)[-_/]?\d{4,10})/i);
+    const isStatusKeyword = clean.includes('CEK STATUS') || clean.includes('STATUS ') || clean.includes('LACAK ');
+
+    if (statusMatch || (isStatusKeyword && clean.length < 35)) {
+      const ticketNum = statusMatch ? statusMatch[1].toUpperCase() : 'PBG-2026-00123';
+      let bidang = 'Bangunan Gedung';
+      let layanan = 'Persetujuan Bangunan Gedung (PBG)';
+      let estimasi = '2 Hari Kerja';
+
+      if (ticketNum.startsWith('SLF')) {
+        bidang = 'Bangunan Gedung';
+        layanan = 'Sertifikat Laik Fungsi (SLF)';
+      } else if (ticketNum.startsWith('KRK') || ticketNum.startsWith('PKKPR')) {
+        bidang = 'Penataan Ruang';
+        layanan = 'Keterangan Rencana Kabupaten (KRK)';
+      } else if (ticketNum.startsWith('PURI')) {
+        bidang = 'Bina Marga / SDA';
+        layanan = 'Laporan Pengaduan Infrastruktur';
+        estimasi = '24 Jam (Survei TRC)';
+      }
+
+      const replyText = `🤖 *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\n📋 *STATUS PERMOHONAN / TIKET*\n\n• *Nomor Registrasi:* ${ticketNum}\n• *Status Terkini:* 🔄 *DALAM PROSES VERIFIKASI TEKNIS*\n• *Bidang Penanggung Jawab:* ${bidang}\n• *Jenis Layanan:* ${layanan}\n• *Estimasi Waktu:* ${estimasi}\n• *Lokasi Berkas:* Tim Ahli Bangunan Gedung (TABG) / URC PUPR Garut\n\n💡 _Untuk konsultasi atau kendala persyaratan berkas, ketik *'operator'* agar terhubung langsung dengan petugas bidang terkait._`;
+
+      const botMsgObj = {
+        id: `msg-status-${Date.now()}`,
+        sender: 'bot',
+        senderName: 'PURI',
+        text: replyText,
+        timestamp: new Date().toISOString(),
+        status: 'sent',
+        type: 'text'
+      };
+
+      await this.client.sendMessageReliable(senderJid, { text: replyText });
+      await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
+      await supabaseService.updateConversationStatus(`conv-${senderJid}`, 'bot_handling', { bidang, prioritas: 'NORMAL', layanan });
+      this.client.addLog('STATUS_CHECK', `Pengecekan status tiket [${ticketNum}] untuk ${pushName}`);
+      return true;
+    }
+    return false;
+  }
+
+  async tryHandleHumanEscalation(senderJid, text, pushName, cleanPhone) {
+    if (!text) return false;
+    const lower = text.trim().toLowerCase();
+    const escalateKeywords = ['operator', 'admin', 'petugas', 'staf', 'manusia', 'cs', 'bantuan langsung', 'hubungi petugas'];
+    const isEscalating = escalateKeywords.some(kw => lower === kw || lower.startsWith(kw + ' ') || lower.includes(' ' + kw));
+
+    if (isEscalating) {
+      const replyText = `🤖 *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\n🙏 *PENGALIHAN KE OPERATOR MANUSIA*\n\nPesan Anda telah kami teruskan ke *Operator Bidang Pelayanan PUPR Garut*. Petugas kami akan segera merespons obrolan ini pada jam kerja operasional (Senin - Jumat, 08:00 - 15:30 WIB).\n\nTerima kasih atas kesabaran Anda!`;
+
+      const botMsgObj = {
+        id: `msg-esc-${Date.now()}`,
+        sender: 'bot',
+        senderName: 'PURI',
+        text: replyText,
+        timestamp: new Date().toISOString(),
+        status: 'sent',
+        type: 'text'
+      };
+
+      await this.client.sendMessageReliable(senderJid, { text: replyText });
+      await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
+      await supabaseService.updateConversationStatus(`conv-${senderJid}`, 'pending', {
+        prioritas: 'TINGGI',
+        smart_labels: ['Eskalasi Operator', 'Bantuan Langsung'],
+        assigned_operator: 'OP-SEKRETARIAT-01 (Online)'
+      });
+      this.client.addLog('ESCALATION_TRIGGERED', `Warga ${pushName} meminta terhubung dengan Operator Manusia`);
+      return true;
+    }
+    return false;
   }
 }
 

@@ -26,6 +26,7 @@ interface WhatsAppState {
   sendMedia: (conversationId: string, file: File, caption?: string) => Promise<void>;
   addInternalNote: (conversationId: string, note: string) => void;
   applyAiSuggestedReply: (conversationId: string) => void;
+  updateConversationStatus: (conversationId: string, status: 'bot_handling' | 'pending' | 'active' | 'resolved') => Promise<void>;
   connect: (mode?: 'qr' | 'pairing', phoneNumber?: string) => Promise<void>;
   confirmAuthentication: () => Promise<void>;
   regenerateBaileysQr: () => void;
@@ -101,7 +102,20 @@ export const useWhatsAppStore = create<WhatsAppState>((set, get) => ({
     // Send via API
     try {
       const apiResult = await WhatsAppService.sendMessageApi(conversationId, text, sender);
-      if (apiResult?.updatedConversation) {
+      if (apiResult?.error) {
+        console.warn('[PUPR WhatsApp] Pesan gagal terkirim:', apiResult.error);
+        set((state) => ({
+          conversations: state.conversations.map((c) => {
+            if (c.id === conversationId) {
+              return {
+                ...c,
+                messages: c.messages.map((m) => m.id === newMsg.id ? { ...m, status: 'failed', text: `${m.text} ⚠️ (${apiResult.error})` } : m),
+              };
+            }
+            return c;
+          }),
+        }));
+      } else if (apiResult?.updatedConversation) {
         set((state) => ({
           conversations: state.conversations.map((c) => {
             if (c.id === conversationId) {
@@ -189,6 +203,28 @@ export const useWhatsAppStore = create<WhatsAppState>((set, get) => ({
     const conv = get().conversations.find((c) => c.id === conversationId);
     if (conv && conv.aiSuggestedReply) {
       get().sendMessage(conversationId, conv.aiSuggestedReply.text, 'bot');
+    }
+  },
+
+  updateConversationStatus: async (conversationId, status) => {
+    set((state) => ({
+      conversations: state.conversations.map((c) => {
+        if (c.id === conversationId) {
+          return {
+            ...c,
+            status,
+          };
+        }
+        return c;
+      }),
+    }));
+    try {
+      await supabase
+        .from('wa_conversations')
+        .update({ status, updated_at: new Date().toISOString() })
+        .eq('id', conversationId);
+    } catch (err) {
+      console.warn('Gagal merubah status percakapan di Supabase:', err);
     }
   },
 

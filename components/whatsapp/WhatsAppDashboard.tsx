@@ -51,6 +51,73 @@ const PURI_SMART_LABELS = [
   { name: 'Kritis', color: 'bg-rose-600', badgeColor: 'bg-rose-600/20 text-rose-300 border-rose-600/40', bidang: 'Darurat' },
 ];
 
+interface QuickResponseTemplate {
+  id: string;
+  title: string;
+  badge: string;
+  color: string;
+  text: string;
+}
+
+const PUPR_QUICK_RESPONSES: QuickResponseTemplate[] = [
+  {
+    id: 'salam',
+    title: 'Salam & Perkenalan',
+    badge: 'Salam',
+    color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    text: `Halo Selamat Siang 🙏,\nPerkenalkan saya Petugas Layanan Dinas Pekerjaan Umum dan Penataan Ruang (PUPR) Kabupaten Garut. Ada yang dapat kami bantu terkait permohonan PBG/SLF, Tata Ruang, atau pelaporan infrastruktur?`
+  },
+  {
+    id: 'syarat-pbg',
+    title: 'Persyaratan PBG (SIMBG)',
+    badge: 'PBG',
+    color: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    text: `🏢 *Persyaratan Persetujuan Bangunan Gedung (PBG)*:\n\n1. Dokumen Identitas (KTP & NPWP Pemohon)\n2. Bukti Kepemilikan Tanah (SHM / HGB / Akta Jual Beli)\n3. Kesesuaian Tata Ruang (KRK / PKKPR)\n4. Dokumen Rencana Teknis (Gambar Arsitektur, Struktur, & Utiliti buatan perencana berlisensi)\n\n📌 Pendaftaran dilakukan secara online melalui portal resmi: https://simbg.pu.go.id`
+  },
+  {
+    id: 'syarat-slf',
+    title: 'Persyaratan SLF',
+    badge: 'SLF',
+    color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    text: `🏢 *Persyaratan Sertifikat Laik Fungsi (SLF)*:\n\n1. KTP & NPWP Pemohon\n2. Dokumen PBG / IMB terdahulu\n3. Laporan Pengkajian Teknis Bangunan Eksisting (oleh Pengkaji Teknis bersertifikat)\n4. As-Built Drawings & Bukti Pemeliharaan\n\n📌 Diajukan via portal resmi SIMBG: https://simbg.pu.go.id`
+  },
+  {
+    id: 'syarat-krk',
+    title: 'Persyaratan KRK / PKKPR',
+    badge: 'KRK',
+    color: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    text: `🗺️ *Persyaratan Keterangan Rencana Kabupaten (KRK) / PKKPR*:\n\n1. Surat Permohonan Resmi\n2. Fotokopi KTP & NPWP\n3. Fotokopi Bukti Kepemilikan Tanah (SHM/HGB) beserta koordinat bidang tanah (Polygon / SHP)\n4. Bukti bayar PBB tahun berjalan\n\n📌 Silakan berkonsultasi langsung dengan Bidang Penataan Ruang Dinas PUPR Garut atau melalui Mal Pelayanan Publik (MPP) Garut.`
+  },
+  {
+    id: 'alamat-jam',
+    title: 'Alamat & Jam Kerja',
+    badge: 'Info Kantor',
+    color: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    text: `🏛️ *Kantor Dinas PUPR Kabupaten Garut*\n\n• *Alamat:* Jl. Prof. KH. Cecep Syarifudin No. 117, Sukagalih, Kec. Tarogong Kidul, Kabupaten Garut, Jawa Barat 44151\n• *Jam Kerja:* Senin - Jumat (08:00 - 15:30 WIB)\n• *Website:* https://pupr.garutkab.go.id\n\nSilakan datang pada jam operasional kerja untuk konsultasi tatap muka.`
+  },
+  {
+    id: 'laporan-trc',
+    title: 'Konfirmasi Laporan TRC (Jalan/SDA)',
+    badge: 'TRC Darurat',
+    color: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    text: `🚨 *Laporan Pengaduan Diterima*\n\nTerima kasih atas laporan Anda. Tim Unit Reaksi Cepat (URC) Dinas PUPR Kabupaten Garut telah menerima detail lokasi kejadian dan sedang melakukan penjadwalan survei lapangan.\n\nKami akan menginformasikan perkembangan penanganan melalui obrolan ini.`
+  },
+  {
+    id: 'panduan-status',
+    title: 'Panduan Cek Status Tiket',
+    badge: 'Cek Status',
+    color: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+    text: `🔍 *Cara Pengecekan Status Permohonan / Tiket*\n\nAnda dapat mengecek progres permohonan kapan saja dengan mengetik:\n*CEK STATUS [Nomor Registrasi]*\n\nContoh:\n• *CEK STATUS PBG-2026-00123*\n• *CEK STATUS PURI-882190*\n\nSistem AI PURI akan otomatis menampilkan progres dokumen Anda secara real-time.`
+  },
+  {
+    id: 'penutupan-tiket',
+    title: 'Penutupan Tiket & Terima Kasih',
+    badge: 'Selesai',
+    color: 'bg-slate-400/20 text-slate-300 border-slate-400/30',
+    text: `🙏 *Sesi Layanan Selesai*\n\nTerima kasih telah menghubungi layanan Dinas PUPR Kabupaten Garut. Semoga informasi yang kami berikan bermanfaat.\n\nApabila ada kendala atau pertanyaan lain di kemudian hari, jangan ragu untuk menghubungi kami kembali. Selamat beraktivitas!`
+  }
+];
+
 export function WhatsAppDashboard() {
   const router = useRouter();
   const { 
@@ -71,7 +138,8 @@ export function WhatsAppDashboard() {
     setPairingMode,
     regenerateBaileysQr,
     confirmAuthentication,
-    disconnect
+    disconnect,
+    updateConversationStatus
   } = useWhatsApp();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -85,6 +153,7 @@ export function WhatsAppDashboard() {
   const [mobileTab, setMobileTab] = useState<'list' | 'chat' | 'info'>('chat');
   const [rightPanelTab, setRightPanelTab] = useState<'info' | 'qr' | 'logs'>('info');
   const [dashboardView, setDashboardView] = useState<'chats' | 'logs'>('chats');
+  const [showQuickTemplates, setShowQuickTemplates] = useState(false);
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId) || conversations[0];
 
@@ -592,124 +661,171 @@ export function WhatsAppDashboard() {
               {/* --------------------------------------------------------- */}
               {/* 1. EXECUTIVE WORKBENCH HEADER                             */}
               {/* --------------------------------------------------------- */}
-              <div className="p-3.5 border-b border-white/10 bg-[#0F172A]/90 backdrop-blur-md flex items-center justify-between shrink-0 shadow-sm">
-                <div className="flex items-center gap-3 min-w-0">
-                  <button
-                    onClick={() => setMobileTab('list')}
-                    className="xl:hidden p-1.5 bg-blue-600/30 hover:bg-blue-600/50 text-blue-300 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors shrink-0"
-                    title="Kembali ke Daftar Percakapan"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    <span className="hidden sm:inline">Daftar</span>
-                  </button>
+              {/* --------------------------------------------------------- */}
+              {/* 1. EXECUTIVE WORKBENCH HEADER (2-ROW SLEEK COMMAND BAR)   */}
+              {/* --------------------------------------------------------- */}
+              <div className="flex flex-col shrink-0 shadow-md">
+                {/* ROW 1: PRIMARY TOPBAR (Name, Ticket Tag, Location & Executive Action Toolbar) */}
+                <div className="px-4 py-2.5 border-b border-white/10 bg-[#0F172A]/95 backdrop-blur-md flex items-center justify-between gap-3">
+                  {/* Left: Avatar, Contact Name, Ticket # and Location */}
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <button
+                      onClick={() => setMobileTab('list')}
+                      className="xl:hidden p-1.5 bg-blue-600/30 hover:bg-blue-600/50 text-blue-300 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors shrink-0 cursor-pointer"
+                      title="Kembali ke Daftar Percakapan"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      <span className="hidden sm:inline">Daftar</span>
+                    </button>
 
-                  {/* Avatar with Live Status Ring */}
-                  <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-garut-blue to-blue-700 border border-blue-400/40 flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-md">
-                    <User className="w-5 h-5 text-blue-200" />
-                    <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#0F172A]" title="Online 24/7" />
-                  </div>
+                    {/* Avatar with Live Status Ring */}
+                    <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-garut-blue to-blue-700 border border-blue-400/40 flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-sm">
+                      <User className="w-4 h-4 text-blue-200" />
+                      <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-[#0F172A]" title="Online 24/7" />
+                    </div>
 
-                  {/* Contact & Active Ticket Metadata */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <h3 className="text-sm font-extrabold text-white tracking-wide truncate">
+                    {/* Name + Ticket Tag + Location (Inline Horizontal) */}
+                    <div className="flex items-center gap-2 min-w-0 flex-wrap">
+                      <h3 className="text-sm font-extrabold text-white tracking-wide truncate max-w-[180px] sm:max-w-[260px]">
                         {activeConversation.contactName}
                       </h3>
                       
-                      {/* Official PURI Ticket Badge */}
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                      {/* Official PURI Ticket Tag */}
+                      <span className="text-[10px] px-2 py-0.5 rounded-md font-mono font-bold bg-blue-500/15 text-blue-300 border border-blue-400/30 shrink-0">
                         #PURI-2024-0514
                       </span>
 
-                      {/* AI vs Operator Status Badge */}
-                      {activeConversation.status === 'pending' && (
-                        <Badge variant="warning" className="text-[9px] py-0 px-2 font-bold">🟡 Belum Dibalas</Badge>
-                      )}
-                      {activeConversation.status === 'active' && (
-                        <Badge variant="info" className="text-[9px] py-0 px-2 font-bold">🧑‍💻 Operator</Badge>
-                      )}
-                      {activeConversation.status === 'bot_handling' && (
-                        <Badge variant="success" className="text-[9px] py-0 px-2 font-bold">🤖 AI Menjawab</Badge>
-                      )}
-                      {activeConversation.status === 'resolved' && (
-                        <Badge variant="outline" className="text-[9px] py-0 px-2 text-slate-300 font-bold">🟢 Selesai</Badge>
-                      )}
-
-                      {/* 7 Bidang PUPR Official Badge */}
-                      {activeConversation.bidang && (
-                        <span className="text-[9px] px-2 py-0.5 rounded-full font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1">
-                          🏛️ {Array.isArray(activeConversation.bidang) ? activeConversation.bidang.join(' + ') : activeConversation.bidang}
-                        </span>
-                      )}
-
-                      {/* Realtime SLA Badge */}
-                      {activeConversation.prioritas && (
-                        <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold border flex items-center gap-1 ${
-                          activeConversation.prioritas === 'KRITIS'
-                            ? 'bg-rose-500/30 text-rose-300 border-rose-500 animate-pulse'
-                            : activeConversation.prioritas === 'TINGGI'
-                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                            : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                        }`}>
-                          {activeConversation.prioritas === 'KRITIS' ? '⚡' : '⏱️'} {activeConversation.prioritas} • SLA: &lt; 15m
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Sub-line Info */}
-                    <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-1 flex-wrap">
-                      <div className="flex items-center gap-1">
+                      {/* Location Badge */}
+                      <div className="hidden sm:flex items-center gap-1 text-[11px] text-slate-400 shrink-0">
                         <MapPin className="w-3 h-3 text-emerald-400" />
-                        <span className="text-slate-300">{activeConversation.location || 'Garut, Jawa Barat'}</span>
-                      </div>
-                      {activeConversation.layanan && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-slate-500">•</span>
-                          <span>Layanan: <strong className="text-sky-300">{activeConversation.layanan}</strong></span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-1">
-                        <span className="text-slate-500">•</span>
-                        <span>Operator: <strong className="text-emerald-300 font-semibold">{activeConversation.assignedOperator || 'BC-01 (Online)'}</strong></span>
+                        <span className="text-slate-300 truncate max-w-[140px]">{activeConversation.location || 'Garut, Jawa Barat'}</span>
                       </div>
                     </div>
                   </div>
+
+                  {/* Right: Executive Action Toolbar */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => setMobileTab('info')}
+                      className="xl:hidden px-2.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded-xl text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">AI Info</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextStatus = activeConversation.status === 'bot_handling' ? 'active' : 'bot_handling';
+                        updateConversationStatus(activeConversation.id, nextStatus);
+                      }}
+                      className={`px-2.5 py-1.5 border rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                        activeConversation.status === 'bot_handling'
+                          ? 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border-emerald-500/30'
+                          : 'bg-blue-500/15 hover:bg-blue-500/25 text-blue-300 border-blue-500/30'
+                      }`}
+                      title="Toggle antara penanganan Otomatis AI PURI dan Operator Manusia"
+                    >
+                      {activeConversation.status === 'bot_handling' ? '🤖 Bot Aktif (Ambil Alih)' : '🧑‍💻 Mode Manusia'}
+                    </button>
+                    <button 
+                      className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 hidden md:flex items-center gap-1.5 transition-colors cursor-pointer"
+                      title="Lihat Detail Kontak & Tiket"
+                    >
+                      Detail
+                    </button>
+                    <button 
+                      className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 flex items-center gap-1.5 transition-colors cursor-pointer"
+                      title="Catatan Internal Operasional"
+                    >
+                      Catatan
+                    </button>
+                    <button 
+                      className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 hidden lg:flex items-center gap-1.5 transition-colors cursor-pointer"
+                      title="Transfer ke Bidang PUPR Lain"
+                    >
+                      Transfer
+                    </button>
+                    <button 
+                      className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-[11px] font-bold flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+                      title="Selesaikan Tiket & Arsip"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Selesai</span>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Executive Action Toolbar */}
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <button
-                    onClick={() => setMobileTab('info')}
-                    className="xl:hidden px-2.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded-xl text-[11px] font-bold flex items-center gap-1 transition-colors"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">AI Info</span>
-                  </button>
-                  <button 
-                    className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 hidden md:flex items-center gap-1.5 transition-colors cursor-pointer"
-                    title="Lihat Detail Kontak & Tiket"
-                  >
-                    Detail
-                  </button>
-                  <button 
-                    className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 flex items-center gap-1.5 transition-colors cursor-pointer"
-                    title="Catatan Internal Operasional"
-                  >
-                    Catatan
-                  </button>
-                  <button 
-                    className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 hidden lg:flex items-center gap-1.5 transition-colors cursor-pointer"
-                    title="Transfer ke Bidang PUPR Lain"
-                  >
-                    Transfer
-                  </button>
-                  <button 
-                    className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-[11px] font-bold flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
-                    title="Selesaikan Tiket & Arsip"
-                  >
-                    <Check className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Selesai</span>
-                  </button>
+                {/* ROW 2: HORIZONTAL PURI 6-TIER SMART ROUTING STRIP */}
+                <div className="px-4 py-1.5 bg-[#0A101D]/90 border-b border-white/10 flex items-center justify-between gap-3 overflow-x-auto text-[11px] no-scrollbar">
+                  {/* Left: Routing Metadata Chips Inline */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {/* Status Mode Badge */}
+                    {activeConversation.status === 'pending' && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-md font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 whitespace-nowrap">
+                        🟡 Belum Dibalas
+                      </span>
+                    )}
+                    {activeConversation.status === 'active' && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-md font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 whitespace-nowrap">
+                        🧑‍💻 Operator
+                      </span>
+                    )}
+                    {activeConversation.status === 'bot_handling' && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-md font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
+                        🤖 AI Menjawab
+                      </span>
+                    )}
+                    {activeConversation.status === 'resolved' && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-md font-bold bg-slate-500/20 text-slate-300 border border-slate-500/30 whitespace-nowrap">
+                        🟢 Selesai
+                      </span>
+                    )}
+
+                    <span className="text-slate-600 font-bold">•</span>
+
+                    {/* 7 Bidang PUPR Official Badge */}
+                    <span className="text-[10px] px-2 py-0.5 rounded-md font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 whitespace-nowrap">
+                      🏛️ {Array.isArray(activeConversation.bidang) ? activeConversation.bidang.join(' + ') : (activeConversation.bidang || 'BINA_MARGA')}
+                    </span>
+
+                    <span className="text-slate-600 font-bold">•</span>
+
+                    {/* Realtime SLA Badge */}
+                    <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold border whitespace-nowrap ${
+                      activeConversation.prioritas === 'KRITIS'
+                        ? 'bg-rose-500/30 text-rose-300 border-rose-500 animate-pulse'
+                        : activeConversation.prioritas === 'TINGGI'
+                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                        : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                    }`}>
+                      {activeConversation.prioritas === 'KRITIS' ? '⚡' : '⏱️'} {activeConversation.prioritas || 'TINGGI'} • SLA: &lt; 15m
+                    </span>
+
+                    <span className="text-slate-600 font-bold">•</span>
+
+                    {/* Layanan */}
+                    <span className="text-slate-400 whitespace-nowrap">
+                      Layanan: <strong className="text-sky-300 font-semibold">{activeConversation.layanan || 'Jalan Kabupaten'}</strong>
+                    </span>
+
+                    <span className="text-slate-600 font-bold">•</span>
+
+                    {/* Operator Assignment */}
+                    <span className="text-slate-400 whitespace-nowrap">
+                      Operator: <strong className="text-emerald-400 font-semibold">{activeConversation.assignedOperator || 'BM-02 (Online)'}</strong>
+                    </span>
+                  </div>
+
+                  {/* Right: Smart Labels (if any) */}
+                  {activeConversation.smartLabels && activeConversation.smartLabels.length > 0 && (
+                    <div className="flex items-center gap-1 shrink-0">
+                      {activeConversation.smartLabels.map((lbl, idx) => (
+                        <span key={idx} className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-slate-300 border border-white/10 whitespace-nowrap font-mono">
+                          #{lbl}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -924,7 +1040,47 @@ export function WhatsAppDashboard() {
                 </div>
 
                 {replyMode === 'reply' ? (
-                  <form onSubmit={handleSendMessage} className="space-y-2.5">
+                  <form onSubmit={handleSendMessage} className="space-y-2.5 relative">
+                    {showQuickTemplates && (
+                      <div className="absolute bottom-full left-0 mb-2 w-full bg-[#131926] border border-purple-500/30 rounded-2xl p-3 shadow-2xl z-50 max-h-64 overflow-y-auto">
+                        <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+                          <span className="text-xs font-bold text-purple-300 flex items-center gap-1.5">
+                            ⚡ Balasan Cepat (Template Resmi PUPR Garut)
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setShowQuickTemplates(false)}
+                            className="text-slate-400 hover:text-white text-xs px-2 py-0.5 rounded bg-white/5 cursor-pointer"
+                          >
+                            Tutup
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {PUPR_QUICK_RESPONSES.map((tpl) => (
+                            <div
+                              key={tpl.id}
+                              onClick={() => {
+                                setMessageText(tpl.text);
+                                setShowQuickTemplates(false);
+                              }}
+                              className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/40 cursor-pointer transition-all flex flex-col gap-1 text-left group"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-semibold text-white group-hover:text-purple-300">
+                                  {tpl.title}
+                                </span>
+                                <span className={`text-[9px] px-1.5 py-0.5 rounded border font-mono ${tpl.color}`}>
+                                  {tpl.badge}
+                                </span>
+                              </div>
+                              <p className="text-[10px] text-slate-400 line-clamp-2 leading-relaxed">
+                                {tpl.text}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     <textarea
                       value={messageText}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessageText(e.target.value)}
@@ -955,7 +1111,8 @@ export function WhatsAppDashboard() {
                         </button>
                         <button 
                           type="button" 
-                          className="p-1.5 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/30 transition-colors flex items-center gap-1 text-[11px] font-semibold"
+                          onClick={() => setShowQuickTemplates(!showQuickTemplates)}
+                          className="p-1.5 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/30 transition-colors flex items-center gap-1 text-[11px] font-semibold cursor-pointer"
                           title="Gunakan Template Cepat"
                         >
                           ⚡ Template

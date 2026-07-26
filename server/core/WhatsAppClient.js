@@ -129,7 +129,8 @@ class WhatsAppClient {
         markOnlineOnConnect: true,
         syncFullHistory: false,
         connectTimeoutMs: 60000,
-        keepAliveIntervalMs: 25000,
+        defaultQueryTimeoutMs: 60000,
+        keepAliveIntervalMs: 15000, // Reduced from 25000 to prevent 'connection closed' by NAT/firewalls
         retryRequestDelayMs: 2000,
       });
 
@@ -273,6 +274,96 @@ class WhatsAppClient {
     this.userInfo = null;
     this.clearSessionAuth();
     this.addLog('LOGOUT', 'Sesi WhatsApp berhasil diputuskan & dilogout');
+  }
+
+  isSocketOpen() {
+    if (!this.waSocket) return false;
+    if (this.connectionState !== 'connected') return false;
+    try {
+      const ws = this.waSocket.ws;
+      if (ws) {
+        if (typeof ws.isOpen === 'boolean' && !ws.isOpen) return false;
+        if (ws.readyState !== undefined && ws.readyState !== 1) return false;
+      }
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  async ensureConnected(timeoutMs = 15000) {
+    if (this.isSocketOpen()) {
+      return true;
+    }
+
+    console.log('[PUPR Baileys] Sesi tidak dalam keadaan tersambung aktif (ws closed/disconnected). Memastikan koneksi...');
+    this.addLog('ENSURE_CONNECTED', 'Sesi tidak aktif saat pengiriman pesan. Menunggu / memulai koneksi ulang...', 'warn');
+
+    if (!this.isReconnecting && this.connectionState === 'disconnected') {
+      try {
+        await this.init(null);
+      } catch (err) {
+        console.error('[PUPR Baileys] Gagal inisialisasi koneksi:', err.message);
+      }
+    }
+
+    const start = Date.now();
+    while (Date.now() - start < timeoutMs) {
+      if (this.isSocketOpen()) {
+        console.log('[PUPR Baileys] Koneksi socket siap!');
+        return true;
+      }
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    console.warn('[PUPR Baileys] ensureConnected timeout setelah ' + timeoutMs + 'ms');
+    return false;
+  }
+
+  async sendMessageReliable(targetJid, content, options = {}) {
+    const maxRetries = options.maxRetries || 3;
+    const delayMs = options.delayMs || 1500;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        if (!this.isSocketOpen()) {
+          await this.ensureConnected(12000);
+        }
+
+        if (!this.waSocket) {
+          throw new Error('whatsappClient.waSocket tidak tersedia (belum diinisialisasi).');
+        }
+
+        const result = await this.waSocket.sendMessage(targetJid, content);
+        return result;
+      } catch (err) {
+        const errMsg = err.message || String(err);
+        const isConnectionError = 
+          errMsg.includes('connection closed') ||
+          errMsg.includes('closed') ||
+          errMsg.includes('timeout') ||
+          errMsg.includes('timed out') ||
+          errMsg.includes('not connected') ||
+          errMsg.includes('503') ||
+          errMsg.includes('socket');
+
+        console.warn(`[PUPR Baileys] Gagal mengirim pesan ke ${targetJid} (Percobaan #${attempt}/${maxRetries}): ${errMsg}`);
+
+        if (attempt < maxRetries && isConnectionError) {
+          this.addLog('SEND_RETRY', `Mengirim ulang pesan ke ${targetJid} (percobaan #${attempt}/${maxRetries}) setelah error: ${errMsg}`, 'warn');
+          await new Promise(r => setTimeout(r, delayMs * attempt));
+          await this.ensureConnected(10000);
+          continue;
+        }
+
+        if (attempt === maxRetries) {
+          this.addLog('SEND_FAILED', `Gagal mengirim pesan ke ${targetJid} setelah ${maxRetries}x percobaan: ${errMsg}`, 'error');
+          throw new Error(`Gagal mengirim pesan (Baileys error: ${errMsg}) setelah ${maxRetries}x percobaan otomatis.`);
+        }
+
+        throw err;
+      }
+    }
   }
 
   getSocketStatus() {

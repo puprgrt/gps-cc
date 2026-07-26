@@ -22,7 +22,11 @@ CREATE TABLE IF NOT EXISTS wa_conversations (
   unread_count INT DEFAULT 0,
   status VARCHAR(30) DEFAULT 'pending', -- pending, active, bot_handling, resolved
   category VARCHAR(50) DEFAULT 'UMUM',
-  assigned_operator UUID, -- Referensi ke tabel Users jika ada
+  bidang VARCHAR(100) DEFAULT 'Sekretariat', -- 7 Bidang Resmi PUPR Garut
+  prioritas VARCHAR(30) DEFAULT 'NORMAL', -- NORMAL, TINGGI, KRITIS
+  layanan VARCHAR(150) DEFAULT 'Informasi Umum',
+  smart_labels TEXT[] DEFAULT '{}',
+  assigned_operator VARCHAR(100), -- ID/Kode Operator bidang
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

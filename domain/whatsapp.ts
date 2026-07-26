@@ -19,7 +19,7 @@ export interface WhatsAppMessage {
   senderName?: string;
   text: string;
   timestamp: Date;
-  status?: 'sent' | 'delivered' | 'read';
+  status?: 'sent' | 'delivered' | 'read' | 'failed';
   type?: 'text' | 'image' | 'document' | 'video' | 'audio' | 'location' | 'contact' | 'poll' | 'unknown';
   metadata?: {
     fileName?: string;

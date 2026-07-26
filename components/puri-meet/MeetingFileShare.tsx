@@ -22,7 +22,7 @@ export function MeetingFileShare({ meetingId, userName, userRole, className }: M
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchFiles = async () => {
+  const fetchFiles = React.useCallback(async () => {
     try {
       const data = await PuriMeetFileService.fetchFiles(meetingId);
       setFiles(data);
@@ -32,11 +32,14 @@ export function MeetingFileShare({ meetingId, userName, userRole, className }: M
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [meetingId]);
 
   useEffect(() => {
-    fetchFiles();
-  }, [meetingId]);
+    const timer = setTimeout(() => {
+      void fetchFiles();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [fetchFiles]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];

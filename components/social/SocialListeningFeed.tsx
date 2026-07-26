@@ -1,20 +1,63 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Twitter, Instagram, Facebook, RefreshCcw, TrendingUp, ThumbsUp, MessageCircle, AlertCircle } from 'lucide-react';
+import {
+  Twitter,
+  Instagram,
+  Facebook,
+  MessageCircle,
+  Youtube,
+  Globe,
+  Video,
+  MapPin,
+  RefreshCcw,
+  TrendingUp,
+  AlertTriangle,
+  Send,
+  Building2,
+  Hash,
+  Mail,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'motion/react';
 
+
 interface Mention {
-  id: number;
-  platform: string;
+  id: string | number;
   author: string;
+  username: string;
   content: string;
-  sentiment: 'positive' | 'negative' | 'neutral';
-  topic: string;
-  timestamp: string;
+  platform: 'twitter' | 'instagram' | 'facebook' | 'youtube' | 'tiktok' | 'whatsapp' | 'telegram' | 'threads' | 'google_business' | 'website' | 'portal_pengaduan' | 'email';
+  time: string;
+  sentiment: 'positive' | 'neutral' | 'negative' | 'urgent';
+  bidang?: string;
+  smart_label?: string;
+  avatar?: string;
+  location?: string | {
+    kecamatan?: string;
+    desa?: string;
+  };
+  kecamatan?: string;
+  metrics?: {
+    likes: number;
+    retweets: number;
+  };
   likes: number;
   retweets: number;
+  timestamp: string;
+  isVerified?: boolean;
+  isInfluencer?: boolean;
+  sentimentRaw?: string;
+  emotion?: string;
+  topic: string;
+  intent?: string;
+  priority?: string;
+  status?: string;
+  location_data?: {
+    kecamatan?: string;
+    desa?: string;
+  };
 }
 
 interface TrendingTopic {
@@ -26,138 +69,258 @@ export function SocialListeningFeed() {
   const [mentions, setMentions] = useState<Mention[]>([]);
   const [trending, setTrending] = useState<TrendingTopic[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedChannel, setSelectedChannel] = useState<string>('all');
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
-  
+
   const fetchMentions = async () => {
     try {
       const res = await fetch('/api/social-listening');
       const data = await res.json();
-      setMentions(data.mentions);
-      setTrending(data.trending);
+      if (data.mentions) {
+        setMentions(data.mentions);
+      }
+      if (data.trending) {
+        setTrending(data.trending);
+      }
       setLastUpdated(new Date());
     } catch (error) {
-      console.error("Failed to fetch social mentions:", error);
+      console.error('Failed to fetch social mentions:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    const init = async () => {
-      await fetchMentions();
-      interval = setInterval(fetchMentions, 5000);
+    const timer = setTimeout(() => {
+      void fetchMentions();
+    }, 0);
+
+    const channel = supabase
+      .channel('public:psic_mentions_feed')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'psic_conversations',
+        },
+        () => {
+          void fetchMentions();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      clearTimeout(timer);
+      supabase.removeChannel(channel);
     };
-    init();
-    return () => clearInterval(interval);
   }, []);
 
   const getPlatformIcon = (platform: string) => {
-    switch (platform) {
-      case 'twitter': return <Twitter className="w-4 h-4 text-sky-400" />;
-      case 'instagram': return <Instagram className="w-4 h-4 text-pink-500" />;
-      case 'facebook': return <Facebook className="w-4 h-4 text-blue-600" />;
-      default: return <MessageCircle className="w-4 h-4 text-slate-400" />;
+    switch (platform.toLowerCase()) {
+      case 'twitter':
+      case 'x':
+        return <Twitter className="w-4 h-4 text-sky-400" />;
+      case 'instagram':
+        return <Instagram className="w-4 h-4 text-pink-500" />;
+      case 'facebook':
+        return <Facebook className="w-4 h-4 text-blue-600" />;
+      case 'youtube':
+        return <Youtube className="w-4 h-4 text-red-500" />;
+      case 'tiktok':
+        return <Video className="w-4 h-4 text-cyan-400" />;
+      case 'whatsapp':
+        return <MessageCircle className="w-4 h-4 text-emerald-400" />;
+      case 'telegram':
+        return <Send className="w-4 h-4 text-sky-400" />;
+      case 'threads':
+        return <Hash className="w-4 h-4 text-slate-300" />;
+      case 'google_business':
+        return <MapPin className="w-4 h-4 text-amber-400" />;
+      case 'email':
+        return <Mail className="w-4 h-4 text-violet-400" />;
+      case 'website':
+      case 'portal_pengaduan':
+      default:
+        return <Globe className="w-4 h-4 text-teal-400" />;
     }
   };
 
-  const getSentimentBadge = (sentiment: string) => {
-    switch (sentiment) {
-      case 'positive': return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">Positif</Badge>;
-      case 'negative': return <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/20">Negatif</Badge>;
-      default: return <Badge variant="outline" className="bg-slate-500/10 text-slate-400 border-slate-500/20">Netral</Badge>;
+  const getSentimentBadge = (sentiment?: string) => {
+    const s = sentiment?.toLowerCase() || 'neutral';
+    if (s.includes('positi')) {
+      return (
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+          Positif
+        </span>
+      );
     }
+    if (s.includes('negati') || s === 'urgent') {
+      return (
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-950 text-red-400 border border-red-800">
+          Negatif
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-800 text-slate-400 border border-slate-700">
+        Netral
+      </span>
+    );
   };
 
-  const getTimeAgo = (dateString: string) => {
-    const seconds = Math.floor((new Date().getTime() - new Date(dateString).getTime()) / 1000);
-    if (seconds < 60) return `${seconds}s ago`;
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
-    const hours = Math.floor(minutes / 60);
-    return `${hours}h ago`;
+  const getBidangBadge = (bidang?: string) => {
+    if (!bidang) return null;
+    const label = bidang.replace(/_/g, ' ');
+    return (
+      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-950/80 text-blue-300 border border-blue-700/50">
+        <Building2 className="w-3 h-3 mr-1 text-blue-400" />
+        {label}
+      </span>
+    );
   };
+
+  const filteredMentions =
+    selectedChannel === 'all'
+      ? mentions
+      : mentions.filter((m) => m.platform.toLowerCase() === selectedChannel.toLowerCase());
+
+  const channels = [
+    { id: 'all', label: 'Semua Kanal' },
+    { id: 'whatsapp', label: 'WhatsApp' },
+    { id: 'instagram', label: 'Instagram' },
+    { id: 'facebook', label: 'Facebook' },
+    { id: 'tiktok', label: 'TikTok' },
+    { id: 'twitter', label: 'X (Twitter)' },
+  ];
 
   return (
-    <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden flex flex-col h-[600px]">
-      <div className="p-4 border-b border-slate-700/50 flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="font-semibold text-white flex items-center gap-2">
-              <RefreshCcw className={`w-4 h-4 ${loading ? 'animate-spin text-blue-400' : 'text-slate-400'}`} /> 
-              Real-time Social Feed
-            </h2>
-            <p className="text-xs text-slate-400 mt-1">
-              Mentions PUPR Garut, Jalan, PBG &bull; Last updated: {lastUpdated.toLocaleTimeString()}
-            </p>
-          </div>
-          <Badge className="bg-blue-600 text-white hover:bg-blue-500">Live</Badge>
+    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+        <div>
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <span>Live Omnichannel Social Feed</span>
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              Realtime PSIC
+            </span>
+          </h2>
+          <p className="text-xs text-slate-400">
+            Monitoring otomatis interaksi warga Garut dari 11 kanal komunikasi
+          </p>
         </div>
-        
-        {/* Trending Topics */}
-        <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          <TrendingUp className="w-4 h-4 text-blue-400 shrink-0" />
-          {trending.map((topic, i) => (
-            <div key={i} className="flex items-center gap-2 bg-slate-900/50 border border-slate-700/50 rounded-full px-3 py-1 whitespace-nowrap">
-              <span className="text-xs font-medium text-slate-200">{topic.name}</span>
-              <span className="text-[10px] bg-slate-700 text-slate-300 px-1.5 rounded-full">{topic.count}</span>
-            </div>
-          ))}
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={fetchMentions}
+            className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+            title="Refresh feed"
+          >
+            <RefreshCcw className="w-4 h-4" />
+          </button>
         </div>
       </div>
-      
-      <div className="overflow-y-auto flex-1 p-2 space-y-3">
-        <AnimatePresence>
-          {mentions.map((mention) => (
-            <motion.div 
-              key={mention.id}
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="bg-slate-900/40 border border-slate-700/50 p-4 rounded-xl hover:bg-slate-800/50 transition-colors"
-            >
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-2">
-                  <div className="bg-slate-800 p-1.5 rounded-full">
-                    {getPlatformIcon(mention.platform)}
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-slate-200">{mention.author}</h3>
-                    <div className="text-[10px] text-slate-500">{getTimeAgo(mention.timestamp)}</div>
-                  </div>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <span className="text-xs font-semibold text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
-                    {mention.topic}
-                  </span>
-                  {getSentimentBadge(mention.sentiment)}
-                </div>
-              </div>
-              <p className="text-sm text-slate-300 leading-relaxed mt-3">
-                {mention.content}
-              </p>
-              <div className="flex items-center gap-4 mt-4 pt-3 border-t border-slate-800/50 text-xs text-slate-500">
-                <div className="flex items-center gap-1.5 hover:text-blue-400 transition-colors cursor-pointer">
-                  <ThumbsUp className="w-3.5 h-3.5" /> {mention.likes}
-                </div>
-                <div className="flex items-center gap-1.5 hover:text-emerald-400 transition-colors cursor-pointer">
-                  <RefreshCcw className="w-3.5 h-3.5" /> {mention.retweets}
-                </div>
-                {mention.sentiment === 'negative' && (
-                   <div className="flex items-center gap-1.5 text-amber-500 ml-auto bg-amber-500/10 px-2 py-1 rounded cursor-pointer hover:bg-amber-500/20 transition-colors">
-                     <AlertCircle className="w-3.5 h-3.5" /> Buat Tiket Aduan
-                   </div>
-                )}
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        
-        {mentions.length === 0 && !loading && (
-          <div className="h-full flex items-center justify-center text-slate-500 text-sm">
-            Belum ada mention terbaru
+
+      {/* Channel Pill Filters */}
+      <div className="flex flex-wrap items-center gap-1.5 mb-5 pb-3 border-b border-slate-800/80">
+        {channels.map((chan) => (
+          <button
+            key={chan.id}
+            onClick={() => setSelectedChannel(chan.id)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              selectedChannel === chan.id
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+            }`}
+          >
+            {chan.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Mentions Stream */}
+      <div className="space-y-3 max-h-[580px] overflow-y-auto pr-1">
+        {loading ? (
+          <div className="text-center py-12 text-slate-400">
+            Memuat aliran data PSIC Omnichannel...
           </div>
+        ) : filteredMentions.length === 0 ? (
+          <div className="text-center py-12 text-slate-500">
+            Belum ada interaksi pada kanal yang dipilih.
+          </div>
+        ) : (
+          <AnimatePresence>
+            {filteredMentions.map((item) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="bg-slate-800/40 hover:bg-slate-800/70 border border-slate-700/60 rounded-xl p-4 transition-all"
+              >
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-lg bg-slate-900 border border-slate-700">
+                      {getPlatformIcon(item.platform)}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-semibold text-white">
+                          {item.author}
+                        </span>
+                        {item.isVerified && (
+                          <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded font-bold">
+                            ✔ Verified
+                          </span>
+                        )}
+                        {item.isInfluencer && (
+                          <span className="text-[10px] bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded font-bold">
+                            ★ Influencer
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs text-slate-400 uppercase tracking-wider font-mono">
+                        {item.platform} •{' '}
+                        {new Date(item.timestamp).toLocaleTimeString('id-ID', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    {getBidangBadge(item.bidang)}
+                    {getSentimentBadge(item.sentimentRaw || item.sentiment)}
+                  </div>
+                </div>
+
+                <p className="text-sm text-slate-200 mb-3 leading-relaxed">
+                  {item.content}
+                </p>
+
+                <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-700/40">
+                  <div className="flex items-center gap-3">
+                    {(typeof item.location === 'object' ? item.location.kecamatan : (item.kecamatan || item.location)) && (
+                      <span className="inline-flex items-center text-slate-300">
+                        <MapPin className="w-3.5 h-3.5 mr-1 text-slate-400" />
+                        {typeof item.location === 'object' ? `Kec. ${item.location.kecamatan}` : (item.kecamatan ? `Kec. ${item.kecamatan}` : item.location)}
+                      </span>
+                    )}
+                    {item.emotion && (
+                      <span className="text-slate-400">
+                        Emosi: <strong className="text-slate-300">{item.emotion}</strong>
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <span>♥ {item.likes}</span>
+                    <span>↻ {item.retweets}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
       </div>
     </div>

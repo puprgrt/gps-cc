@@ -22,7 +22,7 @@ class CallHandler {
           // Send an automatic polite reply
           const replyText = `_🤖 Sistem Otomatis_\n\nMohon maaf, layanan WhatsApp Center PUPR Garut saat ini tidak dapat menerima Panggilan ${callType}. \n\nSilakan sampaikan pertanyaan atau keluhan Anda melalui pesan teks/media (gambar/dokumen). Admin atau Asisten Virtual kami akan segera merespons Anda. Terima kasih.`;
           
-          await this.client.waSocket.sendMessage(callerJid, { text: replyText });
+          await this.client.sendMessageReliable(callerJid, { text: replyText });
           
           // Save the rejection message as a bot message in DB
           const botMsgObj = {

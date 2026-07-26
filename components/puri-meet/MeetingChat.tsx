@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Send, Loader2 } from 'lucide-react';
 import { PuriMeetChatService } from '@/services/puriMeetChatService';
 import type { ChatMessage } from '@/domain/puriMeetChat';
@@ -10,7 +10,7 @@ import type { ParticipantRole } from '@/domain/puriMeet';
 interface MeetingChatProps {
   meetingId: string;
   userName: string;
-  userRole: ParticipantRole;
+  userRole?: ParticipantRole;
   className?: string;
 }
 
@@ -20,6 +20,12 @@ export function MeetingChat({ meetingId, userName, userRole, className }: Meetin
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = useCallback(() => {
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -53,13 +59,7 @@ export function MeetingChat({ meetingId, userName, userRole, className }: Meetin
         subscription.unsubscribe();
       }
     };
-  }, [meetingId]);
-
-  const scrollToBottom = () => {
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
+  }, [meetingId, scrollToBottom]);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -70,7 +70,7 @@ export function MeetingChat({ meetingId, userName, userRole, className }: Meetin
       await PuriMeetChatService.sendMessage({
         meetingId,
         senderName: userName,
-        senderRole: userRole,
+        senderRole: userRole || 'PARTICIPANT',
         message: newMessage.trim(),
       });
       setNewMessage('');

@@ -1,94 +1,142 @@
 'use client';
 
-import React from 'react';
-import { BarChart3, TrendingUp, PieChart, Map, Users, ShieldCheck } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import {
+  BarChart3,
+  TrendingUp,
+  MapPin,
+  Users,
+  ShieldCheck,
+  Building2,
+  Share2,
+} from 'lucide-react';
+import type { PSICReputationIndex } from '@/domain/psic';
 
 export function SocialAnalytics() {
+  const [reputation, setReputation] = useState<PSICReputationIndex | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadData() {
+      try {
+        const res = await fetch('/api/psic/omnichannel');
+        const json = await res.json();
+        if (mounted && json?.data?.reputation) {
+          setReputation(json.data.reputation);
+        }
+      } catch {
+        // Offline / fallback silently
+      }
+    }
+    loadData();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const pos = reputation?.positivePercentage ?? 78.0;
+  const neu = reputation?.neutralPercentage ?? 14.0;
+  const neg = reputation?.negativePercentage ?? 8.0;
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-      
-      {/* Top Topics */}
-      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-blue-400" />
-          Top Kategori & Topik
+    <div className="space-y-4">
+      {/* Top 7 Bidang PUPR Distribution */}
+      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-sm">
+        <h3 className="text-xs font-bold text-white mb-3 flex items-center gap-1.5 uppercase tracking-wider">
+          <Building2 className="w-4 h-4 text-blue-400" />
+          <span>Distribusi Aduan 7 Bidang PUPR</span>
         </h3>
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {[
-            { topic: 'PBG (Persetujuan Bangunan Gedung)', percent: 35 },
-            { topic: 'Jalan Rusak & Infrastruktur', percent: 25 },
-            { topic: 'SLF (Sertifikat Laik Fungsi)', percent: 15 },
-            { topic: 'KRK (Keterangan Rencana Kabupaten)', percent: 12 },
-            { topic: 'Lainnya', percent: 13 },
+            { topic: 'Bina Marga (Jalan & Jembatan)', percent: 38, color: 'bg-blue-500' },
+            { topic: 'SDA (Irigasi, Drainase, Banjir)', percent: 24, color: 'bg-cyan-500' },
+            { topic: 'Bangunan Gedung (PBG & SLF)', percent: 18, color: 'bg-indigo-500' },
+            { topic: 'Penataan Ruang (KRK & Tata Ruang)', percent: 10, color: 'bg-purple-500' },
+            { topic: 'AMPL & Jasa Konstruksi / Sekretariat', percent: 10, color: 'bg-emerald-500' },
           ].map((item, i) => (
             <div key={i}>
-              <div className="flex justify-between text-xs text-slate-300 mb-1">
-                <span>{item.topic}</span>
-                <span>{item.percent}%</span>
+              <div className="flex justify-between text-[11px] text-slate-300 mb-1">
+                <span className="font-medium">{item.topic}</span>
+                <span className="font-bold text-slate-200">{item.percent}%</span>
               </div>
-              <div className="w-full bg-slate-700 rounded-full h-1.5">
-                <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${item.percent}%` }}></div>
+              <div className="w-full bg-slate-800 rounded-full h-1.5">
+                <div
+                  className={`${item.color} h-1.5 rounded-full transition-all duration-500`}
+                  style={{ width: `${item.percent}%` }}
+                ></div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Trend & Sentiment */}
-      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+      {/* Sentiment & Reputation Health */}
+      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-sm">
+        <h3 className="text-xs font-bold text-white mb-3 flex items-center gap-1.5 uppercase tracking-wider">
           <TrendingUp className="w-4 h-4 text-emerald-400" />
-          Sentimen Publik
+          <span>Sentimen & Reputasi Digital</span>
         </h3>
-        <div className="flex items-center justify-center h-[120px] gap-6">
-          <div className="relative w-24 h-24 rounded-full border-4 border-slate-700 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full border-4 border-emerald-500" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 50%)' }}></div>
-            <div className="text-xl font-bold text-white">65%</div>
+        <div className="flex items-center justify-between gap-4 py-2">
+          <div className="relative w-20 h-20 rounded-full border-4 border-slate-800 flex flex-col items-center justify-center shrink-0">
+            <span className="text-sm font-extrabold text-emerald-400">{pos}%</span>
+            <span className="text-[9px] text-slate-400 font-medium uppercase">Positif</span>
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <span className="w-3 h-3 rounded-full bg-emerald-500"></span> Positif (65%)
+          <div className="space-y-1.5 flex-1 text-xs">
+            <div className="flex items-center justify-between text-slate-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Positif
+              </span>
+              <span className="font-bold">{pos}%</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <span className="w-3 h-3 rounded-full bg-slate-400"></span> Netral (25%)
+            <div className="flex items-center justify-between text-slate-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Netral
+              </span>
+              <span className="font-bold">{neu}%</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <span className="w-3 h-3 rounded-full bg-red-400"></span> Negatif (10%)
+            <div className="flex items-center justify-between text-slate-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span> Negatif
+              </span>
+              <span className="font-bold">{neg}%</span>
             </div>
           </div>
         </div>
-        <p className="text-xs text-slate-400 mt-4 text-center">Trend positif meningkat 12% dibandingkan bulan lalu.</p>
+        <p className="text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-800 text-center leading-normal">
+          Indeks Reputasi Dinas PUPR Garut berada di zona <strong className="text-emerald-400">Sangat Baik ({reputation?.score ?? 88.5}/100)</strong>.
+        </p>
       </div>
 
-      {/* Heatmap / Demographics */}
-      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-          <Map className="w-4 h-4 text-amber-400" />
-          Distribusi Wilayah Keluhan
+      {/* 11 Channel Volume & Top Wilayah */}
+      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-sm">
+        <h3 className="text-xs font-bold text-white mb-2 flex items-center justify-between uppercase tracking-wider">
+          <span className="flex items-center gap-1.5">
+            <Share2 className="w-4 h-4 text-purple-400" />
+            <span>Top Kanal & Wilayah</span>
+          </span>
+          <span className="text-[10px] text-slate-400 font-normal">11 Kanal Aktif</span>
         </h3>
-        <div className="space-y-3">
-          {[
-            { region: 'Kecamatan Tarogong Kidul', count: 145, trend: 'up' },
-            { region: 'Kecamatan Garut Kota', count: 98, trend: 'down' },
-            { region: 'Kecamatan Tarogong Kaler', count: 76, trend: 'up' },
-            { region: 'Kecamatan Karangpawitan', count: 64, trend: 'up' },
-            { region: 'Kecamatan Banyuresmi', count: 42, trend: 'down' },
-          ].map((item, i) => (
-            <div key={i} className="flex justify-between items-center text-xs">
-              <span className="text-slate-300">{item.region}</span>
-              <div className="flex items-center gap-2">
-                <span className="text-white font-medium">{item.count}</span>
-                {item.trend === 'up' ? (
-                  <TrendingUp className="w-3 h-3 text-red-400" />
-                ) : (
-                  <TrendingUp className="w-3 h-3 text-emerald-400 rotate-180" />
-                )}
-              </div>
+
+        <div className="grid grid-cols-2 gap-2 text-xs pt-2">
+          <div className="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700/50">
+            <span className="text-[10px] text-slate-400 block mb-1">Kanal Teraktif</span>
+            <div className="font-bold text-white flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span>WhatsApp (42%)</span>
             </div>
-          ))}
+            <span className="text-[10px] text-slate-300 block mt-0.5">IG (28%) • FB (15%)</span>
+          </div>
+
+          <div className="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700/50">
+            <span className="text-[10px] text-slate-400 block mb-1">Wilayah Terbanyak</span>
+            <div className="font-bold text-white flex items-center gap-1.5">
+              <MapPin className="w-3 h-3 text-red-400" />
+              <span>Tarogong Kidul</span>
+            </div>
+            <span className="text-[10px] text-slate-300 block mt-0.5">68 Aduan Aktif</span>
+          </div>
         </div>
       </div>
-
     </div>
   );
 }

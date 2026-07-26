@@ -42,8 +42,9 @@ exports.reconnectSocket = async (req, res) => {
 exports.handleSendMessage = async (req, res) => {
   try {
     const { to, text, sender } = req.body;
-    if (!whatsappClient.waSocket || whatsappClient.connectionState !== 'connected') {
-      return res.status(400).json({ error: 'WhatsApp belum terhubung.' });
+    const isConnected = await whatsappClient.ensureConnected(12000);
+    if (!isConnected) {
+      return res.status(400).json({ error: 'WhatsApp belum terhubung atau sesi terputus. Silakan Scan QR Code / coba beberapa saat lagi.' });
     }
 
     if (!to || !text) {
@@ -53,7 +54,7 @@ exports.handleSendMessage = async (req, res) => {
     let targetJid = to.includes('@s.whatsapp.net') || to.includes('@g.us') ? to : `${to}@s.whatsapp.net`;
     const cleanPhone = '+' + targetJid.split('@')[0];
 
-    const result = await whatsappClient.waSocket.sendMessage(targetJid, { text });
+    const result = await whatsappClient.sendMessageReliable(targetJid, { text });
     
     // Simpan ke database
     const botMsgObj = {
@@ -72,7 +73,10 @@ exports.handleSendMessage = async (req, res) => {
     res.json({ message: 'Pesan Teks berhasil dikirim.', data: result, saved: botMsgObj });
   } catch (error) {
     console.error('Error Send Message:', error);
-    res.status(500).json({ error: error.message });
+    const errMsg = error.message || String(error);
+    const isConnectionError = errMsg.includes('connection closed') || errMsg.includes('closed') || errMsg.includes('timeout') || errMsg.includes('not connected');
+    const statusCode = isConnectionError ? 503 : 500;
+    res.status(statusCode).json({ error: errMsg, connectionError: isConnectionError });
   }
 };
 
@@ -81,8 +85,9 @@ exports.handleSendMedia = async (req, res) => {
   try {
     const { to, base64Data, caption, mimetype, fileName, type } = req.body;
     
-    if (!whatsappClient.waSocket || whatsappClient.connectionState !== 'connected') {
-      return res.status(400).json({ error: 'WhatsApp belum terhubung.' });
+    const isConnected = await whatsappClient.ensureConnected(12000);
+    if (!isConnected) {
+      return res.status(400).json({ error: 'WhatsApp belum terhubung atau sesi terputus.' });
     }
 
     let targetJid = to.includes('@s.whatsapp.net') || to.includes('@g.us') ? to : `${to}@s.whatsapp.net`;
@@ -98,7 +103,7 @@ exports.handleSendMedia = async (req, res) => {
       return res.status(400).json({ error: 'Tipe media tidak didukung' });
     }
 
-    const result = await whatsappClient.waSocket.sendMessage(targetJid, msgOptions);
+    const result = await whatsappClient.sendMessageReliable(targetJid, msgOptions);
     
     const botMsgObj = {
       id: result?.key?.id || `msg-${Date.now()}`,
@@ -114,7 +119,11 @@ exports.handleSendMedia = async (req, res) => {
     await supabaseService.saveMessage(`conv-${targetJid}`, botMsgObj, { name: cleanPhone, phoneNumber: cleanPhone });
     res.json({ message: 'Pesan Media berhasil dikirim.', data: result });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error Send Media:', error);
+    const errMsg = error.message || String(error);
+    const isConnectionError = errMsg.includes('connection closed') || errMsg.includes('closed') || errMsg.includes('timeout') || errMsg.includes('not connected');
+    const statusCode = isConnectionError ? 503 : 500;
+    res.status(statusCode).json({ error: errMsg, connectionError: isConnectionError });
   }
 };
 

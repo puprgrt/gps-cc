@@ -357,3 +357,34 @@ interface AuditLog {
 | `pengaduan` | `prioritas`, `sla.isBreached` | ASC, ASC | Eskalasi prioritas |
 | `social_mentions` | `platform`, `sentiment`, `capturedAt` | ASC, ASC, DESC | Social filter |
 | `audit_logs` | `userId`, `timestamp` | ASC, DESC | User activity |
+
+---
+
+## 🌐 Skema Database PSIC Omnichannel (Supabase PostgreSQL)
+
+Untuk mendukung **PURI Social Intelligence Center (PSIC)** sebagai *AI Omnichannel Social Media Command Center*, sistem menggunakan tabel-tabel Supabase PostgreSQL berikut (file SQL tersedia di [docs/supabase_psic_omnichannel.sql](./supabase_psic_omnichannel.sql)):
+
+### 1. `psic_channels` (Registri Kanal)
+- Menyimpan konfigurasi 11 kanal komunikasi (`whatsapp`, `instagram`, `facebook`, `threads`, `twitter`, `youtube`, `tiktok`, `telegram`, `google_business`, `website`, `portal_pengaduan`).
+- Kolom kunci: `id`, `name`, `category` (`SOCIAL_MEDIA`, `MESSENGER`, `REVIEW`, `PORTAL`), `api_provider` (`META`, `BAILEYS`, `N8N_WEBHOOK`, `CHATWOOT`).
+
+### 2. `psic_conversations` (Percakapan Terintegrasi 6-Tier PURI)
+- Mengklasifikasikan pesan dari seluruh kanal ke dalam **7 Bidang Resmi Dinas PUPR Garut**.
+- Kolom kunci: `channel_type`, `external_id`, `author_id`, `bidang`, `intent`, `smart_label`, `priority`, `sentiment`, `emotion`, `feed_category`, `status`, `sla_deadline`, `kecamatan`, `desa`.
+
+### 3. `psic_messages` (Aliran Pesan & AI Multimodal)
+- Menyimpan setiap item pesan dengan dukungan teks, foto, voice note, video, dokumen, dan link.
+- Kolom kunci: `conversation_id`, `sender_type`, `attachment_type`, `voice_transcription` (Whisper), `vision_analysis_summary` (Vision AI), `is_draft`.
+
+### 4. `psic_issues` (Deteksi Isu & Peringatan Dini Krisis)
+- Mendeteksi isu secara otomatis jika topik mencapai ambang batas (`is_crisis_alert = TRUE` bila ≥ 200 posting dalam ≤ 30 menit).
+- Kolom kunci: `title`, `keyword`, `bidang`, `total_mentions`, `is_crisis_alert`, `affected_kecamatan`, `status`.
+
+### 5. `psic_collaboration_tickets` (Tiket Kolaboratif Lintas Bidang)
+- Menangani 1 isu kompleks yang memerlukan tindakan dari beberapa bidang sekaligus.
+- Kolom kunci: `parent_conversation_id`, `title`, `sub_tasks` (JSONB), `status`.
+
+### 6. `psic_reputation_index` (Indeks Reputasi Digital PUPR)
+- Merekam skor reputasi digital harian Dinas PUPR Kabupaten Garut dari 0 - 100.
+- Kolom kunci: `score`, `positive_percentage`, `negative_percentage`, `sla_compliance_rate`, `period_date`.
+

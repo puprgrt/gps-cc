@@ -76,6 +76,29 @@ async function saveMessage(conversationId, messageData, contactData = null) {
   }
 }
 
+async function updateConversationStatus(conversationId, status, metadata = {}) {
+  try {
+    const payload = {
+      status,
+      updated_at: new Date().toISOString(),
+      ...metadata,
+    };
+    const { error } = await supabase
+      .from('wa_conversations')
+      .update(payload)
+      .eq('id', conversationId);
+
+    if (error) {
+      console.warn('[SupabaseService] Error updating conversation status:', error.message || error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[SupabaseService] Exception in updateConversationStatus:', err.message || err);
+    return false;
+  }
+}
+
 async function getActiveConversations() {
   const { data, error } = await supabase
     .from('wa_conversations')
@@ -363,6 +386,7 @@ async function saveSurveyResponse(responseData) {
 module.exports = {
   supabase,
   saveMessage,
+  updateConversationStatus,
   getActiveConversations,
   upsertContacts,
   getBotSettings,
