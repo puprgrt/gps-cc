@@ -55,7 +55,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
   const [isAiActive, setIsAiActive] = useState(true);
   const [isMenuActive, setIsMenuActive] = useState(true);
   const [isKeywordActive, setIsKeywordActive] = useState(true);
-  const [model, setModel] = useState('gemini-3.6-flash');
+  const [model, setModel] = useState('gemini-2.0-flash');
   const [systemPrompt, setSystemPrompt] = useState(DEFAULT_COMPREHENSIVE_PROMPT);
   const [minTextLength, setMinTextLength] = useState(2);
   const [isLoading, setIsLoading] = useState(false);
@@ -87,7 +87,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
         setIsAiActive(data.is_active ?? true);
         setIsMenuActive(data.is_menu_active ?? true);
         setIsKeywordActive(data.is_keyword_active ?? true);
-        setModel(data.model || 'gemini-3.6-flash');
+        setModel(data.model || 'gemini-2.0-flash');
         setSystemPrompt(data.system_prompt || DEFAULT_COMPREHENSIVE_PROMPT);
         setMinTextLength(data.min_text_length || 2);
       }
@@ -299,10 +299,10 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
           </div>
           <div>
             <h2 className="text-base font-bold flex items-center gap-2">
-              Pengaturan Bot PURI WhatsApp
+              Pengaturan Bot PURI WhatsApp (Integrated AI Center)
               <Sparkles className="w-5 h-5 text-amber-400" />
             </h2>
-            <p className="text-xs text-slate-400">Atur Balasan AI Gemini, Menu Interaktif (Sub-Menu), dan Keyword Reply Kata Kunci dalam Bahasa Indonesia.</p>
+            <p className="text-xs text-slate-400">Atur Balasan PURI AI Center (Multi-Model 6-Tier), Menu Interaktif (Sub-Menu), dan Keyword Reply dalam Bahasa Indonesia.</p>
           </div>
         </div>
 
@@ -354,7 +354,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
           }`}
         >
           <Bot className="w-4 h-4" />
-          <span>Bot AI Gemini (Prompt & Model)</span>
+          <span>Bot AI Center (Prompt & Model)</span>
         </button>
 
         <button
@@ -432,22 +432,29 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
             </div>
 
             <div className="p-4 bg-slate-950/80 border border-white/10 rounded-2xl space-y-2">
-              <label className="text-xs font-bold text-slate-200 block">
-                Pilih Engine Model Gemini AI
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-200 block">
+                  Pilih Engine Model AI (Terintegrasi PURI AI Center)
+                </label>
+                <span className="text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                  AI Orchestrator Connected
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Pilih mesin pemroses utama Bot AI. Opsi <strong>PURI 6-Tier AI Orchestrator</strong> secara otomatis mendistribusikan beban kerja ke model terbaik.
+              </p>
               <select
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500/50"
+                className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-blue-500/50"
               >
-                <option value="gemini-3.6-flash">🔥 Gemini 3.6 Flash (Terbaru & Tercanggih v3.6)</option>
-                <option value="gemini-3.5-flash">⚡ Gemini 3.5 Flash (Generasi v3.5 - Cepat & Responsif)</option>
-                <option value="gemini-3.5-pro">🧠 Gemini 3.5 Pro (Generasi v3.5 - High Reasoning)</option>
-                <option value="gemini-3.0-flash">✨ Gemini 3.0 Flash (Generasi v3.0)</option>
-                <option value="gemini-3.0-pro">💎 Gemini 3.0 Pro (Kompleksitas Tinggi)</option>
-                <option value="gemini-2.5-flash">🚀 Gemini 2.5 Flash (Ultra Fast Latency)</option>
-                <option value="gemini-2.0-flash">Gemini 2.0 Flash (Standard Baseline)</option>
-                <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash-Lite (Hemat Token Quota)</option>
+                <option value="auto">🚀 PURI 6-Tier AI Orchestrator (Auto-Route Smart Consensus - Rekomendasi Utama)</option>
+                <option value="gemini-2.0-flash">🔥 Google Gemini 2.0 Flash (Vision & 128k Context - Unggulan PURI)</option>
+                <option value="gemini-2.0-flash-lite-preview-02-05">⚡ Google Gemini 2.0 Flash-Lite (Hemat Quota & Cepat)</option>
+                <option value="gpt-4o-mini">🤖 OpenAI ChatGPT-4o Mini (CS & FAQ Publik 24/7)</option>
+                <option value="claude-3-5-sonnet-20241022">🧠 Anthropic Claude 3.5 Sonnet (Analisis Regulasi & PBG)</option>
+                <option value="moonshot-v1-8k">🌙 Kimi AI Global Moonshot (BIM / IFC / GIS Spasial)</option>
+                <option value="qwen2.5:7b">🖥️ Local AI Ollama Qwen 2.5 (Offline On-Premise Tanpa Kuota)</option>
               </select>
             </div>
 

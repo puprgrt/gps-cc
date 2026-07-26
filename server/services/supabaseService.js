@@ -211,6 +211,118 @@ async function getBotKeywords() {
   }
 }
 
+// ============================================================================
+// PURI RAG KNOWLEDGE BASE & FAQ CACHE (SUPABASE DEFAULT DB)
+// ============================================================================
+async function saveRAGDocument(docData) {
+  try {
+    const docId = docData.id || `doc-${Date.now()}`;
+    const payload = {
+      id: docId,
+      bidang: docData.bidang,
+      title: docData.title,
+      keywords: docData.keywords || [],
+      content: docData.content,
+      updated_at: docData.updatedAt || new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from('puri_rag_knowledge_base')
+      .upsert(payload, { onConflict: 'id' });
+
+    if (error) {
+      if (error.code === '42P01') {
+        console.warn('[SupabaseService] Table puri_rag_knowledge_base does not exist yet. Storing in local disk DB.');
+        return false;
+      }
+      throw error;
+    }
+    return true;
+  } catch (err) {
+    console.warn('[SupabaseService] Fallback saving RAG document:', err.message || err);
+    return false;
+  }
+}
+
+async function getAllRAGDocuments() {
+  try {
+    const { data, error } = await supabase
+      .from('puri_rag_knowledge_base')
+      .select('*')
+      .order('updated_at', { ascending: false });
+
+    if (error && (error.code === '42P01' || error.code === 'PGRST205')) {
+      return [];
+    }
+    if (error) throw error;
+
+    return (data || []).map((item) => ({
+      id: item.id,
+      bidang: item.bidang,
+      title: item.title,
+      keywords: item.keywords || [],
+      content: item.content,
+      updatedAt: item.updated_at || item.updatedAt,
+    }));
+  } catch (err) {
+    console.warn('[SupabaseService] Error fetching RAG docs from Supabase:', err.message || err);
+    return [];
+  }
+}
+
+async function saveFAQEntry(entryData) {
+  try {
+    const qKey = entryData.queryKey || entryData.key || `faq-${Date.now()}`;
+    const payload = {
+      query_key: qKey,
+      reply_text: entryData.replyText,
+      category: entryData.category || 'CHAT_GENERAL',
+      hit_count: entryData.hitCount || 1,
+      updated_at: entryData.updatedAt || new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from('puri_faq_cache')
+      .upsert(payload, { onConflict: 'query_key' });
+
+    if (error) {
+      if (error.code === '42P01') {
+        return false;
+      }
+      throw error;
+    }
+    return true;
+  } catch (err) {
+    console.warn('[SupabaseService] Fallback saving FAQ entry:', err.message || err);
+    return false;
+  }
+}
+
+async function getAllFAQEntries() {
+  try {
+    const { data, error } = await supabase
+      .from('puri_faq_cache')
+      .select('*')
+      .order('updated_at', { ascending: false });
+
+    if (error && (error.code === '42P01' || error.code === 'PGRST205')) {
+      return [];
+    }
+    if (error) throw error;
+
+    return (data || []).map((item) => ({
+      queryKey: item.query_key || item.queryKey,
+      replyText: item.reply_text || item.replyText,
+      category: item.category || 'CHAT_GENERAL',
+      hitCount: item.hit_count || item.hitCount || 1,
+      updatedAt: item.updated_at || item.updatedAt,
+    }));
+  } catch (err) {
+    console.warn('[SupabaseService] Error fetching FAQ entries from Supabase:', err.message || err);
+    return [];
+  }
+}
+
 module.exports = {
   supabase,
   saveMessage,
@@ -219,5 +331,9 @@ module.exports = {
   getBotSettings,
   updateBotSettings,
   getBotMenuFlows,
-  getBotKeywords
+  getBotKeywords,
+  saveRAGDocument,
+  getAllRAGDocuments,
+  saveFAQEntry,
+  getAllFAQEntries,
 };

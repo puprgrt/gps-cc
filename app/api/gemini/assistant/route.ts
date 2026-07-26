@@ -1,46 +1,49 @@
-﻿import { GoogleGenAI } from "@google/genai";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import aiOrchestrator from '@/server/core/AIOrchestrator';
 
+/**
+ * POST /api/gemini/assistant
+ * Integrated with PURI Multi-Modal AI Orchestrator 2026.
+ * Serves web widget & dashboard AI Assistant with 0-Token Cache,
+ * RAG First 7 Bidang PUPR, and Cloud -> Local Resilience.
+ */
 export async function POST(req: NextRequest) {
   try {
     const { prompt, history } = await req.json();
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: "GEMINI_API_KEY is not set" }, { status: 500 });
+    if (!prompt || typeof prompt !== 'string') {
+      return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
     }
 
-    const ai = new GoogleGenAI({ apiKey });
-
-    const systemInstruction = `Anda adalah Google Gemini AI Assistant resmi yang terintegrasi di Dashboard Executive Dinas Pekerjaan Umum dan Penataan Ruang (PUPR) Kabupaten Garut.
-Tugas Anda adalah membantu Admin & Pimpinan PUPR dengan memberikan informasi ringkas, data analitis, ringkasan permohonan (PBG, SLF, KRK), status pengaduan (Jalan, Irigasi, Drainase), serta rekomendasi teknis/SLA dalam Bahasa Indonesia yang profesional, ramah, dan solutif.
-Jawab dengan ringkas (2-4 kalimat) dan terstruktur.`;
-
-    // Format chat contents if history is provided
-    let contents: any = prompt;
+    // Include recent history context into prompt text if available
+    let combinedText = prompt;
     if (history && Array.isArray(history) && history.length > 0) {
-      const formattedHistory = history.map((msg: { sender: string; text: string }) => ({
-        role: msg.sender === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.text }]
-      }));
-      formattedHistory.push({
-        role: 'user',
-        parts: [{ text: prompt }]
-      });
-      contents = formattedHistory;
+      const recentContext = history
+        .slice(-3)
+        .map((m: { sender: string; text: string }) => `${m.sender === 'user' ? 'Warga/Admin' : 'PURI'}: ${m.text}`)
+        .join('\n');
+      combinedText = `[Riwayat Percakapan Sebelumnya]:\n${recentContext}\n\n[Pertanyaan Saat Ini]:\n${prompt}`;
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
-      contents,
-      config: {
-        systemInstruction,
-      },
+    // Process through PURI Multi-Modal AI Orchestrator 2026
+    const result = await aiOrchestrator.processMessage({
+      conversationId: `web-assistant-${Date.now()}`,
+      senderName: 'Admin / Warga Web',
+      userText: combinedText,
     });
 
-    return NextResponse.json({ text: response.text });
-  } catch (error) {
-    console.error("Gemini Assistant API error:", error);
-    return NextResponse.json({ error: "Failed to generate AI assistant response" }, { status: 500 });
+    return NextResponse.json({
+      text: result.text,
+      providerUsed: result.providerUsed,
+      modelName: result.modelName,
+      isFromCache: result.isFromCache,
+      confidenceScore: result.confidenceScore,
+      routingDecision: result.routingDecision,
+      executionTimeMs: result.executionTimeMs,
+    });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Failed to generate AI assistant response';
+    console.error('PURI Assistant API error:', msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

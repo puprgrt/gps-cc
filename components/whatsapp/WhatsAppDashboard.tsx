@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useWhatsApp } from '@/hooks/useWhatsApp';
 import { WhatsAppQrModal } from './WhatsAppQrModal';
 import { WhatsAppFrontLogin } from './WhatsAppFrontLogin';
 import { WhatsAppRightQrPanel } from './WhatsAppRightQrPanel';
 import { WhatsAppLogViewer } from './WhatsAppLogViewer';
-import { WhatsAppBotSettingsModal } from './WhatsAppBotSettingsModal';
 import { Badge } from '@/components/ui/badge';
 import { 
   QrCode, MessageSquare, Terminal, RefreshCw, Phone, CheckCircle, 
@@ -51,6 +51,7 @@ const PURI_SMART_LABELS = [
 ];
 
 export function WhatsAppDashboard() {
+  const router = useRouter();
   const { 
     connectionStatus, 
     conversations, 
@@ -82,7 +83,7 @@ export function WhatsAppDashboard() {
   const [dateFilter, setDateFilter] = useState('Hari Ini');
   const [mobileTab, setMobileTab] = useState<'list' | 'chat' | 'info'>('chat');
   const [rightPanelTab, setRightPanelTab] = useState<'info' | 'qr' | 'logs'>('info');
-  const [dashboardView, setDashboardView] = useState<'chats' | 'logs' | 'settings'>('chats');
+  const [dashboardView, setDashboardView] = useState<'chats' | 'logs'>('chats');
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId) || conversations[0];
 
@@ -182,141 +183,135 @@ export function WhatsAppDashboard() {
   }
 
   return (
-    <div className="space-y-5 pb-8">
+    <div className="space-y-4 pb-8">
       {/* ------------------------------------------------------------- */}
-      {/* TOP KPI GRID - COMMAND CENTER METRICS                         */}
+      {/* 1. SLEEK SMART FRONT OFFICE HEADER BAR (1 BARIS BERKELAS)      */}
       {/* ------------------------------------------------------------- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3">
-        {/* KPI 1: WhatsApp Status */}
-        <div className="glass-card p-3.5 rounded-xl border border-white/10 flex flex-col justify-between shadow-card relative overflow-hidden group">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">WHATSAPP STATUS</span>
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      <div className="glass-card rounded-2xl border border-white/10 px-5 py-4 shadow-xl bg-gradient-to-r from-[#0F4C81]/40 via-[#161B22] to-[#0D1117] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0 shadow-inner">
+            <Bot className="w-5 h-5 text-emerald-400" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-base font-extrabold text-white tracking-tight truncate">
+                Smart Front Office — WhatsApp Center PUPR Garut
+              </h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                24/7 ONLINE
+              </span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                ⚡ 6-Tier AI Routing
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 truncate mt-0.5">
+              Pusat pelayanan obrolan publik & aduan infrastruktur terintegrasi PURI Multi-Model AI Orchestrator.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
+          {/* Server Connection Pill */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            <span className="text-slate-300 font-mono text-[11px]">
+              {connectionStatus?.phoneNumber || '+62 812-3456-7890'}
             </span>
-          </div>
-          <div className="mt-2 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
-              <MessageSquare className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-white leading-tight">Connected</p>
-              <p className="text-[10px] text-slate-400 truncate">Aktif: {connectionStatus?.phoneNumber || '+62 812-3456-7890'}</p>
-            </div>
-          </div>
-          <div className="flex gap-1.5 mt-3">
-            <button 
+            <button
               onClick={() => {
                 setShowQrModal(true);
                 connect('qr');
                 setRightPanelTab('qr');
                 setMobileTab('info');
               }}
-              className="flex-1 py-1.5 bg-emerald-600/80 hover:bg-emerald-500 text-white text-[10px] font-bold tracking-wider rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer"
+              className="text-[10px] text-emerald-400 font-bold hover:underline ml-1"
             >
-              <QrCode className="w-3 h-3" /> QR CODE
+              [QR]
             </button>
-            <button 
-              onClick={disconnect}
-              className="py-1.5 px-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 text-[10px] font-bold border border-red-500/30 rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer"
-              title="Putuskan Koneksi / Log Out"
-            >
-              PUTUSKAN
-            </button>
+          </div>
+
+          {/* Refresh Button */}
+          <button
+            onClick={refreshConnection}
+            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition-colors cursor-pointer"
+            title="Refresh Status Server"
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+
+          {/* Direct AI Center Config Button */}
+          <button
+            onClick={() => router.push('/ai-dashboard')}
+            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg border border-emerald-400/30 transition-all flex items-center gap-1.5 group cursor-pointer"
+            title="Buka AI Center untuk mengelola pengaturan Bot, Model, dan Prompt"
+          >
+            <Bot className="w-4 h-4 text-amber-300 group-hover:scale-110 transition-transform" />
+            <span>⚙️ Pengaturan di AI Center</span>
+            <ExternalLink className="w-3.5 h-3.5 text-emerald-200" />
+          </button>
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* 2. CLEAN MINIMAL 4-CARD STATUS BAR (BERSIH & ELEGAN)           */}
+      {/* ------------------------------------------------------------- */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="glass-card p-4 rounded-xl border border-white/10 flex items-center justify-between shadow-sm">
+          <div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">TOTAL ANTREAN CHAT</div>
+            <div className="text-xl font-extrabold text-white font-mono mt-0.5">{totalChatCount}</div>
+          </div>
+          <div className="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center">
+            <MessageSquare className="w-4 h-4" />
           </div>
         </div>
 
-        {/* KPI 2: Total Chat */}
-        <KpiCard 
-          title="TOTAL CHAT" 
-          value={totalChatCount.toString()} 
-          trend="Real-time" 
-          trendType="up" 
-          data={totalChatSpark} 
-          color="#3b82f6" 
-        />
-
-        {/* KPI 3: Belum Dibalas */}
-        <KpiCard 
-          title="BELUM DIBALAS" 
-          value={pendingCount.toString()} 
-          trend="Antrean" 
-          trendType="down" 
-          data={pendingSpark} 
-          color="#f59e0b" 
-        />
-
-        {/* KPI 4: Dijawab AI */}
-        <KpiCard 
-          title="DIJAWAB AI" 
-          value={aiCount.toString()} 
-          trend="Otomatis" 
-          trendType="up" 
-          data={aiSpark} 
-          color="#10b981" 
-        />
-
-        {/* KPI 5: Dijawab Operator */}
-        <KpiCard 
-          title="DIJAWAB OPERATOR" 
-          value={operatorCount.toString()} 
-          trend="Manual" 
-          trendType="up" 
-          data={operatorSpark} 
-          color="#0284c7" 
-        />
-
-        {/* KPI 6: Rata-Rata Respon */}
-        <KpiCard 
-          title="RATA-RATA RESPON" 
-          value="2m 34s" 
-          trend="+9.6%" 
-          trendType="up" 
-          data={responseTimeSpark} 
-          color="#a855f7" 
-        />
-
-        {/* KPI 7: Tingkat Kepuasan & Date Filter */}
-        <div className="glass-card p-3.5 rounded-xl border border-white/10 flex flex-col justify-between shadow-card relative">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">TINGKAT KEPUASAN</span>
-            <div className="relative">
-              <select 
-                value={dateFilter} 
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setDateFilter(e.target.value)}
-                className="bg-slate-900 border border-white/10 rounded px-1.5 py-0.5 text-[10px] text-slate-300 focus:outline-none"
-              >
-                <option>Hari Ini</option>
-                <option>Minggu Ini</option>
-                <option>Bulan Ini</option>
-              </select>
-            </div>
+        <div className="glass-card p-4 rounded-xl border border-white/10 flex items-center justify-between shadow-sm">
+          <div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">DIJAWAB OTOMATIS AI PURI</div>
+            <div className="text-xl font-extrabold text-emerald-400 font-mono mt-0.5">{aiCount}</div>
           </div>
-          <div className="mt-1">
-            <div className="text-2xl font-bold text-white font-mono leading-none">94%</div>
-            <div className="flex items-center gap-1 mt-1 text-amber-400 text-xs">
-              {'★'.repeat(5)}
-            </div>
-            <span className="text-[10px] text-emerald-400 font-medium">Sangat Baik</span>
+          <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
+            <Sparkles className="w-4 h-4" />
+          </div>
+        </div>
+
+        <div className="glass-card p-4 rounded-xl border border-white/10 flex items-center justify-between shadow-sm">
+          <div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">DITANGANI OPERATOR</div>
+            <div className="text-xl font-extrabold text-sky-400 font-mono mt-0.5">{operatorCount}</div>
+          </div>
+          <div className="w-9 h-9 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center">
+            <UserCheck className="w-4 h-4" />
+          </div>
+        </div>
+
+        <div className="glass-card p-4 rounded-xl border border-white/10 flex items-center justify-between shadow-sm">
+          <div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">RATA-RATA RESPON SLA</div>
+            <div className="text-xl font-extrabold text-purple-400 font-mono mt-0.5">2m 34s</div>
+          </div>
+          <div className="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center">
+            <Clock className="w-4 h-4" />
           </div>
         </div>
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* MAIN VIEW SWITCHER TABS (CHATS vs REAL-TIME BAILEYS LOGS)    */}
+      {/* 3. SLEEK APPLE-STYLE SEGMENTED VIEW SWITCHER                   */}
       {/* ------------------------------------------------------------- */}
-      <div className="flex items-center justify-between bg-slate-900/90 border border-white/10 p-1.5 rounded-xl text-xs shadow-md">
-        <div className="flex items-center gap-1.5">
+      <div className="flex items-center justify-between bg-slate-900/90 border border-white/10 p-1 rounded-xl text-xs shadow-sm">
+        <div className="flex items-center gap-1">
           <button
             onClick={() => setDashboardView('chats')}
-            className={`py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`py-1.5 px-3.5 rounded-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
               dashboardView === 'chats'
-                ? 'bg-blue-600 text-white shadow-md'
+                ? 'bg-blue-600 text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <MessageSquare className="w-4 h-4 text-emerald-400" />
+            <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
             <span>Ruang Percakapan & Operator</span>
             <span className="px-1.5 py-0.2 bg-emerald-500/20 text-emerald-300 text-[10px] rounded font-mono font-bold">
               {filteredConversations.length}
@@ -325,34 +320,21 @@ export function WhatsAppDashboard() {
 
           <button
             onClick={() => setDashboardView('logs')}
-            className={`py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`py-1.5 px-3.5 rounded-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
               dashboardView === 'logs'
-                ? 'bg-purple-600 text-white shadow-md'
+                ? 'bg-purple-600 text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <Terminal className="w-4 h-4 text-purple-400" />
+            <Terminal className="w-3.5 h-3.5 text-purple-400" />
             <span>Terminal Log Baileys Live</span>
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           </button>
-
-          <button
-            onClick={() => setDashboardView('settings')}
-            className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-              dashboardView === 'settings'
-                ? 'bg-emerald-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-white/5 border border-white/10'
-            }`}
-          >
-            <Bot className="w-4 h-4 text-emerald-400" />
-            <span>Pengaturan Bot AI</span>
-            <Sparkles className="w-3 h-3 text-amber-400" />
-          </button>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-400 px-2 font-mono">
+        <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-400 px-3 font-mono">
           <Activity className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Baileys Engine MD: <strong>v6.7.8</strong></span>
+          <span>Baileys MD: <strong>v6.7.8</strong></span>
         </div>
       </div>
 
@@ -361,9 +343,6 @@ export function WhatsAppDashboard() {
         <div className="animate-fade-in">
           <WhatsAppLogViewer />
         </div>
-      ) : dashboardView === 'settings' ? (
-        /* Full-width Dynamic Bot AI Settings View */
-        <WhatsAppBotSettingsModal onBack={() => setDashboardView('chats')} />
       ) : (
         /* 3-Column Command Center Chat View */
         <div>
@@ -604,14 +583,16 @@ export function WhatsAppDashboard() {
         </div>
 
         {/* =========================================================== */}
-        {/* COLUMN 2: CHAT WINDOW & REPLY BOX (5 Cols)                  */}
+        {/* COLUMN 2: EXECUTIVE SMART CHAT CONSOLE (5 Cols)             */}
         {/* =========================================================== */}
-        <div className={`xl:col-span-5 glass-card rounded-2xl border border-white/10 overflow-hidden shadow-card flex-col h-[720px] ${mobileTab === 'chat' ? 'flex' : 'hidden xl:flex'}`}>
+        <div className={`xl:col-span-5 glass-card rounded-2xl border border-white/10 overflow-hidden shadow-card flex-col h-[720px] bg-[#090D16]/80 ${mobileTab === 'chat' ? 'flex' : 'hidden xl:flex'}`}>
           {activeConversation ? (
             <>
-              {/* Chat Window Header */}
-              <div className="p-3.5 border-b border-white/10 bg-slate-900/80 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-2 sm:gap-3">
+              {/* --------------------------------------------------------- */}
+              {/* 1. EXECUTIVE WORKBENCH HEADER                             */}
+              {/* --------------------------------------------------------- */}
+              <div className="p-3.5 border-b border-white/10 bg-[#0F172A]/90 backdrop-blur-md flex items-center justify-between shrink-0 shadow-sm">
+                <div className="flex items-center gap-3 min-w-0">
                   <button
                     onClick={() => setMobileTab('list')}
                     className="xl:hidden p-1.5 bg-blue-600/30 hover:bg-blue-600/50 text-blue-300 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors shrink-0"
@@ -620,95 +601,130 @@ export function WhatsAppDashboard() {
                     <ChevronLeft className="w-4 h-4" />
                     <span className="hidden sm:inline">Daftar</span>
                   </button>
-                  <div className="w-9 h-9 rounded-full bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-white font-bold text-xs shrink-0">
-                    <User className="w-4 h-4 text-blue-300" />
+
+                  {/* Avatar with Live Status Ring */}
+                  <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-garut-blue to-blue-700 border border-blue-400/40 flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-md">
+                    <User className="w-5 h-5 text-blue-200" />
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#0F172A]" title="Online 24/7" />
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-xs font-bold text-white">{activeConversation.contactName}</h3>
+
+                  {/* Contact & Active Ticket Metadata */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <h3 className="text-sm font-extrabold text-white tracking-wide truncate">
+                        {activeConversation.contactName}
+                      </h3>
+                      
+                      {/* Official PURI Ticket Badge */}
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                        #PURI-2024-0514
+                      </span>
+
+                      {/* AI vs Operator Status Badge */}
                       {activeConversation.status === 'pending' && (
-                        <Badge variant="warning" className="text-[9px] py-0 px-1.5">Belum Dibalas</Badge>
+                        <Badge variant="warning" className="text-[9px] py-0 px-2 font-bold">🟡 Belum Dibalas</Badge>
                       )}
                       {activeConversation.status === 'active' && (
-                        <Badge variant="info" className="text-[9px] py-0 px-1.5">Operator</Badge>
+                        <Badge variant="info" className="text-[9px] py-0 px-2 font-bold">🧑‍💻 Operator</Badge>
                       )}
                       {activeConversation.status === 'bot_handling' && (
-                        <Badge variant="success" className="text-[9px] py-0 px-1.5">AI Menjawab</Badge>
+                        <Badge variant="success" className="text-[9px] py-0 px-2 font-bold">🤖 AI Menjawab</Badge>
                       )}
                       {activeConversation.status === 'resolved' && (
-                        <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-slate-300">Selesai</Badge>
+                        <Badge variant="outline" className="text-[9px] py-0 px-2 text-slate-300 font-bold">🟢 Selesai</Badge>
                       )}
 
-                      {/* Bidang Badge */}
+                      {/* 7 Bidang PUPR Official Badge */}
                       {activeConversation.bidang && (
-                        <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-garut-blue/40 text-blue-200 border border-blue-400/50 flex items-center gap-1">
+                        <span className="text-[9px] px-2 py-0.5 rounded-full font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1">
                           🏛️ {Array.isArray(activeConversation.bidang) ? activeConversation.bidang.join(' + ') : activeConversation.bidang}
                         </span>
                       )}
 
-                      {/* Prioritas & SLA Badge */}
+                      {/* Realtime SLA Badge */}
                       {activeConversation.prioritas && (
-                        <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold border flex items-center gap-1 ${
+                        <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold border flex items-center gap-1 ${
                           activeConversation.prioritas === 'KRITIS'
                             ? 'bg-rose-500/30 text-rose-300 border-rose-500 animate-pulse'
                             : activeConversation.prioritas === 'TINGGI'
                             ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                             : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
                         }`}>
-                          {activeConversation.prioritas === 'KRITIS' ? '⚡' : '⏱️'} {activeConversation.prioritas} (SLA: {activeConversation.sla || '1 Hari'})
+                          {activeConversation.prioritas === 'KRITIS' ? '⚡' : '⏱️'} {activeConversation.prioritas} • SLA: &lt; 15m
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-[10px] text-slate-400 mt-1 flex-wrap">
+
+                    {/* Sub-line Info */}
+                    <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-1 flex-wrap">
                       <div className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-slate-500" />
-                        <span>{activeConversation.location || 'Garut, Jawa Barat'}</span>
+                        <MapPin className="w-3 h-3 text-emerald-400" />
+                        <span className="text-slate-300">{activeConversation.location || 'Garut, Jawa Barat'}</span>
                       </div>
                       {activeConversation.layanan && (
-                        <div className="flex items-center gap-1 text-sky-400">
-                          <span>• Layanan: <strong className="text-sky-300">{activeConversation.layanan}</strong></span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-slate-500">•</span>
+                          <span>Layanan: <strong className="text-sky-300">{activeConversation.layanan}</strong></span>
                         </div>
                       )}
-                      {activeConversation.assignedOperator && (
-                        <div className="flex items-center gap-1 text-slate-400">
-                          <span>• Operator: <strong className="text-white">{activeConversation.assignedOperator}</strong></span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-1">
+                        <span className="text-slate-500">•</span>
+                        <span>Operator: <strong className="text-emerald-300 font-semibold">{activeConversation.assignedOperator || 'BC-01 (Online)'}</strong></span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Quick Action Toolbar */}
-                <div className="flex items-center gap-1">
+                {/* Executive Action Toolbar */}
+                <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     onClick={() => setMobileTab('info')}
-                    className="xl:hidden px-2 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded text-[10px] font-semibold flex items-center gap-1 transition-colors"
+                    className="xl:hidden px-2.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded-xl text-[11px] font-bold flex items-center gap-1 transition-colors"
                   >
-                    <Sparkles className="w-3 h-3" />
-                    <span className="hidden sm:inline">Info & AI</span>
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">AI Info</span>
                   </button>
-                  <button className="px-2 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-[10px] text-slate-300 hidden sm:flex items-center gap-1 transition-colors">
+                  <button 
+                    className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 hidden md:flex items-center gap-1.5 transition-colors cursor-pointer"
+                    title="Lihat Detail Kontak & Tiket"
+                  >
                     Detail
                   </button>
-                  <button className="px-2 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-[10px] text-slate-300 flex items-center gap-1 transition-colors">
+                  <button 
+                    className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 flex items-center gap-1.5 transition-colors cursor-pointer"
+                    title="Catatan Internal Operasional"
+                  >
                     Catatan
                   </button>
-                  <button className="px-2 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-[10px] text-slate-300 hidden sm:flex items-center gap-1 transition-colors">
+                  <button 
+                    className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 hidden lg:flex items-center gap-1.5 transition-colors cursor-pointer"
+                    title="Transfer ke Bidang PUPR Lain"
+                  >
                     Transfer
+                  </button>
+                  <button 
+                    className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-[11px] font-bold flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+                    title="Selesaikan Tiket & Arsip"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Selesai</span>
                   </button>
                 </div>
               </div>
 
-              {/* Chat Stream Body */}
-              <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-950/40 scrollbar-thin">
-                {/* Date separator */}
-                <div className="flex items-center justify-center my-2">
-                  <span className="text-[10px] font-semibold text-slate-400 bg-slate-900 border border-white/10 px-3 py-0.5 rounded-full">
-                    Hari Ini
+              {/* --------------------------------------------------------- */}
+              {/* 2. CHAT STREAM CANVAS (MODERN GLASSMORPHIC BUBBLES)      */}
+              {/* --------------------------------------------------------- */}
+              <div className="flex-1 p-5 overflow-y-auto space-y-4 bg-[#090D16]/90 scrollbar-thin relative">
+                
+                {/* Date / Status Separator Badge */}
+                <div className="flex items-center justify-center my-3">
+                  <span className="text-[10px] font-bold tracking-wider text-slate-400 bg-[#0F172A] border border-white/10 px-3.5 py-1 rounded-full shadow-sm">
+                    Hari Ini • SLA Aktif 24/7 (PURI AI Routing)
                   </span>
                 </div>
 
-                {/* Messages stream */}
+                {/* Message Bubbles Stream */}
                 {activeConversation.messages && activeConversation.messages.length > 0 ? (
                   activeConversation.messages.map((msg) => {
                     const isUser = msg.sender === 'user';
@@ -719,42 +735,60 @@ export function WhatsAppDashboard() {
                         className={`flex flex-col ${isUser ? 'items-start' : 'items-end'}`}
                       >
                         <div
-                          className={`max-w-[85%] p-3 rounded-2xl text-xs leading-relaxed shadow-sm ${
+                          className={`max-w-[85%] sm:max-w-[78%] p-3.5 rounded-2xl text-xs leading-relaxed shadow-md border ${
                             isUser
-                              ? 'bg-white text-slate-900 rounded-tl-none font-normal'
+                              ? 'bg-slate-800/90 hover:bg-slate-800 border-slate-700/80 text-slate-100 rounded-tl-sm'
                               : isBot
-                              ? 'bg-emerald-600 text-white rounded-tr-none font-normal'
-                              : 'bg-blue-600 text-white rounded-tr-none'
+                              ? 'bg-gradient-to-br from-emerald-900/85 via-emerald-950/90 to-slate-900/95 border-emerald-500/40 text-emerald-100 rounded-tr-sm'
+                              : 'bg-gradient-to-br from-[#0F4C81]/90 to-blue-900/95 border-blue-400/40 text-white rounded-tr-sm'
                           }`}
                         >
+                          {/* Header Identity for Bot AI / Operator */}
                           {!isUser && (
-                            <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-200 mb-1 border-b border-white/20 pb-1">
-                              <Bot className="w-3 h-3" /> {msg.senderName || 'AI Assistant PUPR'}
+                            <div className="flex items-center justify-between gap-2 text-[10px] font-extrabold mb-1.5 border-b border-white/15 pb-1.5">
+                              <span className="flex items-center gap-1.5">
+                                {isBot ? (
+                                  <>
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                                    <Bot className="w-3.5 h-3.5 text-emerald-300" />
+                                    <span className="text-emerald-300 tracking-wide">PURI AI • 6-TIER SMART RESPONSE</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <User className="w-3.5 h-3.5 text-blue-300" />
+                                    <span className="text-blue-200 tracking-wide">🧑‍💻 OPERATOR RESMI PUPR GARUT</span>
+                                  </>
+                                )}
+                              </span>
+                              <span className="text-[9px] font-mono text-slate-400">
+                                {isBot ? 'Confidence: 98%' : 'Verified'}
+                              </span>
                             </div>
                           )}
-                          {/* Image Media Attachment */}
+
+                          {/* Image Media Attachment Card */}
                           {msg.type === 'image' && (
-                            <div className="mb-2 rounded-xl overflow-hidden border border-white/20 shadow-sm bg-black/40 group relative">
+                            <div className="mb-2.5 rounded-xl overflow-hidden border border-white/20 shadow-md bg-black/40 group relative">
                               {msg.metadata?.fileUrl || msg.attachments?.[0]?.url ? (
                                 <div className="relative">
                                   <img
                                     src={msg.metadata?.fileUrl || msg.attachments?.[0]?.url}
-                                    alt={msg.metadata?.fileName || 'Foto Laporan PUPR'}
-                                    className="w-full max-h-56 object-cover rounded-t-lg transition-transform group-hover:scale-105"
+                                    alt={msg.metadata?.fileName || 'Foto Laporan Warga'}
+                                    className="w-full max-h-60 object-cover rounded-t-lg transition-transform group-hover:scale-105"
                                   />
                                   <a
                                     href={msg.metadata?.fileUrl || msg.attachments?.[0]?.url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="absolute bottom-2 right-2 px-2.5 py-1 bg-black/70 hover:bg-black/90 text-white rounded-lg text-[10px] font-bold flex items-center gap-1.5 backdrop-blur-sm border border-white/20"
+                                    className="absolute bottom-2 right-2 px-3 py-1.5 bg-black/80 hover:bg-black/90 text-white rounded-xl text-[10px] font-bold flex items-center gap-1.5 backdrop-blur-sm border border-white/20 transition-colors"
                                   >
-                                    <Eye className="w-3 h-3 text-sky-400" /> Buka Foto
+                                    <Eye className="w-3.5 h-3.5 text-sky-400" /> Buka Foto HD
                                   </a>
                                 </div>
                               ) : (
-                                <div className="p-4 flex items-center justify-center text-slate-400 gap-2 bg-slate-800">
+                                <div className="p-5 flex items-center justify-center text-slate-400 gap-2 bg-slate-900/80">
                                   <ImageIcon className="w-6 h-6 text-sky-400 animate-pulse" />
-                                  <span>[Lampiran Gambar / Foto]</span>
+                                  <span>[Lampiran Gambar / Foto Laporan]</span>
                                 </div>
                               )}
                             </div>
@@ -762,24 +796,20 @@ export function WhatsAppDashboard() {
 
                           {/* Document PDF/Docx Attachment Card */}
                           {msg.type === 'document' && (
-                            <div className={`flex items-center gap-2.5 p-2.5 rounded-xl border mb-2 shadow-inner ${
+                            <div className={`flex items-center gap-3 p-3 rounded-xl border mb-2.5 shadow-inner ${
                               isUser 
-                                ? 'bg-slate-100 border-slate-300 text-slate-800' 
-                                : 'bg-black/25 border-white/15 text-white'
+                                ? 'bg-slate-900/60 border-white/10 text-slate-100' 
+                                : 'bg-black/30 border-white/15 text-white'
                             }`}>
-                              <div className={`p-2 rounded-lg shrink-0 ${
-                                isUser ? 'bg-rose-500/15 text-rose-600' : 'bg-rose-500/20 text-rose-300'
-                              }`}>
+                              <div className="p-2.5 rounded-lg shrink-0 bg-rose-500/20 text-rose-400 border border-rose-500/30">
                                 <FileText className="w-6 h-6" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-xs font-bold truncate leading-snug">
                                   {msg.metadata?.fileName || msg.attachments?.[0]?.name || msg.text || 'Dokumen_Permohonan.pdf'}
                                 </p>
-                                <span className={`text-[10px] font-mono block mt-0.5 ${
-                                  isUser ? 'text-slate-500' : 'text-slate-300'
-                                }`}>
-                                  {msg.metadata?.mimetype || 'PDF / Dokumen PUPR'} 
+                                <span className="text-[10px] font-mono text-slate-400 block mt-0.5">
+                                  {msg.metadata?.mimetype || 'PDF / Dokumen Resmi PUPR'} 
                                   {msg.metadata?.size ? ` • ${(msg.metadata.size / (1024 * 1024)).toFixed(1)} MB` : ''}
                                 </span>
                               </div>
@@ -788,11 +818,7 @@ export function WhatsAppDashboard() {
                                   href={msg.metadata?.fileUrl || msg.attachments?.[0]?.url}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className={`px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition-all shrink-0 ${
-                                    isUser 
-                                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm' 
-                                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-                                  }`}
+                                  className="px-3.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition-all shrink-0 bg-blue-600 hover:bg-blue-500 text-white shadow-sm"
                                 >
                                   <Download className="w-3.5 h-3.5" /> Buka
                                 </a>
@@ -802,21 +828,21 @@ export function WhatsAppDashboard() {
 
                           {/* Video Attachment Card */}
                           {msg.type === 'video' && (
-                            <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-black/30 border border-white/15 mb-2">
-                              <div className="p-2 bg-purple-500/20 text-purple-400 rounded-lg shrink-0">
+                            <div className="flex items-center gap-3 p-3 rounded-xl bg-black/40 border border-white/15 mb-2.5">
+                              <div className="p-2.5 bg-purple-500/20 text-purple-400 rounded-lg shrink-0 border border-purple-500/30">
                                 <Film className="w-6 h-6" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-xs font-bold text-white truncate">Lampiran Video Rekaman</p>
-                                <span className="text-[10px] text-slate-400">Video • {msg.metadata?.seconds || 30} detik</span>
+                                <span className="text-[10px] text-slate-400">Video HD • {msg.metadata?.seconds || 30} detik</span>
                               </div>
                             </div>
                           )}
 
                           {/* Audio / Voice Note Card */}
                           {msg.type === 'audio' && (
-                            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-black/30 border border-white/15 mb-2">
-                              <div className="p-2 bg-emerald-500/20 text-emerald-400 rounded-full shrink-0">
+                            <div className="flex items-center gap-3 p-2.5 rounded-xl bg-black/40 border border-white/15 mb-2.5">
+                              <div className="p-2 bg-emerald-500/20 text-emerald-400 rounded-full shrink-0 border border-emerald-500/30">
                                 <Mic className="w-5 h-5" />
                               </div>
                               <div className="flex-1 min-w-0">
@@ -828,97 +854,140 @@ export function WhatsAppDashboard() {
 
                           {/* Message Text / Caption */}
                           {msg.text && (
-                            <p className="whitespace-pre-line leading-relaxed">
+                            <p className="whitespace-pre-line leading-relaxed text-xs">
                               {msg.type === 'document' && msg.metadata?.caption ? msg.metadata.caption : msg.text}
                             </p>
                           )}
+
+                          {/* Timestamp & Delivery Status */}
                           <div
-                            className={`text-[9px] mt-1.5 flex items-center justify-end gap-1 ${
-                              isUser ? 'text-slate-500' : 'text-emerald-100'
+                            className={`text-[9px] mt-2 flex items-center justify-end gap-1 font-mono ${
+                              isUser ? 'text-slate-400' : 'text-emerald-200/80'
                             }`}
                           >
                             <span>
                               {new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' }).format(msg.timestamp)}
                             </span>
-                            {!isUser && <Check className="w-3 h-3 text-emerald-200" />}
+                            {!isUser && <Check className="w-3.5 h-3.5 text-emerald-300" />}
                           </div>
                         </div>
                       </div>
                     );
                   })
                 ) : (
-                  <div className="text-center py-12 text-slate-500 text-xs">
+                  <div className="text-center py-16 text-slate-500 text-xs">
                     Belum ada riwayat pesan untuk percakapan ini.
                   </div>
                 )}
 
-                {/* AI Assistant Streaming Indicator */}
+                {/* AI Assistant Streaming / Typing Indicator */}
                 <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium py-1 animate-pulse">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>AI Assistant sedang mengetik...</span>
+                  <span>PURI AI Orchestrator sedang menganalisis pesan...</span>
                 </div>
               </div>
 
-              {/* Chat Reply Composer (Bottom) */}
-              <div className="p-3 border-t border-white/10 bg-slate-900/90 shrink-0 space-y-2">
-                {/* Composer Tabs */}
-                <div className="flex items-center gap-3 border-b border-white/10 pb-1 text-xs">
-                  <button
-                    onClick={() => setReplyMode('reply')}
-                    className={`pb-1 font-semibold transition-colors ${
-                      replyMode === 'reply' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    Balas
-                  </button>
-                  <button
-                    onClick={() => setReplyMode('internal_note')}
-                    className={`pb-1 font-semibold transition-colors ${
-                      replyMode === 'internal_note' ? 'text-amber-400 border-b-2 border-amber-400' : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    Catatan Internal
-                  </button>
+              {/* --------------------------------------------------------- */}
+              {/* 3. EXECUTIVE SMART COMPOSER (BOTTOM REPLY BAR)            */}
+              {/* --------------------------------------------------------- */}
+              <div className="p-3.5 border-t border-white/10 bg-[#0F172A]/95 backdrop-blur-md shrink-0 space-y-2.5 shadow-lg">
+                
+                {/* Mode Switcher Tabs */}
+                <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div className="flex items-center gap-3 text-xs">
+                    <button
+                      onClick={() => setReplyMode('reply')}
+                      className={`px-3 py-1 rounded-lg font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                        replyMode === 'reply'
+                          ? 'bg-blue-600/25 text-blue-300 border border-blue-500/40 shadow-sm'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      💬 Balas Pesan Warga
+                    </button>
+                    <button
+                      onClick={() => setReplyMode('internal_note')}
+                      className={`px-3 py-1 rounded-lg font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                        replyMode === 'internal_note'
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      🔒 Catatan Internal Tim
+                    </button>
+                  </div>
+
+                  <span className="text-[10px] text-slate-500 hidden sm:inline font-mono">
+                    Tekan <strong className="text-slate-400">Enter ↵</strong> untuk kirim
+                  </span>
                 </div>
 
                 {replyMode === 'reply' ? (
-                  <form onSubmit={handleSendMessage} className="space-y-2">
+                  <form onSubmit={handleSendMessage} className="space-y-2.5">
                     <textarea
                       value={messageText}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessageText(e.target.value)}
-                      placeholder="Ketik pesan..."
+                      placeholder="Ketik balasan untuk pemohon... (Draf AI otomatis tersedia)"
                       rows={2}
-                      className="w-full bg-slate-950/80 border border-white/10 rounded-xl p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50 resize-none"
+                      className="w-full bg-[#0B0F19]/90 border border-white/15 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/60 transition-all resize-none shadow-inner leading-relaxed"
                     />
-                    <div className="flex items-center justify-between pt-1">
+                    <div className="flex items-center justify-between pt-0.5">
                       <div className="flex items-center gap-2 text-slate-400">
                         <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
-                        <button type="button" onClick={() => fileInputRef.current?.click()} className="hover:text-white transition-colors" title="Lampirkan File"><Paperclip className="w-4 h-4" /></button>
-                        <button type="button" onClick={() => fileInputRef.current?.click()} className="hover:text-white transition-colors" title="Kirim Gambar"><ImageIcon className="w-4 h-4" /></button>
+                        <button 
+                          type="button" 
+                          onClick={() => fileInputRef.current?.click()} 
+                          className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-1 text-[11px] font-semibold text-slate-300"
+                          title="Lampirkan Dokumen/File"
+                        >
+                          <Paperclip className="w-3.5 h-3.5 text-sky-400" />
+                          <span className="hidden md:inline">Lampiran</span>
+                        </button>
+                        <button 
+                          type="button" 
+                          onClick={() => fileInputRef.current?.click()} 
+                          className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-1 text-[11px] font-semibold text-slate-300"
+                          title="Kirim Foto"
+                        >
+                          <ImageIcon className="w-3.5 h-3.5 text-emerald-400" />
+                          <span className="hidden md:inline">Foto</span>
+                        </button>
+                        <button 
+                          type="button" 
+                          className="p-1.5 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/30 transition-colors flex items-center gap-1 text-[11px] font-semibold"
+                          title="Gunakan Template Cepat"
+                        >
+                          ⚡ Template
+                        </button>
                       </div>
+
                       <button
                         type="submit"
                         disabled={!messageText.trim() || isUploading}
-                        className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="px-5 py-2 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 disabled:opacity-50 text-white rounded-xl text-xs font-extrabold flex items-center gap-2 shadow-lg transition-all cursor-pointer"
                       >
-                        <Send className="w-3.5 h-3.5" /> {isUploading ? 'Mengirim...' : 'Kirim'}
+                        <Send className="w-3.5 h-3.5" />
+                        <span>{isUploading ? 'Mengunggah...' : 'Kirim Balasan'}</span>
                       </button>
                     </div>
                   </form>
                 ) : (
-                  <div className="space-y-2">
+                  <div className="space-y-2.5">
                     <textarea
                       value={internalNoteText}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInternalNoteText(e.target.value)}
-                      placeholder="Tulis catatan internal untuk tim operator..."
+                      placeholder="Tulis catatan internal untuk koordinasi tim operasional (Rahasia)..."
                       rows={2}
-                      className="w-full bg-amber-500/10 border border-amber-500/20 rounded-xl p-2.5 text-xs text-white placeholder-slate-400 focus:outline-none resize-none"
+                      className="w-full bg-amber-500/10 border border-amber-500/25 rounded-xl p-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-500/50 resize-none shadow-inner leading-relaxed"
                     />
-                    <div className="flex justify-end">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-amber-300/80 flex items-center gap-1 font-medium">
+                        🔒 Catatan ini tersimpan secara internal di arsip tiket PURI
+                      </span>
                       <button
                         onClick={handleSaveInternalNote}
                         disabled={!internalNoteText.trim()}
-                        className="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                        className="px-5 py-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 disabled:opacity-50 text-white rounded-xl text-xs font-extrabold transition-all cursor-pointer shadow-md"
                       >
                         Simpan Catatan
                       </button>
@@ -928,8 +997,14 @@ export function WhatsAppDashboard() {
               </div>
             </>
           ) : (
-            <div className="flex items-center justify-center h-full text-slate-500 text-xs">
-              Pilih percakapan dari daftar di sebelah kiri.
+            <div className="flex flex-col items-center justify-center h-full text-slate-500 text-xs space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400">
+                <User className="w-6 h-6" />
+              </div>
+              <p className="font-semibold text-slate-400">Pilih percakapan dari daftar antrean di sebelah kiri.</p>
+              <span className="text-[11px] text-slate-500">
+                PURI 6-Tier Smart Routing Siap Menganalisis Percakapan Masuk
+              </span>
             </div>
           )}
         </div>
@@ -1022,10 +1097,12 @@ export function WhatsAppDashboard() {
                   </div>
                   <div className="flex items-center gap-1">
                     <button
-                      onClick={() => setDashboardView('settings')}
-                      className="px-2 py-1 bg-white/10 hover:bg-white/20 text-slate-200 rounded text-[10px] font-semibold transition-colors cursor-pointer"
+                      onClick={() => router.push('/ai-dashboard')}
+                      className="px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded text-[10px] font-bold transition-colors cursor-pointer flex items-center gap-1"
+                      title="Buka AI Center untuk mengatur Model AI Bot dan System Prompt"
                     >
-                      Kustom Bot
+                      <Bot className="w-3 h-3 text-emerald-400" />
+                      <span>AI Center</span>
                     </button>
                     <button
                       onClick={() => activeConversation && applyAiSuggestedReply(activeConversation.id)}

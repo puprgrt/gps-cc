@@ -5,8 +5,19 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
-  webpack: (config) => {
+  webpack: (config, { dev }) => {
     config.resolve.symlinks = false;
+    if (dev) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        ignored: [
+          '**/node_modules/**',
+          '**/.git/**',
+          '**/server/data/**',
+          '**/baileys_auth_garut/**'
+        ],
+      };
+    }
     return config;
   },
   typescript: {

@@ -2,6 +2,7 @@ const { GoogleGenAI } = require('@google/genai');
 const { downloadMediaMessage, normalizeMessageContent, getContentType } = require('@whiskeysockets/baileys');
 const supabaseService = require('../services/supabaseService');
 const localDb = require('../services/localDbService'); // Keep for logs if needed
+const aiOrchestrator = require('./AIOrchestrator');
 
 class MessageHandler {
   constructor(client) {
@@ -236,13 +237,6 @@ class MessageHandler {
       };
     }
 
-    const textMsg = m.conversation || m.extendedTextMessage?.text || m.text || '';
-    return { 
-      text: textMsg || '[Pesan]', 
-      type: 'text', 
-      metadata: null 
-    };
-
     if (m.locationMessage) {
       return { 
         text: '[Berbagi Lokasi]', 
@@ -259,54 +253,39 @@ class MessageHandler {
       return { text: '[Polling] ' + m.pollCreationMessage.name, type: 'poll', metadata: null };
     }
 
+    const textMsg = m.conversation || m.extendedTextMessage?.text || m.text || '';
+    if (textMsg) {
+      return { 
+        text: textMsg, 
+        type: 'text', 
+        metadata: null 
+      };
+    }
+
     return { text: '[Pesan Tipe Lain]', type: 'unknown', metadata: null };
   }
 
   async handleGeminiAiReply(senderJid, messageText, pushName, botSettings = {}, mediaPayload = null) {
     try {
-      const systemPrompt = botSettings.system_prompt || `Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.`;
-      let modelName = botSettings.model || 'gemini-3.5-flash';
-      if (!modelName || modelName === 'default' || modelName.includes('2.5')) {
-        modelName = 'gemini-3.5-flash';
-      }
+      const cleanPhone = '+' + senderJid.split('@')[0];
+      const convId = `conv-${senderJid}`;
 
-      let contentsPayload;
-      if (mediaPayload && mediaPayload.base64) {
-        const promptText = `${systemPrompt}\n\nPesan Warga (${pushName}): "${messageText}". Warga melampirkan berkas/gambar (${mediaPayload.fileName || 'Lampiran'}). Mohon baca, analisis, dan berikan penjelasan atau tanggapan terkait isi dokumen/gambar terlampir untuk keperluan pelayanan Dinas PUPR Kabupaten Garut.`;
-        contentsPayload = [
-          {
-            role: 'user',
-            parts: [
-              { text: promptText },
-              {
-                inlineData: {
-                  data: mediaPayload.base64,
-                  mimeType: mediaPayload.mimetype || 'application/octet-stream'
-                }
-              }
-            ]
-          }
-        ];
-      } else {
-        contentsPayload = `${systemPrompt}\n\nPertanyaan Warga (${pushName}): "${messageText}"`;
-      }
-
-      const aiClient = this.getAiInstance();
-      if (!aiClient) {
-        console.warn('[MessageHandler] GEMINI_API_KEY tidak ditemukan di .env!');
-        return false;
-      }
-
-      const res = await aiClient.models.generateContent({
-        model: modelName,
-        contents: contentsPayload,
+      // Call PURI Multi-Modal AI Orchestrator 2026 (Free Tier / Local Fallback + 6-Tier Routing)
+      const orchestratorResult = await aiOrchestrator.processMessage({
+        conversationId: convId,
+        senderName: pushName,
+        userText: messageText,
+        mediaPayload: mediaPayload || undefined,
+        preferredModel: botSettings.model || 'auto',
+        customSystemPrompt: botSettings.system_prompt || undefined,
       });
 
-      const rawReply = res.text;
+      const rawReply = orchestratorResult.text;
       
       if (rawReply) {
         const replyText = this.formatPuriReply(rawReply);
-        // Automatically send the reply
+        
+        // Prepare Bot message object including 6-Tier PURI Routing metadata
         const botMsgObj = {
           id: `msg-${Date.now()}`,
           sender: 'bot',
@@ -314,20 +293,36 @@ class MessageHandler {
           text: replyText,
           timestamp: new Date().toISOString(),
           status: 'sent',
-          type: 'text'
+          type: 'text',
+          metadata: {
+            aiOrchestrator: {
+              providerUsed: orchestratorResult.providerUsed,
+              modelName: orchestratorResult.modelName,
+              isFromCache: orchestratorResult.isFromCache,
+              confidenceScore: orchestratorResult.confidenceScore,
+              fallbackHistory: orchestratorResult.fallbackHistory,
+              executionTimeMs: orchestratorResult.executionTimeMs,
+              routingDecision: orchestratorResult.routingDecision,
+            },
+          },
         };
 
         await this.client.waSocket.sendMessage(senderJid, { text: replyText });
+        await supabaseService.saveMessage(convId, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
+
+        // Structured logging for AI Cost & Performance Dashboard
+        const logTag = orchestratorResult.isFromCache
+          ? 'AI_CACHE_HIT'
+          : `AI_${orchestratorResult.providerUsed}_REPLY`;
+        const logMsg = `Respon [${orchestratorResult.providerUsed} - ${orchestratorResult.modelName}] dikirim ke ${pushName} (${orchestratorResult.executionTimeMs}ms, Conf: ${orchestratorResult.confidenceScore}%)`;
+        this.client.addLog(logTag, logMsg);
         
-        const cleanPhone = '+' + senderJid.split('@')[0];
-        await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
-        
-        this.client.addLog('AI_GEMINI_REPLY', `Respon Gemini AI dikirim ke ${pushName}`);
+        console.log(`[PURI_ORCHESTRATOR] ${logMsg} | Routing Bidang: ${orchestratorResult.routingDecision?.primaryBidang}`);
         return true;
       }
     } catch (error) {
-      console.error('[MessageHandler] Gagal mengirim balasan Gemini AI:', error.message);
-      this.client.addLog('AI_GEMINI_ERROR', `Gagal merespons AI: ${error.message}`, 'error');
+      console.error('[MessageHandler] Gagal mengirim balasan PURI AI Orchestrator:', error.message);
+      this.client.addLog('AI_ORCHESTRATOR_ERROR', `Gagal merespons AI: ${error.message}`, 'error');
       return false;
     }
   }

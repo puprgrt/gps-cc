@@ -21,7 +21,8 @@ import {
   Plus,
   Bot,
   QrCode,
-  X
+  X,
+  Headphones
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/hooks/useSidebar';
@@ -37,6 +38,7 @@ export function Sidebar() {
     { icon: MessageCircle, label: 'WhatsApp Center', href: '/whatsapp' },
     { icon: Share2, label: 'Social Media', href: '/social' },
     { icon: Bot, label: 'AI Center', href: '/ai-dashboard' },
+    { icon: Headphones, label: 'AI Customer Service', href: '/ai-cs' },
     { icon: BookOpen, label: 'Knowledge Base', href: '/kb' },
     { icon: Map, label: 'GIS & Peta', href: '/gis' },
     { icon: PieChart, label: 'Analytics', href: '/analisis' },

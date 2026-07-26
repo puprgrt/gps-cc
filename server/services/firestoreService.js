@@ -109,9 +109,80 @@ async function getRecentLogs() {
   }
 }
 
+// ============================================================================
+// PURI RAG & FAQ CACHE DATABASE PERSISTENCE
+// ============================================================================
+const RAG_COLLECTION = 'puri_rag_knowledge_base';
+const FAQ_COLLECTION = 'puri_faq_cache';
+
+async function saveRAGDocument(docData) {
+  try {
+    const docId = docData.id || `doc-${Date.now()}`;
+    const docRef = doc(db, RAG_COLLECTION, docId);
+    await setDoc(docRef, {
+      ...docData,
+      id: docId,
+      updatedAt: docData.updatedAt || new Date().toISOString(),
+    });
+    return true;
+  } catch (error) {
+    console.warn('[Firestore] Fallback saving RAG Document to local database:', error.message);
+    return false;
+  }
+}
+
+async function getAllRAGDocuments() {
+  try {
+    const q = query(collection(db, RAG_COLLECTION));
+    const snapshot = await getDocs(q);
+    const docs = [];
+    snapshot.forEach((itemDoc) => {
+      docs.push(itemDoc.data());
+    });
+    return docs;
+  } catch (error) {
+    console.warn('[Firestore] Could not load RAG documents from Firestore:', error.message);
+    return [];
+  }
+}
+
+async function saveFAQEntry(entryData) {
+  try {
+    const docId = entryData.queryKey || `faq-${Date.now()}`;
+    const docRef = doc(db, FAQ_COLLECTION, docId);
+    await setDoc(docRef, {
+      ...entryData,
+      updatedAt: entryData.updatedAt || new Date().toISOString(),
+    });
+    return true;
+  } catch (error) {
+    console.warn('[Firestore] Fallback saving FAQ cache entry:', error.message);
+    return false;
+  }
+}
+
+async function getAllFAQEntries() {
+  try {
+    const q = query(collection(db, FAQ_COLLECTION));
+    const snapshot = await getDocs(q);
+    const faqs = [];
+    snapshot.forEach((itemDoc) => {
+      faqs.push(itemDoc.data());
+    });
+    return faqs;
+  } catch (error) {
+    console.warn('[Firestore] Could not load FAQ entries from Firestore:', error.message);
+    return [];
+  }
+}
+
 module.exports = {
   saveMessage,
   saveLog,
   getActiveConversations,
-  getRecentLogs
+  getRecentLogs,
+  saveRAGDocument,
+  getAllRAGDocuments,
+  saveFAQEntry,
+  getAllFAQEntries,
 };
