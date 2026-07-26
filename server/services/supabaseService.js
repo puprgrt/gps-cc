@@ -323,6 +323,43 @@ async function getAllFAQEntries() {
   }
 }
 
+// ============================================================================
+// SPMS (Smart Public Service Performance Management System)
+// ============================================================================
+async function saveSurveyResponse(responseData) {
+  try {
+    const payload = {
+      respondent_name: responseData.name,
+      respondent_phone: responseData.phoneNumber,
+      layanan: responseData.layanan || 'PENGADUAN',
+      channel: responseData.channel || 'WHATSAPP',
+      status: 'COMPLETED',
+      dimensions: responseData.dimensions || {},
+      nps_score: responseData.npsScore || 0,
+      comment: responseData.comment || '',
+      sentimen: responseData.sentimen || 'NETRAL',
+      ticket_id: responseData.ticketId,
+      submitted_at: new Date().toISOString()
+    };
+
+    const { error } = await supabase
+      .from('spms_survey_responses')
+      .insert(payload);
+
+    if (error) {
+      if (error.code === '42P01') {
+        console.warn('[SupabaseService] Table spms_survey_responses does not exist yet.');
+        return false;
+      }
+      throw error;
+    }
+    return true;
+  } catch (err) {
+    console.error('[SupabaseService] Error saving survey response:', err.message || err);
+    return false;
+  }
+}
+
 module.exports = {
   supabase,
   saveMessage,
@@ -336,4 +373,5 @@ module.exports = {
   getAllRAGDocuments,
   saveFAQEntry,
   getAllFAQEntries,
+  saveSurveyResponse,
 };

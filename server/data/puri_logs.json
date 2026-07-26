@@ -1,5 +1,68 @@
 [
   {
+    "id": "log-1785066974632",
+    "timestamp": "2026-07-26T11:56:14.632Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785066973522",
+    "timestamp": "2026-07-26T11:56:13.522Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD version 2.3000.1035194821",
+    "level": "info"
+  },
+  {
+    "id": "log-1785066937242",
+    "timestamp": "2026-07-26T11:55:37.242Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785066917227",
+    "timestamp": "2026-07-26T11:55:17.227Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785066897217",
+    "timestamp": "2026-07-26T11:54:57.217Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785066837170",
+    "timestamp": "2026-07-26T11:53:57.170Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785066836029",
+    "timestamp": "2026-07-26T11:53:56.029Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD version 2.3000.1035194821",
+    "level": "info"
+  },
+  {
+    "id": "log-1785066762616",
+    "timestamp": "2026-07-26T11:52:42.616Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1785066761268",
+    "timestamp": "2026-07-26T11:52:41.268Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD version 2.3000.1035194821",
+    "level": "info"
+  },
+  {
     "id": "log-1785065141467",
     "timestamp": "2026-07-26T11:25:41.467Z",
     "event": "QR_RECEIVED",

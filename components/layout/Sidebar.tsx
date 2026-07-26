@@ -22,7 +22,8 @@ import {
   Bot,
   QrCode,
   X,
-  Headphones
+  Headphones,
+  Target
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/hooks/useSidebar';
@@ -33,6 +34,7 @@ export function Sidebar() {
   
   const menuItems = [
     { icon: Home, label: 'Dashboard', href: '/' },
+    { icon: Target, label: 'SPMS Executive', href: '/spms' },
     { icon: Files, label: 'Pelayanan', href: '/pelayanan' },
     { icon: Activity, label: 'Monitoring', href: '/monitoring' },
     { icon: MessageCircle, label: 'WhatsApp Center', href: '/whatsapp' },

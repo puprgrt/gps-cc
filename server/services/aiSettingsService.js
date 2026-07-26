@@ -25,7 +25,7 @@ const DEFAULT_AI_SETTINGS = {
   GEMINI: {
     provider: 'GEMINI',
     name: 'Google Gemini AI',
-    model: 'gemini-2.5-flash',
+    model: 'gemini-1.5-flash',
     isActive: true,
     temperature: 0.7,
     maxTokens: 2048,

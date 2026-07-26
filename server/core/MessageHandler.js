@@ -318,6 +318,44 @@ class MessageHandler {
         this.client.addLog(logTag, logMsg);
         
         console.log(`[PURI_ORCHESTRATOR] ${logMsg} | Routing Bidang: ${orchestratorResult.routingDecision?.primaryBidang}`);
+        
+        // --- SPMS Integration: Catch SURVEY_SUBMISSION ---
+        if (orchestratorResult.routingDecision?.intent === 'SURVEY_SUBMISSION') {
+          console.log(`[SPMS] Menangkap submission survei dari ${pushName}`);
+          
+          // Simple extraction logic: extract first number 1-10 as NPS, determine sentiment
+          let npsScore = 8; // default
+          const scoreMatch = messageText.match(/\b([1-9]|10)\b/);
+          if (scoreMatch) {
+             npsScore = parseInt(scoreMatch[1], 10);
+          }
+          
+          let sentimen = 'NETRAL';
+          if (npsScore >= 9) sentimen = 'POSITIF';
+          else if (npsScore <= 6) sentimen = 'NEGATIF';
+
+          // Simulate scoring dimensions based on overall score
+          const baseDim = (npsScore / 10) * 5;
+          const dimensions = {
+            kemudahan_informasi: Math.min(5, Math.max(1, Math.round(baseDim))),
+            kecepatan_pelayanan: Math.min(5, Math.max(1, Math.round(baseDim))),
+            keramahan_petugas: Math.min(5, Math.max(1, Math.round(baseDim))),
+            kepuasan_keseluruhan: Math.min(5, Math.max(1, Math.round(baseDim)))
+          };
+
+          await supabaseService.saveSurveyResponse({
+            name: pushName,
+            phoneNumber: cleanPhone,
+            layanan: orchestratorResult.routingDecision.layanan || 'INFORMASI',
+            channel: 'WHATSAPP',
+            npsScore,
+            sentimen,
+            comment: messageText,
+            dimensions,
+            ticketId: orchestratorResult.routingDecision.ticketId
+          });
+        }
+        
         return true;
       }
     } catch (error) {

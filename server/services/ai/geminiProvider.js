@@ -9,8 +9,8 @@
  *
  * Model Updates (Juli 2026):
  * - gemini-2.0-flash DISCONTINUED (1 Juni 2026)
- * - Default: gemini-2.5-flash (GA, stable)
- * - Fallback: gemini-2.5-flash-lite (cost-efficient)
+ * - Default: gemini-1.5-flash (GA, stable)
+ * - Fallback: gemini-1.5-flash-8b (cost-efficient)
  *
  * Anti-Limit: Inherits retry, timeout, rate limiter, circuit breaker from base.
  */
@@ -20,20 +20,20 @@ const AIProviderInterface = require('./aiProviderInterface');
 
 // Map of deprecated/discontinued models to their current replacements
 const MODEL_MIGRATION_MAP = {
-  'gemini-2.0-flash': 'gemini-2.5-flash',
-  'gemini-2.0-flash-lite': 'gemini-2.5-flash-lite',
-  'gemini-2.0-flash-lite-preview-02-05': 'gemini-2.5-flash-lite',
-  'gemini-pro': 'gemini-2.5-flash',
-  'gemini-1.5-flash': 'gemini-2.5-flash',
-  'gemini-1.5-pro': 'gemini-2.5-flash',
-  'gemini-2.5-flash-preview': 'gemini-2.5-flash',
+  'gemini-2.5-flash': 'gemini-1.5-flash',
+  'gemini-2.5-flash-lite': 'gemini-1.5-flash-8b',
+  'gemini-pro': 'gemini-1.5-flash',
+  'gemini-1.5-flash': 'gemini-1.5-flash',
+  'gemini-1.5-pro': 'gemini-1.5-pro',
+  'gemini-2.5-flash-preview': 'gemini-1.5-flash',
 };
 
 class GeminiProvider extends AIProviderInterface {
   constructor() {
-    super('GEMINI', 'gemini-2.5-flash');
-    this.name = 'Google Gemini AI';
+    super('GEMINI', 'gemini-1.5-flash');
+    this.name = 'Google Gemini (1.5 Flash)';
     this.client = null;
+    this.fallbackModels = ['gemini-1.5-flash-8b', 'gemini-1.5-pro'];
   }
 
   getClient() {

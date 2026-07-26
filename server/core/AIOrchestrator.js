@@ -176,6 +176,11 @@ class AIOrchestrator {
       intent = 'STATUS_PERMOHONAN';
     } else if (lower.includes('konsultasi') || lower.includes('tanya teknis')) {
       intent = 'KONSULTASI';
+    } else if (lower.match(/^(skm|nilai|rating|puas|kecewa|bintang|10|9|8|7|6|5|4|3|2|1)\b/)) {
+      // Very basic heuristic for survey submission
+      if (lower.includes('pelayanan') || lower.match(/\b(10|9|8|7|6|5|4|3|2|1)\b/)) {
+        intent = 'SURVEY_SUBMISSION';
+      }
     }
 
     // 4. Priority & Emergency flag
