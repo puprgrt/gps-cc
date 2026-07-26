@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { usePuriMeetStore } from '@/hooks/usePuriMeet';
 import { MeetingRoom } from '@/components/puri-meet/MeetingRoom';
-import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
 import { MeetingParticipants } from '@/components/puri-meet/MeetingParticipants';
 import { PuriMeetService } from '@/services/puriMeetService';
 import type { MeetingParticipant } from '@/domain/puriMeet';
@@ -126,6 +126,16 @@ export default function MeetingRoomPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          <a
+            href={`https://meet.jit.si/${activeMeeting.roomId}#userInfo.displayName="${encodeURIComponent('Operator PUPR (Host)')}"&config.prejoinPageEnabled=false&config.startWithAudioMuted=false&config.startWithVideoMuted=false`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-500/30 flex items-center gap-1.5 transition-colors"
+            title="Buka Ruangan Jitsi di Tab Baru"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            Buka Jitsi
+          </a>
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className={cn(

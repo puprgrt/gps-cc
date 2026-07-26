@@ -1,8 +1,13 @@
 const { createClient } = require('@supabase/supabase-js');
 const whatsappClient = require('../core/WhatsAppClient');
-const { SUPABASE_URL, SUPABASE_ANON_KEY } = process.env;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+if (!supabaseUrl) {
+  console.warn('⚠️  NEXT_PUBLIC_SUPABASE_URL is missing. Reminders may fail.');
+}
+
+const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder');
 
 /**
  * Check for meetings starting in exactly 30 minutes

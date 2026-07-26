@@ -13,6 +13,7 @@ import { MeetingCard } from './MeetingCard';
 import { MeetingCalendar } from './MeetingCalendar';
 import { ActiveMeetingBanner } from './ActiveMeetingBanner';
 import { CreateMeetingModal } from './CreateMeetingModal';
+import { PuriMeetService } from '@/services/puriMeetService';
 import type { Meeting } from '@/domain/puriMeet';
 
 export function MeetDashboard() {
@@ -36,8 +37,14 @@ export function MeetDashboard() {
   const todayMeetings = useTodayMeetings();
   const liveMeetings = useLiveMeetings();
 
-  const handleJoin = (meeting: Meeting) => {
-    router.push(`/puri-meet/room/${meeting.roomId}`);
+  const handleJoin = async (meeting: Meeting) => {
+    if (meeting.status === 'SCHEDULED') {
+      await PuriMeetService.startMeeting(meeting.id);
+    }
+    const hostName = encodeURIComponent('Operator PUPR (Host)');
+    const hostEmail = encodeURIComponent('operator@pupr.garutkab.go.id');
+    const jitsiHostUrl = `https://meet.jit.si/${meeting.roomId}#userInfo.displayName="${hostName}"&userInfo.email="${hostEmail}"&config.prejoinPageEnabled=false&config.startWithAudioMuted=false&config.startWithVideoMuted=false`;
+    window.open(jitsiHostUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleSearch = (e: React.FormEvent) => {
