@@ -199,7 +199,7 @@ Ketik *0* untuk kembali ke Menu Utama.`,
       description: 'Info Alamat & Kontak',
       reply_text: `📍 *KANTOR DINAS PUPR KABUPATEN GARUT*
 
-• *Alamat:* Jl. Raya Samarang No. 115, Tarogong Kaler, Kabupaten Garut, Jawa Barat 44151
+• *Alamat:* Jl. Prof. KH. Cecep Syarifudin No. 117, Sukagalih, Tarogong Kidul, Kabupaten Garut
 • *Jam Operasional:* Senin - Jumat (08:00 - 15:30 WIB)
 • *Website Resmi:* https://pupr.garutkab.go.id
 

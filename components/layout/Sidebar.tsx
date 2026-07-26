@@ -23,7 +23,8 @@ import {
   QrCode,
   X,
   Headphones,
-  Target
+  Target,
+  Video
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/hooks/useSidebar';
@@ -39,6 +40,7 @@ export function Sidebar() {
     { icon: Activity, label: 'Monitoring', href: '/monitoring' },
     { icon: MessageCircle, label: 'WhatsApp Center', href: '/whatsapp' },
     { icon: Share2, label: 'Social Media', href: '/social' },
+    { icon: Video, label: 'PURI Meet', href: '/puri-meet' },
     { icon: Bot, label: 'AI Center', href: '/ai-dashboard' },
     { icon: Headphones, label: 'AI Customer Service', href: '/ai-cs' },
     { icon: BookOpen, label: 'Knowledge Base', href: '/kb' },

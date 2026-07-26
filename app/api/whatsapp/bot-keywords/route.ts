@@ -105,9 +105,7 @@ Ketik *1.1* untuk melihat rincian syarat berkas teknis PBG.`,
     {
       keyword: 'lokasi',
       match_type: 'CONTAINS',
-      reply_text: `📍 *Lokasi Kantor Dinas PUPR Kabupaten Garut:*
-Jl. Raya Samarang No. 115, Tarogong Kaler, Kabupaten Garut, Jawa Barat 44151.
-Jam Kerja: Senin - Jumat (08:00 - 15:30 WIB).`,
+      reply_text: `🏛️ *ALAMAT KANTOR DINAS PUPR GARUT*\n\nJl. Prof. KH. Cecep Syarifudin No. 117, Sukagalih, Tarogong Kidul, Kabupaten Garut.\n\n🕒 *Jam Kerja Pelayanan:*\nSenin - Jumat: 08:00 - 15:30 WIB\n\n📌 *Layanan Tatap Muka:*\nMal Pelayanan Publik (MPP) Garut & Kantor Dinas PUPR Garut.`,
       is_active: true
     },
     {

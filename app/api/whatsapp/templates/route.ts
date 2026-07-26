@@ -38,7 +38,7 @@ Informasi lebih lanjut dapat dikonsultasikan di Loket Pelayanan PUPR Garut.`,
     category: 'Umum',
     shortcut: '/jam-pelayanan',
     text: `Jam Pelayanan Kantor Dinas PUPR Kabupaten Garut:
-📍 Alamat: Jl. Raya Samarang No. 115, Tarogong Kaler, Garut
+📍 Alamat: Jl. Prof. KH. Cecep Syarifudin No. 117, Sukagalih, Tarogong Kidul, Kabupaten Garut
 🕒 Senin - Kamis: 08.00 - 15.30 WIB
 🕒 Jumat: 08.00 - 16.00 WIB (Istirahat 11.30 - 13.00 WIB)
 Situs Web Resmi: https://pupr.garutkab.go.id`,

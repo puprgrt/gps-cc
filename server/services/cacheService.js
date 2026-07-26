@@ -154,7 +154,7 @@ class CacheService {
       },
       {
         q: 'dimana alamat kantor pupr garut alamat dinas pupr garut',
-        a: '🏛️ *Alamat Kantor Dinas PUPR Kabupaten Garut*:\n\nJl. Raya Samarang No. 115, Tarogong Kaler, Kabupaten Garut, Jawa Barat.\n🕒 *Jam Pelayanan*: Senin - Jumat (08.00 - 15.30 WIB).',
+        a: '🏛️ *Alamat Kantor Dinas PUPR Kabupaten Garut*:\n\nJl. Prof. KH. Cecep Syarifudin No. 117, Sukagalih, Tarogong Kidul, Kabupaten Garut.\n🕒 *Jam Pelayanan*: Senin - Jumat (08.00 - 15.30 WIB).',
         cat: 'CHAT_GENERAL',
       },
       {

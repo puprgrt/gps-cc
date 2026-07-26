@@ -42,7 +42,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
   * Informasikan bahwa laporan akan diteruskan ke Tim Unit Reaksi Cepat (URC) Bidang Bina Marga / SDA PUPR Garut.
 
 4. ALAMAT & JAM OPERASIONAL:
-- Alamat Kantor: Jl. Raya Samarang No. 115, Tarogong Kaler, Kabupaten Garut, Jawa Barat 44151.
+- Alamat Kantor: Jl. Prof. KH. Cecep Syarifudin No. 117, Sukagalih, Tarogong Kidul, Kabupaten Garut.
 - Jam Operasional Tatap Muka: Senin - Jumat, Pukul 08:00 - 15:30 WIB.
 - Website Resmi: https://pupr.garutkab.go.id
 
@@ -765,7 +765,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-lg bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-5 space-y-4 text-white"
+            className="modal-container bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-5 space-y-4 text-white"
           >
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <h3 className="text-sm font-bold flex items-center gap-2">
@@ -853,7 +853,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-lg bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-5 space-y-4 text-white"
+            className="modal-container bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-5 space-y-4 text-white"
           >
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <h3 className="text-sm font-bold flex items-center gap-2">

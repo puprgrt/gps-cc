@@ -94,7 +94,7 @@ export const WhatsAppQrModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto overflow-x-hidden">
-      <div className="relative w-full max-w-xl bg-slate-900 border border-white/15 rounded-2xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh] min-w-0">
+      <div className="relative modal-container bg-slate-900 border border-white/15 rounded-2xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh] min-w-0">
         {/* Modal Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-slate-950/90 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3 min-w-0">

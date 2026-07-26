@@ -14,15 +14,22 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   
   const isLoginPage = pathname === '/login' || pathname.startsWith('/login/');
+  const isGuestMeeting = pathname.startsWith('/puri-meet/guest/');
 
-  if (isLoginPage) {
+  if (isLoginPage || isGuestMeeting) {
     return (
       <SessionProvider>
-        <AuthGuard>
-          <main className="w-full min-h-screen">
+        {isLoginPage ? (
+          <AuthGuard>
+            <main className="w-full min-h-screen">
+              {children}
+            </main>
+          </AuthGuard>
+        ) : (
+          <main className="w-full h-screen bg-black overflow-hidden">
             {children}
           </main>
-        </AuthGuard>
+        )}
       </SessionProvider>
     );
   }

@@ -6,6 +6,7 @@ const { PORT, CORS_WHITELIST } = require('./config/baileys');
 const baileysRoutes = require('./routes/baileysRoutes');
 const whatsappClient = require('./core/WhatsAppClient');
 const localDb = require('./services/localDbService');
+const puriMeetReminder = require('./workers/puriMeetReminder');
 
 const app = express();
 
@@ -50,4 +51,7 @@ app.listen(PORT, async () => {
   // Auto-connect on startup
   console.log('[PUPR Baileys] Menginisialisasi Client WhatsApp...');
   whatsappClient.init();
+
+  // Start workers
+  puriMeetReminder.start();
 });

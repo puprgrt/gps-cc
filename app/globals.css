@@ -66,6 +66,16 @@ body {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
+.modal-container {
+  width: 95vw;
+  max-width: 700px;
+}
+
+.modal-container-sm {
+  width: 95vw;
+  max-width: 450px;
+}
+
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
