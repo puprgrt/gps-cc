@@ -23,15 +23,18 @@ export async function GET() {
     // 2. Fallback: Fetch directly from Supabase DB using Service Role Key
     const { data: conversations, error } = await supabaseAdmin
       .from('wa_conversations')
-      .select('*')
+      .select('*, wa_contacts(name, phone_number)')
       .order('updated_at', { ascending: false });
 
     if (!error && conversations) {
       return NextResponse.json({
-        conversations: conversations.map(c => ({
-          id: c.id,
-          contactName: c.contact_name || c.phone_number,
-          contactNumber: c.phone_number,
+        conversations: conversations.map(c => {
+          const contactObj = Array.isArray(c.wa_contacts) ? c.wa_contacts[0] : c.wa_contacts;
+          const fallbackPhone = c.id.replace('conv-', '').split('@')[0];
+          return {
+            id: c.id,
+            contactName: contactObj?.name || c.contact_name || fallbackPhone,
+            contactNumber: contactObj?.phone_number || fallbackPhone,
           lastMessage: c.last_message || '',
           timestamp: c.updated_at,
           unreadCount: c.unread_count || 0,
@@ -39,7 +42,8 @@ export async function GET() {
           tags: c.tags || [],
           category: c.category || 'Umum',
           messages: c.messages || []
-        })),
+        };
+      }),
         logs: []
       });
     }

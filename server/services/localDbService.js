@@ -50,6 +50,8 @@ async function saveMessage(conversationId, messageData, contactData = null) {
       };
       conversations.unshift(conv);
     } else {
+      if (contactData?.name) conv.contactName = contactData.name;
+      if (contactData?.phoneNumber) conv.contactNumber = contactData.phoneNumber;
       conv.timestamp = timestampIso;
       conv.lastMessage = messageData.text || '';
       conv.unreadCount = messageData.sender === 'user' ? (conv.unreadCount || 0) + 1 : 0;

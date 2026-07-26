@@ -47,16 +47,19 @@ export class WhatsAppService {
           category,
           updated_at,
           created_at,
+          wa_contacts(name, phone_number),
           wa_messages(id, sender_type, text, media_url, media_type, status, timestamp)
         `)
         .order('updated_at', { ascending: false });
 
       if (!error && data && data.length > 0) {
         return data.map((c: any) => {
+          const contactObj = Array.isArray(c.wa_contacts) ? c.wa_contacts[0] : c.wa_contacts;
+          const fallbackPhone = c.id.replace('conv-', '').split('@')[0];
           const base: WhatsAppConversation = {
             id: c.id,
-            contactName: c.id.split('@')[0],
-            contactNumber: c.id.split('@')[0],
+            contactName: contactObj?.name || fallbackPhone,
+            contactNumber: contactObj?.phone_number || fallbackPhone,
             lastMessage: c.last_message || '',
             timestamp: new Date(c.updated_at || Date.now()),
             unreadCount: c.unread_count || 0,

@@ -64,7 +64,7 @@ class MessageHandler {
             const fs = require('fs');
             const path = require('path');
             try {
-              const publicDir = path.join(process.cwd(), 'public', 'wa-media');
+              const publicDir = path.resolve(__dirname, '../../public', 'wa-media');
               if (!fs.existsSync(publicDir)) {
                 fs.mkdirSync(publicDir, { recursive: true });
               }
@@ -72,9 +72,11 @@ class MessageHandler {
               const safeName = `${Date.now()}_${msg.key.id.replace(/[^a-zA-Z0-9]/g, '')}.${ext}`;
               const filePath = path.join(publicDir, safeName);
               fs.writeFileSync(filePath, mediaBuffer);
+              console.log(`[MEDIA_SAVE] Berhasil menyimpan file media: ${filePath} (${(mediaBuffer.length / 1024).toFixed(1)} KB)`);
               enrichedMetadata.fileUrl = `/wa-media/${safeName}`;
               enrichedMetadata.fileName = enrichedMetadata.fileName || `Lampiran_${type === 'image' ? 'Foto' : 'Dokumen'}.${ext}`;
             } catch (fsErr) {
+              console.error('[MEDIA_SAVE_ERROR] Gagal menyimpan file ke public/wa-media:', fsErr.message);
               this.client.addLog('MEDIA_FS_ERROR', `Gagal menyimpan file ke public/wa-media: ${fsErr.message}`);
               enrichedMetadata.fileUrl = dataUrl;
             }
@@ -263,9 +265,9 @@ class MessageHandler {
   async handleGeminiAiReply(senderJid, messageText, pushName, botSettings = {}, mediaPayload = null) {
     try {
       const systemPrompt = botSettings.system_prompt || `Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.`;
-      let modelName = botSettings.model || 'gemini-2.5-flash';
-      if (!modelName || modelName.includes('3.') || modelName === 'default') {
-        modelName = 'gemini-2.5-flash';
+      let modelName = botSettings.model || 'gemini-3.5-flash';
+      if (!modelName || modelName === 'default' || modelName.includes('2.5')) {
+        modelName = 'gemini-3.5-flash';
       }
 
       let contentsPayload;
