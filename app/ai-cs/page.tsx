@@ -268,7 +268,7 @@ export default function AICustomerServicePage() {
                       : 'bg-emerald-600/20 text-emerald-400 border-emerald-500/40'
                   )}
                 >
-                  {msg.sender === 'user' ? <UserIcon className="h-4 w-4" /> : <Bot className="h-5 w-5" />}
+                  {msg.sender === 'user' ? <UserIcon className="h-4 w-4" /> : <img src="/favicon.ico" alt="PURI" className="h-5 w-5 object-contain" />}
                 </div>
 
                 {/* BUBBLE CONTENT */}
@@ -326,8 +326,8 @@ export default function AICustomerServicePage() {
 
             {isLoading && (
               <div className="flex items-center gap-3 mr-auto max-w-[75%]">
-                <div className="h-9 w-9 rounded-full bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center">
-                  <Bot className="h-5 w-5 animate-pulse" />
+                <div className="h-9 w-9 rounded-full bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center p-1.5 overflow-hidden">
+                  <img src="/favicon.ico" alt="PURI" className="h-full w-full object-contain animate-pulse" />
                 </div>
                 <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 text-sm text-slate-400 flex items-center gap-2">
                   <RefreshCw className="h-4 w-4 animate-spin text-blue-400" />

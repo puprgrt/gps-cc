@@ -12,7 +12,7 @@ export function AIPerformanceCard({ ai }: { ai: AIPerformance | null }) {
     <div className="glass-card p-5 h-full flex flex-col border-t-2 border-t-purple-500">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xs font-bold text-slate-300 tracking-wider uppercase flex items-center gap-2">
-          <Bot className="w-4 h-4 text-purple-400" />
+          <img src="/favicon.ico" alt="PURI" className="w-4 h-4 object-contain" />
           PURI AI Quality Index
         </h2>
         <span className="text-[10px] font-mono text-purple-400 bg-purple-500/10 px-2 py-1 rounded">v2.4</span>

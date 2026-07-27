@@ -294,8 +294,8 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
               <ArrowLeft className="w-5 h-5" />
             </button>
           )}
-          <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-            <Bot className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 p-1.5 flex items-center justify-center shrink-0 shadow-inner overflow-hidden">
+            <img src="/favicon.ico" alt="PURI" className="w-full h-full object-contain" />
           </div>
           <div>
             <h2 className="text-base font-bold flex items-center gap-2">
@@ -353,7 +353,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
               : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
           }`}
         >
-          <Bot className="w-4 h-4" />
+          <img src="/favicon.ico" alt="PURI" className="w-4 h-4 object-contain" />
           <span>Bot AI Center (Prompt & Model)</span>
         </button>
 

@@ -68,10 +68,8 @@ export function Sidebar() {
       )}>
         {/* Logo Area */}
         <div className={cn("p-6 border-b border-white/10 flex items-start gap-4", isCollapsed && "justify-center px-4")}>
-          <div className="w-12 h-12 shrink-0">
-             <div className="w-full h-full bg-blue-900 rounded-lg flex items-center justify-center border border-white/20">
-                <span className="text-xs font-bold text-yellow-400">GARUT</span>
-             </div>
+          <div className="w-12 h-12 shrink-0 rounded-xl overflow-hidden border border-white/20 bg-slate-900/80 p-1 flex items-center justify-center shadow-md">
+            <img src="/favicon.ico" alt="Logo PURI PUPR Garut" className="w-full h-full object-contain" />
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">

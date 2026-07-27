@@ -259,8 +259,8 @@ export function WhatsAppDashboard() {
       {/* ------------------------------------------------------------- */}
       <div className="glass-card rounded-2xl border border-white/10 px-5 py-4 shadow-xl bg-gradient-to-r from-[#0F4C81]/40 via-[#161B22] to-[#0D1117] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0 shadow-inner">
-            <Bot className="w-5 h-5 text-emerald-400" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0 shadow-inner p-1.5 overflow-hidden">
+            <img src="/favicon.ico" alt="PURI" className="w-full h-full object-contain" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
@@ -316,7 +316,7 @@ export function WhatsAppDashboard() {
             className="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg border border-emerald-400/30 transition-all flex items-center gap-1.5 group cursor-pointer"
             title="Buka AI Center untuk mengelola pengaturan Bot, Model, dan Prompt"
           >
-            <Bot className="w-4 h-4 text-amber-300 group-hover:scale-110 transition-transform" />
+            <img src="/favicon.ico" alt="PURI" className="w-4 h-4 object-contain group-hover:scale-110 transition-transform" />
             <span>⚙️ Pengaturan di AI Center</span>
             <ExternalLink className="w-3.5 h-3.5 text-emerald-200" />
           </button>
@@ -867,7 +867,7 @@ export function WhatsAppDashboard() {
                                 {isBot ? (
                                   <>
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                                    <Bot className="w-3.5 h-3.5 text-emerald-300" />
+                                    <img src="/favicon.ico" alt="PURI" className="w-3.5 h-3.5 object-contain" />
                                     <span className="text-emerald-300 tracking-wide">PURI AI • 6-TIER SMART RESPONSE</span>
                                   </>
                                 ) : (
@@ -999,7 +999,7 @@ export function WhatsAppDashboard() {
 
                 {/* AI Assistant Streaming / Typing Indicator */}
                 <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium py-1 animate-pulse">
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <img src="/favicon.ico" alt="PURI" className="w-3.5 h-3.5 object-contain" />
                   <span>PURI AI Orchestrator sedang menganalisis pesan...</span>
                 </div>
               </div>
@@ -1259,7 +1259,7 @@ export function WhatsAppDashboard() {
                       className="px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded text-[10px] font-bold transition-colors cursor-pointer flex items-center gap-1"
                       title="Buka AI Center untuk mengatur Model AI Bot dan System Prompt"
                     >
-                      <Bot className="w-3 h-3 text-emerald-400" />
+                      <img src="/favicon.ico" alt="PURI" className="w-3 h-3 object-contain" />
                       <span>AI Center</span>
                     </button>
                     <button

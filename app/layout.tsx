@@ -8,6 +8,11 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'GPS-CC | Garut Public Service AI Command Center',
   description: 'Dashboard Monitoring & AI Pelayanan Publik Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

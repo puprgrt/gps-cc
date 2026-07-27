@@ -118,9 +118,9 @@ export function Topbar() {
 
         {/* AI System Status Compact Pill */}
         <div className="hidden md:flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-950/40 to-slate-900/80 border border-blue-500/30 shadow-sm">
-          <div className="relative flex items-center justify-center w-6 h-6 rounded-lg bg-blue-500/20 border border-blue-400/40 shrink-0">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping absolute" />
-            <span className="w-2 h-2 rounded-full bg-emerald-400 relative z-10" />
+          <div className="relative flex items-center justify-center w-7 h-7 rounded-lg bg-blue-500/20 border border-blue-400/40 shrink-0 overflow-hidden p-0.5 shadow-sm">
+            <img src="/favicon.ico" alt="PURI" className="w-full h-full object-contain" />
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping absolute -top-0.5 -right-0.5" />
           </div>
           <div className="flex flex-col leading-tight">
             <div className="flex items-center gap-1.5">
