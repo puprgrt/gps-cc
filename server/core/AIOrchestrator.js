@@ -304,7 +304,6 @@ class AIOrchestrator {
 
     // 3a. Spreadsheet Service Retrieval
     let spreadsheetContext = '';
-    const lowerUserText = userText.toLowerCase();
     const isStatusCheck = lowerUserText.includes('status') || lowerUserText.includes('lacak') || lowerUserText.includes('permohonan');
     
     if (isStatusCheck) {
