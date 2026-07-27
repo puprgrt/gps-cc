@@ -15,6 +15,7 @@ import { PerformanceHeatmap } from './PerformanceHeatmap';
 import { TrendLineChart } from './TrendLineChart';
 import { EarlyWarningTicker } from './EarlyWarningTicker';
 import { AIRecommendationsPanel } from './AIRecommendationsPanel';
+import { SKMTable } from './SKMTable';
 
 export function SPMSLayout() {
   const store = useSPMS();
@@ -91,6 +92,9 @@ export function SPMSLayout() {
 
         </div>
       </div>
+
+      {/* 4. Tabel SKM — Full Width di paling bawah */}
+      <SKMTable />
     </div>
   );
 }

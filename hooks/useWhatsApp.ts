@@ -205,8 +205,21 @@ export const useWhatsAppStore = create<WhatsAppState>((set, get) => ({
       get().sendMessage(conversationId, conv.aiSuggestedReply.text, 'bot');
     }
   },
-
   updateConversationStatus: async (conversationId, status) => {
+    // Otomatis kirim survei SKM jika status diubah menjadi 'resolved' (selesai)
+    if (status === 'resolved') {
+      const origin = typeof window !== 'undefined' ? window.location.origin : 'https://gps-cc.garutkab.go.id';
+      const surveyLink = `${origin}/spms/survei?cid=${conversationId}`;
+      const messageText = `Halo! Laporan/layanan Anda telah kami selesaikan. Sebagai upaya perbaikan layanan DPUPR Kabupaten Garut, mohon kesediaan Bapak/Ibu untuk mengisi Survei Kepuasan Masyarakat (SKM) melalui tautan berikut:\n\n${surveyLink}\n\nTerima kasih atas partisipasi Anda!`;
+      
+      // Kirim pesan dari bot tanpa memblokir pembaruan status
+      try {
+        get().sendMessage(conversationId, messageText, 'bot');
+      } catch (err) {
+        console.warn('Gagal mengirim auto-pesan SKM:', err);
+      }
+    }
+
     set((state) => ({
       conversations: state.conversations.map((c) => {
         if (c.id === conversationId) {

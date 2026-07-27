@@ -3,6 +3,21 @@
 import React, { useEffect } from 'react';
 import { SPMSLayout } from '@/components/spms/SPMSLayout';
 import { useSPMS } from '@/hooks/useSPMS';
+import { supabase } from '@/lib/supabase';
+
+// Tabel-tabel Supabase yang di-subscribe untuk real-time updates
+const REALTIME_TABLES = [
+  'spms_survey_responses',
+  'spms_metrics',
+  'spms_bidang_performance',
+  'spms_operator_performance',
+  'spms_ai_performance',
+  'spms_early_warnings',
+  'spms_ai_recommendations',
+  'spms_heatmap_kecamatan',
+  'spms_trend_data',
+  'spms_ai_insights',
+] as const;
 
 export default function SPMSDashboardPage() {
   const { fetchDashboardData, isLoading, error } = useSPMS();
@@ -10,6 +25,31 @@ export default function SPMSDashboardPage() {
   useEffect(() => {
     // Initial data fetch
     fetchDashboardData();
+
+    // Auto-refresh setiap 60 detik sebagai fallback
+    const interval = setInterval(() => {
+      fetchDashboardData();
+    }, 60_000);
+
+    // Setup Supabase Realtime subscriptions
+    const channel = supabase
+      .channel('spms-dashboard-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'spms_survey_responses' }, () => fetchDashboardData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'spms_metrics' }, () => fetchDashboardData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'spms_bidang_performance' }, () => fetchDashboardData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'spms_operator_performance' }, () => fetchDashboardData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'spms_ai_performance' }, () => fetchDashboardData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'spms_early_warnings' }, () => fetchDashboardData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'spms_ai_recommendations' }, () => fetchDashboardData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'spms_heatmap_kecamatan' }, () => fetchDashboardData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'spms_trend_data' }, () => fetchDashboardData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'spms_ai_insights' }, () => fetchDashboardData())
+      .subscribe();
+
+    return () => {
+      clearInterval(interval);
+      supabase.removeChannel(channel);
+    };
   }, [fetchDashboardData]);
 
   if (error) {
@@ -32,6 +72,5 @@ export default function SPMSDashboardPage() {
     );
   }
 
-  // Pass loading state to a wrapper if needed, but the layout components handle loading skeleton individually
   return <SPMSLayout />;
 }

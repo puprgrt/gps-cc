@@ -14,6 +14,8 @@ import {
   BarChart, Bar, Cell, PieChart, Pie
 } from 'recharts';
 
+import { useDashboard } from '@/hooks/useDashboard';
+
 const trendData = [
   { name: 'Des 2023', Masuk: 2000, Selesai: 1500 },
   { name: 'Jan 2024', Masuk: 3000, Selesai: 2500 },
@@ -43,50 +45,98 @@ const slaData = [
 ];
 
 export default function Dashboard() {
+  const { metrics, layanan, isLiveSyncing, lastUpdated, refetch } = useDashboard();
+
+  // Helper untuk mendapatkan data per layanan
+  const getLayananData = (nama: string) => {
+    const item = layanan.find((l) => l.nama.toLowerCase() === nama.toLowerCase());
+    return {
+      total: item ? item.total.toLocaleString('id-ID') : '0',
+      sla: item ? `${item.sla}%` : '0%'
+    };
+  };
+
+  const krkData = getLayananData('KRK');
+  const pkkprData = getLayananData('PKKPR');
+  const peilData = getLayananData('Peil Banjir');
+  const irigasiData = getLayananData('Irigasi');
+  const rumijaData = getLayananData('RUMIJA');
+  const siteplanData = getLayananData('Siteplan');
+  const pbgData = getLayananData('PBG');
+  const slfData = getLayananData('SLF');
+
   return (
     <div className="flex flex-col gap-4 pb-12 w-full max-w-[1600px] mx-auto">
       
+      {/* Realtime Live Sync Bar */}
+      <div className="flex items-center justify-between bg-slate-900/80 border border-white/10 rounded-2xl px-4 py-2.5 shadow-md">
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isLiveSyncing ? 'bg-emerald-400' : 'bg-amber-400'} opacity-75`}></span>
+            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isLiveSyncing ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+          </span>
+          <span className="font-bold text-emerald-400 tracking-wider text-xs uppercase flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5 text-emerald-400" />
+            LIVE REALTIME SYNC
+          </span>
+          <span className="text-slate-400 text-[11px] hidden sm:inline border-l border-white/10 pl-2.5">
+            Terakhir diperbarui: <span className="font-mono text-slate-200">{lastUpdated.toLocaleTimeString('id-ID')}</span>
+          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] font-mono text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-white/5">
+            Auto-Polling 5s & WebSocket
+          </span>
+          <button 
+            onClick={() => refetch()} 
+            className="px-2.5 py-1 bg-white/5 hover:bg-white/10 active:bg-white/20 rounded-lg border border-white/10 text-slate-200 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1"
+          >
+            Segarkan Data
+          </button>
+        </div>
+      </div>
+
       {/* 8 Metric Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
         <MetricCard 
-          title="KRK" subtitle="Keterangan Rencana Kota" value="412" trend="12.5%" sla="98%" slaTarget="98%"
+          title="KRK" subtitle="Keterangan Rencana Kota" value={krkData.total} trend="0%" sla={krkData.sla} slaTarget="98%"
           icon={<MapIcon className="w-5 h-5 text-white" />} color="bg-blue-600"
-          data={[10, 20, 15, 25, 20, 30, 25, 35, 40]}
+          data={[0, 0, 0, 0, 0, 0, 0, 0, 0]}
         />
         <MetricCard 
-          title="PKKPR" subtitle="Persetujuan Kesesuaian Kegiatan" value="563" trend="8.2%" sla="96%" slaTarget="96%"
+          title="PKKPR" subtitle="Persetujuan Kesesuaian Kegiatan" value={pkkprData.total} trend="0%" sla={pkkprData.sla} slaTarget="96%"
           icon={<FileCheck className="w-5 h-5 text-white" />} color="bg-green-600"
-          data={[15, 10, 20, 18, 25, 22, 30, 28, 35]}
+          data={[0, 0, 0, 0, 0, 0, 0, 0, 0]}
         />
         <MetricCard 
-          title="Peil Banjir" subtitle="Rekomendasi Teknis" value="128" trend="4.1%" sla="97%" slaTarget="97%"
+          title="Peil Banjir" subtitle="Rekomendasi Teknis" value={peilData.total} trend="0%" sla={peilData.sla} slaTarget="97%"
           icon={<Droplet className="w-5 h-5 text-white" />} color="bg-cyan-600"
-          data={[5, 10, 8, 15, 12, 18, 15, 20, 25]}
+          data={[0, 0, 0, 0, 0, 0, 0, 0, 0]}
         />
         <MetricCard 
-          title="Irigasi" subtitle="Rekomendasi Teknis" value="198" trend="7.3%" sla="97%" slaTarget="98%"
+          title="Irigasi" subtitle="Rekomendasi Teknis" value={irigasiData.total} trend="0%" sla={irigasiData.sla} slaTarget="98%"
           icon={<Waves className="w-5 h-5 text-white" />} color="bg-blue-500"
-          data={[8, 12, 15, 10, 18, 20, 15, 22, 28]}
+          data={[0, 0, 0, 0, 0, 0, 0, 0, 0]}
         />
         <MetricCard 
-          title="RUMIJA" subtitle="Rekomendasi Teknis" value="176" trend="6.4%" sla="98%" slaTarget="98%"
+          title="RUMIJA" subtitle="Rekomendasi Teknis" value={rumijaData.total} trend="0%" sla={rumijaData.sla} slaTarget="98%"
           icon={<MapPin className="w-5 h-5 text-white" />} color="bg-purple-600"
-          data={[12, 15, 20, 18, 22, 25, 20, 28, 30]}
+          data={[0, 0, 0, 0, 0, 0, 0, 0, 0]}
         />
         <MetricCard 
-          title="Siteplan" subtitle="Pengesahan Siteplan" value="309" trend="10.6%" sla="95%" slaTarget="97%"
+          title="Siteplan" subtitle="Pengesahan Siteplan" value={siteplanData.total} trend="0%" sla={siteplanData.sla} slaTarget="97%"
           icon={<FileSignature className="w-5 h-5 text-white" />} color="bg-orange-500"
-          data={[20, 18, 25, 22, 30, 28, 35, 30, 40]}
+          data={[0, 0, 0, 0, 0, 0, 0, 0, 0]}
         />
         <MetricCard 
-          title="PBG" subtitle="Persetujuan Bangunan Gedung" value="3.281" trend="18.7%" sla="97%" slaTarget="97%"
+          title="PBG" subtitle="Persetujuan Bangunan Gedung" value={pbgData.total} trend="0%" sla={pbgData.sla} slaTarget="97%"
           icon={<Building className="w-5 h-5 text-white" />} color="bg-red-500"
-          data={[30, 40, 35, 50, 45, 60, 55, 70, 80]}
+          data={[0, 0, 0, 0, 0, 0, 0, 0, 0]}
         />
         <MetricCard 
-          title="SLF" subtitle="Sertifikat Laik Fungsi" value="1.254" trend="15.3%" sla="97%" slaTarget="97%"
+          title="SLF" subtitle="Sertifikat Laik Fungsi" value={slfData.total} trend="0%" sla={slfData.sla} slaTarget="97%"
           icon={<FileBadge className="w-5 h-5 text-white" />} color="bg-teal-600"
-          data={[15, 25, 20, 35, 30, 45, 40, 55, 65]}
+          data={[0, 0, 0, 0, 0, 0, 0, 0, 0]}
         />
       </div>
 
@@ -94,39 +144,50 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[420px]">
         {/* Executive Summary */}
         <div className="lg:col-span-3 glass-card p-5 flex flex-col">
-          <h2 className="text-xs font-bold text-slate-300 mb-4 tracking-wider uppercase">EXECUTIVE SUMMARY</h2>
+          <h2 className="text-xs font-bold text-slate-300 mb-4 tracking-wider uppercase flex items-center justify-between">
+            <span>EXECUTIVE SUMMARY</span>
+            <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1"><Zap className="w-3 h-3"/> LIVE</span>
+          </h2>
           <div className="grid grid-cols-2 gap-4 flex-1">
             <div className="flex flex-col gap-1 border-r border-b border-white/5 pb-2 pr-2">
               <div className="w-6 h-6 rounded bg-blue-500/20 flex items-center justify-center mb-1">
                 <Calendar className="w-3 h-3 text-blue-400" />
               </div>
               <span className="text-[9px] text-slate-400 uppercase font-bold">TOTAL PERMOHONAN</span>
-              <span className="text-2xl font-bold text-white font-mono leading-none mt-1">6.321</span>
-              <span className="text-[9px] text-green-400 mt-1">▲ 16.8% <span className="text-slate-500">dari kemarin</span></span>
+              <span className="text-2xl font-bold text-white font-mono leading-none mt-1">
+                {metrics ? metrics.totalPermohonan.toLocaleString('id-ID') : '0'}
+              </span>
+              <span className="text-[9px] text-green-400 mt-1">▲ 0% <span className="text-slate-500">hari ini ({metrics?.hariIni ?? 0})</span></span>
             </div>
             <div className="flex flex-col gap-1 border-b border-white/5 pb-2 pl-2">
               <div className="w-6 h-6 rounded bg-green-500/20 flex items-center justify-center mb-1">
                 <CheckCircle className="w-3 h-3 text-green-400" />
               </div>
               <span className="text-[9px] text-slate-400 uppercase font-bold">SELESAI</span>
-              <span className="text-2xl font-bold text-white font-mono leading-none mt-1">4.782</span>
-              <span className="text-sm text-green-400 mt-1 font-bold">75.7%</span>
+              <span className="text-2xl font-bold text-white font-mono leading-none mt-1">
+                {metrics ? Math.round(metrics.totalPermohonan * (metrics.persentasePenyelesaian / 100)).toLocaleString('id-ID') : '0'}
+              </span>
+              <span className="text-sm text-green-400 mt-1 font-bold">{metrics?.persentasePenyelesaian ?? 0}%</span>
             </div>
             <div className="flex flex-col gap-1 border-r border-white/5 pt-2 pr-2">
               <div className="w-6 h-6 rounded bg-yellow-500/20 flex items-center justify-center mb-1">
                 <Clock className="w-3 h-3 text-yellow-400" />
               </div>
               <span className="text-[9px] text-slate-400 uppercase font-bold">SEDANG DIPROSES</span>
-              <span className="text-2xl font-bold text-white font-mono leading-none mt-1">1.289</span>
-              <span className="text-sm text-yellow-400 mt-1 font-bold">20.4%</span>
+              <span className="text-2xl font-bold text-white font-mono leading-none mt-1">
+                {metrics ? Math.round(metrics.totalPermohonan * (1 - (metrics.persentasePenyelesaian || 0) / 100)).toLocaleString('id-ID') : '0'}
+              </span>
+              <span className="text-sm text-yellow-400 mt-1 font-bold">{metrics ? (100 - (metrics.persentasePenyelesaian || 0)).toFixed(1) : 0}%</span>
             </div>
             <div className="flex flex-col gap-1 pt-2 pl-2">
               <div className="w-6 h-6 rounded bg-orange-500/20 flex items-center justify-center mb-1">
                 <AlertCircle className="w-3 h-3 text-orange-400" />
               </div>
-              <span className="text-[9px] text-slate-400 uppercase font-bold">BELUM DIPROSES</span>
-              <span className="text-2xl font-bold text-white font-mono leading-none mt-1">250</span>
-              <span className="text-sm text-orange-400 mt-1 font-bold">3.9%</span>
+              <span className="text-[9px] text-slate-400 uppercase font-bold">PENGADUAN TERBANYAK</span>
+              <span className="text-2xl font-bold text-white font-mono leading-none mt-1">
+                {metrics?.totalPengaduan ? metrics.totalPengaduan.toLocaleString('id-ID') : '0'}
+              </span>
+              <span className="text-sm text-orange-400 mt-1 font-bold">{metrics?.totalPengaduan ? 'Jalan & Drainase' : 'Belum Ada'}</span>
             </div>
           </div>
           
@@ -134,26 +195,26 @@ export default function Dashboard() {
              <div className="flex flex-col items-center justify-center text-center">
                 <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center mb-1 text-blue-400"><Clock className="w-3 h-3"/></div>
                 <span className="text-[8px] text-slate-400 uppercase font-bold whitespace-nowrap">RATA-RATA WAKTU</span>
-                <span className="text-sm font-bold text-white mt-1">4.2 <span className="text-[10px] font-normal">Hari</span></span>
-                <span className="text-[9px] text-green-400 mt-1">▼ 0.8 Hari</span>
+                <span className="text-sm font-bold text-white mt-1">0 <span className="text-[10px] font-normal">Hari</span></span>
+                <span className="text-[9px] text-slate-400 mt-1">-</span>
              </div>
              <div className="flex flex-col items-center justify-center text-center">
                 <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mb-1 text-green-400"><UserCheck className="w-3 h-3"/></div>
                 <span className="text-[8px] text-slate-400 uppercase font-bold whitespace-nowrap">IKM (INDEX KEPUASAN)</span>
-                <span className="text-sm font-bold text-white mt-1">92.35</span>
-                <span className="text-[9px] text-green-400 mt-1">Sangat Baik</span>
+                <span className="text-sm font-bold text-white mt-1">{metrics?.ikm ?? 0}</span>
+                <span className="text-[9px] text-emerald-400 mt-1">{metrics?.ikm ? 'Sangat Baik' : '-'}</span>
              </div>
              <div className="flex flex-col items-center justify-center text-center">
                 <div className="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center mb-1 text-red-400"><AlertCircle className="w-3 h-3"/></div>
                 <span className="text-[8px] text-slate-400 uppercase font-bold whitespace-nowrap">PENGADUAN MASUK</span>
-                <span className="text-sm font-bold text-white mt-1">215</span>
-                <span className="text-[9px] text-red-400 mt-1">▼ 12.5%</span>
+                <span className="text-sm font-bold text-white mt-1">{metrics?.totalPengaduan ?? 0}</span>
+                <span className="text-[9px] text-slate-400 mt-1">Realtime</span>
              </div>
              <div className="flex flex-col items-center justify-center text-center">
                 <div className="w-6 h-6 rounded-full bg-teal-500/20 flex items-center justify-center mb-1 text-teal-400"><Zap className="w-3 h-3"/></div>
-                <span className="text-[8px] text-slate-400 uppercase font-bold whitespace-nowrap">AI RESPONSE RATE</span>
-                <span className="text-sm font-bold text-white mt-1">96.3%</span>
-                <span className="text-[9px] text-green-400 mt-1">▲ 3.5%</span>
+                <span className="text-[8px] text-slate-400 uppercase font-bold whitespace-nowrap">AI RESPONSES</span>
+                <span className="text-sm font-bold text-white mt-1">{metrics?.aiActivity ?? 0}</span>
+                <span className="text-[9px] text-emerald-400 mt-1">Sync</span>
              </div>
           </div>
         </div>

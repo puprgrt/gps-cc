@@ -293,6 +293,57 @@ export interface SurveyResultsSummary {
   byLayanan: Record<LayananType, number>;
 }
 
+/**
+ * Data Form Survei Publik (Payload yang dikirim warga)
+ */
+export interface SurveyFormData {
+  respondentName?: string;
+  respondentPhone?: string;
+  gender?: string; // Jenis Kelamin
+  education?: string; // Pendidikan Terakhir
+  occupation?: string; // Pekerjaan
+  layanan: LayananType | string;
+  dimensions: Record<string, number>; // skor per dimensi (1-5)
+  npsScore?: number; // 0-10
+  comment?: string;
+}
+
+/**
+ * Konfigurasi field data pribadi yang bisa diaktifkan/nonaktifkan
+ */
+export interface PersonalDataField {
+  id: string;             // e.g. 'respondentName', 'gender', 'education'
+  label: string;          // Label yang tampil di form
+  isActive: boolean;      // Apakah ditampilkan ke publik
+  isRequired: boolean;    // Apakah wajib diisi
+  fieldType: 'text' | 'tel' | 'select'; // Jenis input
+  options?: string[];     // Opsi untuk tipe 'select'
+}
+
+/**
+ * Pertanyaan Survei Dinamis
+ */
+export interface SurveyQuestion {
+  id: string;
+  label: string;
+  isActive: boolean;
+  order: number;
+}
+
+/**
+ * Konfigurasi Survei (Dinamis)
+ */
+export interface SurveySettings {
+  id: string;
+  title: string;
+  description: string;
+  questions: SurveyQuestion[];
+  layananOptions: { value: string; label: string; isActive: boolean }[];
+  personalDataFields: PersonalDataField[];
+  updatedAt: string;
+}
+
+
 // ============================================================================
 // EARLY WARNING SYSTEM
 // ============================================================================

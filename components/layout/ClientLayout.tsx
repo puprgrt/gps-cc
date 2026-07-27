@@ -15,8 +15,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   
   const isLoginPage = pathname === '/login' || pathname.startsWith('/login/');
   const isGuestMeeting = pathname.startsWith('/puri-meet/guest/');
+  const isPublicSurvey = pathname === '/spms/survei' || pathname.startsWith('/spms/survei/');
 
-  if (isLoginPage || isGuestMeeting) {
+  if (isLoginPage || isGuestMeeting || isPublicSurvey) {
     return (
       <SessionProvider>
         {isLoginPage ? (
@@ -25,6 +26,10 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
               {children}
             </main>
           </AuthGuard>
+        ) : isPublicSurvey ? (
+          <main className="w-full min-h-screen dashboard-bg flex flex-col py-10 px-4 md:px-8 overflow-y-auto">
+            {children}
+          </main>
         ) : (
           <main className="w-full h-screen bg-black overflow-hidden">
             {children}

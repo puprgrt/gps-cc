@@ -1088,7 +1088,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="modal-container bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-5 space-y-4 text-white w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="modal-container bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-5 space-y-4 text-white w-full max-w-4xl max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <h3 className="text-sm font-bold flex items-center gap-2">

@@ -8,6 +8,8 @@ const whatsappClient = require('./core/WhatsAppClient');
 const localDb = require('./services/localDbService');
 const puriMeetReminder = require('./workers/puriMeetReminder');
 
+const autoResolveWorker = require('./workers/autoResolveWorker');
+
 const app = express();
 
 app.use(cors({
@@ -54,4 +56,5 @@ app.listen(PORT, async () => {
 
   // Start workers
   puriMeetReminder.start();
+  autoResolveWorker.start();
 });

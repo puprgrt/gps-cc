@@ -24,7 +24,8 @@ import {
   X,
   Headphones,
   Target,
-  Video
+  Video,
+  ClipboardCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/hooks/useSidebar';
@@ -36,6 +37,8 @@ export function Sidebar() {
   const menuItems = [
     { icon: Home, label: 'Dashboard', href: '/' },
     { icon: Target, label: 'SPMS Executive', href: '/spms' },
+    { icon: ClipboardCheck, label: 'Survei Warga', href: '/spms/survei' },
+    { icon: Settings, label: 'Pengaturan SPMS', href: '/spms/pengaturan' },
     { icon: Files, label: 'Pelayanan', href: '/pelayanan' },
     { icon: Activity, label: 'Monitoring', href: '/monitoring' },
     { icon: MessageCircle, label: 'WhatsApp Center', href: '/whatsapp' },
