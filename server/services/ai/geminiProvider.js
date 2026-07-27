@@ -20,6 +20,8 @@ const AIProviderInterface = require('./aiProviderInterface');
 
 // Map of deprecated/discontinued models to their current replacements
 const MODEL_MIGRATION_MAP = {
+  'gemini-2.0-flash': 'gemini-1.5-flash',
+  'gemini-2.0-flash-lite-preview-02-05': 'gemini-1.5-flash-8b',
   'gemini-2.5-flash': 'gemini-1.5-flash',
   'gemini-2.5-flash-lite': 'gemini-1.5-flash-8b',
   'gemini-pro': 'gemini-1.5-flash',

@@ -37,6 +37,7 @@ class WhatsAppClient {
     this.MAX_RECONNECT_ATTEMPTS = 15;
     this.reconnectTimer = null;
     this.isReconnecting = false;
+    this.isExplicitlyLoggedOut = false; // Flag: user explicitly logged out → do NOT auto-reconnect
     
     // Handlers
     this.messageHandler = new MessageHandler(this);
@@ -69,6 +70,15 @@ class WhatsAppClient {
   }
 
   scheduleAutoReconnect(reasonCode = null, customDelayMs = null) {
+    // Guard: Do NOT auto-reconnect if user explicitly logged out
+    if (this.isExplicitlyLoggedOut) {
+      console.log('[PUPR Baileys] Auto-reconnect DIBATALKAN karena user sudah logout secara manual.');
+      this.addLog('RECONNECT_SKIPPED', 'Auto-reconnect dibatalkan — sesi di-logout manual oleh user.', 'info');
+      this.connectionState = 'disconnected';
+      this.isReconnecting = false;
+      return;
+    }
+
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
@@ -102,6 +112,9 @@ class WhatsAppClient {
   }
 
   async init(phoneNumber = null) {
+    // Reset explicit-logout flag when user initiates a new connection
+    this.isExplicitlyLoggedOut = false;
+
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
@@ -113,11 +126,15 @@ class WhatsAppClient {
         fs.mkdirSync(SESSION_PATH, { recursive: true });
       }
 
+      console.log(`[PUPR Baileys] SESSION_PATH (absolut): ${SESSION_PATH}`);
+
       const { state, saveCreds } = await getMultiFileAuthState(SESSION_PATH);
       const { version } = await fetchLatestBaileysVersion();
 
-      console.log(`[PUPR Baileys] Memulai koneksi Baileys ${version.join('.')}...`);
-      this.addLog('SOCKET_INITIALIZING', `Memulai engine Baileys MD version ${version.join('.')}`);
+      // Log apakah sesi yang tersimpan berisi credentials yang valid
+      const hasExistingSession = !!(state.creds && state.creds.registered);
+      console.log(`[PUPR Baileys] Memulai koneksi Baileys ${version.join('.')} | Sesi tersimpan: ${hasExistingSession ? 'YA ✅' : 'TIDAK (perlu QR baru)'}`);
+      this.addLog('SOCKET_INITIALIZING', `Memulai engine Baileys MD v${version.join('.')} | Sesi tersimpan: ${hasExistingSession ? 'Ya' : 'Tidak'}`);
       this.connectionState = 'connecting';
 
       this.waSocket = makeWASocket({
@@ -125,12 +142,13 @@ class WhatsAppClient {
         logger,
         printQRInTerminal: true,
         auth: state,
-        browser: Browsers.ubuntu('Chrome'), // Fix for 'Invalid QR code' issue
+        browser: Browsers.windows('Desktop'), // More stable identity — avoids Meta session invalidation
         markOnlineOnConnect: true,
         syncFullHistory: false,
+        emitOwnEvents: false, // Reduce unnecessary event traffic
         connectTimeoutMs: 60000,
         defaultQueryTimeoutMs: 60000,
-        keepAliveIntervalMs: 15000, // Reduced from 25000 to prevent 'connection closed' by NAT/firewalls
+        keepAliveIntervalMs: 25000, // Standard 25s keep-alive (NAT timeout is typically 60s)
         retryRequestDelayMs: 2000,
       });
 
@@ -159,15 +177,20 @@ class WhatsAppClient {
           this.currentQrCode = null;
 
           if (isLoggedOut || statusCode === 440) {
+            // Sesi dicabut oleh WhatsApp / user logout dari HP
             console.warn(`[PUPR Baileys] Sesi ditolak / Dilogout dari WhatsApp (Kode: ${statusCode}). Membersihkan sesi lama.`);
             this.addLog('DISCONNECTED_LOGGED_OUT', `Sesi ditolak oleh Meta WhatsApp (Kode: ${statusCode}). Memerlukan scan QR baru.`, 'error');
             this.clearSessionAuth();
             this.isReconnecting = false;
-            // Inisialisasi ulang agar QR Code baru segera muncul
-            this.scheduleAutoReconnect(statusCode, 2000);
+            // JANGAN auto-reconnect setelah logout — tunggu user scan QR manual
+            // Hanya re-init agar QR Code baru tersedia (tapi tidak force-connect)
+            this.isExplicitlyLoggedOut = true;
+            console.log('[PUPR Baileys] Menunggu user untuk menghubungkan ulang secara manual (Scan QR / Pairing Code).');
+            this.addLog('WAITING_FOR_USER', 'Sesi terputus. Menunggu user menghubungkan ulang secara manual.', 'info');
           } else {
-            console.log(`[PUPR Baileys] Koneksi tertutup. Status Code: ${statusCode}`);
-            this.addLog('DISCONNECTED', `Koneksi tertutup dengan kode: ${statusCode || 'Unknown'}`, 'warn');
+            // Disconnect sementara (network issue, restart required, etc.) — reconnect otomatis DENGAN sesi yang ada
+            console.log(`[PUPR Baileys] Koneksi tertutup sementara. Status Code: ${statusCode}`);
+            this.addLog('DISCONNECTED', `Koneksi tertutup sementara (Kode: ${statusCode || 'Unknown'}). Reconnect otomatis dengan sesi tersimpan...`, 'warn');
             const delay = isRestartRequired ? 1000 : null;
             this.scheduleAutoReconnect(statusCode, delay);
           }
@@ -257,6 +280,9 @@ class WhatsAppClient {
   }
 
   async logout() {
+    // Set flag FIRST to prevent auto-reconnect from triggering
+    this.isExplicitlyLoggedOut = true;
+
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
@@ -273,7 +299,8 @@ class WhatsAppClient {
     this.currentPairingCode = null;
     this.userInfo = null;
     this.clearSessionAuth();
-    this.addLog('LOGOUT', 'Sesi WhatsApp berhasil diputuskan & dilogout');
+    this.addLog('LOGOUT', 'Sesi WhatsApp berhasil diputuskan & dilogout oleh user. Auto-reconnect DINONAKTIFKAN sampai user login kembali.');
+    console.log('[PUPR Baileys] Logout berhasil. Auto-reconnect DINONAKTIFKAN. Sesi TIDAK akan login kembali sampai user menghubungkan ulang.');
   }
 
   isSocketOpen() {

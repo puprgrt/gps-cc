@@ -1,5 +1,243 @@
 [
   {
+    "id": "log-1785122876037",
+    "timestamp": "2026-07-27T03:27:56.037Z",
+    "event": "RECONNECT_FAILED_MAX",
+    "details": "Gagal menghubungkan kembali setelah 15 percobaan.",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122846030",
+    "timestamp": "2026-07-27T03:27:26.030Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #16 dijadwalkan dalam 30.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122846025",
+    "timestamp": "2026-07-27T03:27:26.025Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122816016",
+    "timestamp": "2026-07-27T03:26:56.016Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #15 dijadwalkan dalam 30.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122816011",
+    "timestamp": "2026-07-27T03:26:56.011Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122785999",
+    "timestamp": "2026-07-27T03:26:25.999Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #14 dijadwalkan dalam 30.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122785994",
+    "timestamp": "2026-07-27T03:26:25.994Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122755980",
+    "timestamp": "2026-07-27T03:25:55.980Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #13 dijadwalkan dalam 30.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122755975",
+    "timestamp": "2026-07-27T03:25:55.975Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122725959",
+    "timestamp": "2026-07-27T03:25:25.959Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #12 dijadwalkan dalam 30.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122725954",
+    "timestamp": "2026-07-27T03:25:25.954Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122695937",
+    "timestamp": "2026-07-27T03:24:55.937Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #11 dijadwalkan dalam 30.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122695932",
+    "timestamp": "2026-07-27T03:24:55.932Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122665921",
+    "timestamp": "2026-07-27T03:24:25.921Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #10 dijadwalkan dalam 30.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122665916",
+    "timestamp": "2026-07-27T03:24:25.916Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122636390",
+    "timestamp": "2026-07-27T03:23:56.390Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #9 dijadwalkan dalam 29.5 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122636385",
+    "timestamp": "2026-07-27T03:23:56.385Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122615295",
+    "timestamp": "2026-07-27T03:23:35.295Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #8 dijadwalkan dalam 21.1 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122615290",
+    "timestamp": "2026-07-27T03:23:35.290Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122600224",
+    "timestamp": "2026-07-27T03:23:20.224Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #7 dijadwalkan dalam 15.1 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122600219",
+    "timestamp": "2026-07-27T03:23:20.219Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122589447",
+    "timestamp": "2026-07-27T03:23:09.447Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #6 dijadwalkan dalam 10.8 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122589442",
+    "timestamp": "2026-07-27T03:23:09.442Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122581749",
+    "timestamp": "2026-07-27T03:23:01.749Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #5 dijadwalkan dalam 7.7 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122581745",
+    "timestamp": "2026-07-27T03:23:01.745Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122576244",
+    "timestamp": "2026-07-27T03:22:56.244Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #4 dijadwalkan dalam 5.5 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122576239",
+    "timestamp": "2026-07-27T03:22:56.239Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122572312",
+    "timestamp": "2026-07-27T03:22:52.312Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #3 dijadwalkan dalam 3.9 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122572307",
+    "timestamp": "2026-07-27T03:22:52.307Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122569499",
+    "timestamp": "2026-07-27T03:22:49.499Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #2 dijadwalkan dalam 2.8 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122569494",
+    "timestamp": "2026-07-27T03:22:49.494Z",
+    "event": "INIT_ERROR",
+    "details": "Gagal inisialisasi socket: EPERM: operation not permitted, mkdir 'E:\\aplikasi\\gps-cc\\baileys_auth_garut'",
+    "level": "error"
+  },
+  {
+    "id": "log-1785122567478",
+    "timestamp": "2026-07-27T03:22:47.478Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #1 dijadwalkan dalam 2.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1785122567471",
+    "timestamp": "2026-07-27T03:22:47.471Z",
+    "event": "SESSION_CLEARED",
+    "details": "Sesi di ./baileys_auth_garut dibersihkan karena logout / kredensial kadaluarsa",
+    "level": "warn"
+  },
+  {
+    "id": "log-1785122557249",
+    "timestamp": "2026-07-27T03:22:37.249Z",
+    "event": "DISCONNECTED_LOGGED_OUT",
+    "details": "Sesi ditolak oleh Meta WhatsApp (Kode: 401). Memerlukan scan QR baru.",
+    "level": "error"
+  },
+  {
     "id": "log-1785122088991",
     "timestamp": "2026-07-27T03:14:48.991Z",
     "event": "USER_INFO",

@@ -34,6 +34,7 @@ firestore-debug.log*
 /session*
 /sessions*
 /tokens
+/baileys_auth_garut
 *.session
 
 # Firebase & Cloud Cache
