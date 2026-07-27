@@ -12,7 +12,8 @@
     "clean": "node --require ./patch.js node_modules/next/dist/bin/next clean",
     "server:baileys": "node server/baileys-server.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server:baileys\"",
-    "db:seed": "node scripts/seed-admin.js"
+    "db:seed": "node scripts/seed-admin.js",
+    "media:migrate": "node scripts/migrate-wa-media-to-supabase.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

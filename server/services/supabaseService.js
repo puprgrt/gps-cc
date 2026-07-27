@@ -3,6 +3,8 @@ const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const WHATSAPP_MEDIA_BUCKET = 'whatsapp-media';
+const MAX_WHATSAPP_MEDIA_BYTES = 20 * 1024 * 1024;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error('[SupabaseService] Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
@@ -10,6 +12,52 @@ if (!supabaseUrl || !supabaseServiceKey) {
 
 // Gunakan Service Role Key agar Backend punya hak akses penuh (bypass RLS)
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+function safePathSegment(value, fallback) {
+  const normalized = String(value || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 128);
+  return normalized || fallback;
+}
+
+function extensionForMedia(mimetype, type) {
+  const mime = String(mimetype || '').toLowerCase();
+  if (mime === 'image/png') return 'png';
+  if (mime === 'image/webp') return 'webp';
+  if (mime === 'image/jpeg' || mime === 'image/jpg') return 'jpg';
+  if (mime === 'application/pdf') return 'pdf';
+  return type === 'image' ? 'jpg' : 'pdf';
+}
+
+async function uploadWhatsAppMedia({ buffer, conversationId, messageId, mimetype, type }) {
+  if (!Buffer.isBuffer(buffer) || buffer.length === 0) {
+    throw new Error('Lampiran WhatsApp kosong atau tidak valid.');
+  }
+  if (buffer.length > MAX_WHATSAPP_MEDIA_BYTES) {
+    throw new Error(`Lampiran WhatsApp melebihi batas ${MAX_WHATSAPP_MEDIA_BYTES / (1024 * 1024)} MB.`);
+  }
+
+  const contentType = String(mimetype || '').toLowerCase();
+  const allowedMimeTypes = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf']);
+  if (!allowedMimeTypes.has(contentType)) {
+    throw new Error(`Tipe lampiran WhatsApp tidak diizinkan: ${contentType || 'unknown'}.`);
+  }
+
+  const now = new Date();
+  const storagePath = [
+    'inbound',
+    now.toISOString().slice(0, 7),
+    safePathSegment(conversationId, 'conversation'),
+    `${safePathSegment(messageId, String(now.getTime()))}.${extensionForMedia(contentType, type)}`,
+  ].join('/');
+
+  const { error } = await supabase.storage.from(WHATSAPP_MEDIA_BUCKET).upload(storagePath, buffer, {
+    contentType,
+    cacheControl: '0',
+    upsert: false,
+  });
+  if (error) throw error;
+
+  return { storagePath, bucket: WHATSAPP_MEDIA_BUCKET };
+}
 
 async function saveMessage(conversationId, messageData, contactData = null) {
   try {
@@ -56,8 +104,9 @@ async function saveMessage(conversationId, messageData, contactData = null) {
       timestamp: new Date().toISOString()
     };
 
-    if (messageData.metadata && (messageData.metadata.fileUrl || messageData.metadata.base64)) {
-      payload.media_url = messageData.metadata.fileUrl || `data:${messageData.metadata.mimetype || 'application/octet-stream'};base64,${messageData.metadata.base64}`;
+    if (messageData.metadata && (messageData.metadata.storagePath || messageData.metadata.fileUrl)) {
+      // Simpan path Storage privat, bukan data URL atau URL publik.
+      payload.media_url = messageData.metadata.storagePath || messageData.metadata.fileUrl;
       payload.media_type = messageData.metadata.mimetype || messageData.type;
     } else if (messageData.type === 'image' || messageData.type === 'document' || messageData.type === 'video' || messageData.type === 'audio') {
       payload.media_type = messageData.metadata?.mimetype || messageData.type;
@@ -481,6 +530,8 @@ async function deleteSpreadsheetConfig(id) {
 
 module.exports = {
   supabase,
+  WHATSAPP_MEDIA_BUCKET,
+  uploadWhatsAppMedia,
   saveMessage,
   updateConversationStatus,
   getActiveConversations,

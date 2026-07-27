@@ -8,6 +8,7 @@ import { WhatsAppQrModal } from './WhatsAppQrModal';
 import { WhatsAppFrontLogin } from './WhatsAppFrontLogin';
 import { WhatsAppRightQrPanel } from './WhatsAppRightQrPanel';
 import { WhatsAppLogViewer } from './WhatsAppLogViewer';
+import { PrivateMediaUrl } from './PrivateMediaUrl';
 import { Badge } from '@/components/ui/badge';
 import { 
   QrCode, MessageSquare, Terminal, RefreshCw, Phone, CheckCircle, 
@@ -886,28 +887,33 @@ export function WhatsAppDashboard() {
                           {/* Image Media Attachment Card */}
                           {msg.type === 'image' && (
                             <div className="mb-2.5 rounded-xl overflow-hidden border border-white/20 shadow-md bg-black/40 group relative">
-                              {msg.metadata?.fileUrl || msg.attachments?.[0]?.url ? (
-                                <div className="relative">
-                                  <img
-                                    src={msg.metadata?.fileUrl || msg.attachments?.[0]?.url}
-                                    alt={msg.metadata?.fileName || 'Foto Laporan Warga'}
-                                    className="w-full max-h-60 object-cover rounded-t-lg transition-transform group-hover:scale-105"
-                                  />
-                                  <a
-                                    href={msg.metadata?.fileUrl || msg.attachments?.[0]?.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="absolute bottom-2 right-2 px-3 py-1.5 bg-black/80 hover:bg-black/90 text-white rounded-xl text-[10px] font-bold flex items-center gap-1.5 backdrop-blur-sm border border-white/20 transition-colors"
-                                  >
-                                    <Eye className="w-3.5 h-3.5 text-sky-400" /> Buka Foto HD
-                                  </a>
-                                </div>
-                              ) : (
-                                <div className="p-5 flex items-center justify-center text-slate-400 gap-2 bg-slate-900/80">
-                                  <ImageIcon className="w-6 h-6 text-sky-400 animate-pulse" />
-                                  <span>[Lampiran Gambar / Foto Laporan]</span>
-                                </div>
-                              )}
+                              <PrivateMediaUrl
+                                storagePath={msg.metadata?.storagePath}
+                                fallbackUrl={msg.metadata?.fileUrl || msg.attachments?.[0]?.url || undefined}
+                              >
+                                {(mediaUrl, isLoading) => mediaUrl ? (
+                                  <div className="relative">
+                                    <img
+                                      src={mediaUrl}
+                                      alt={msg.metadata?.fileName || 'Foto Laporan Warga'}
+                                      className="w-full max-h-60 object-cover rounded-t-lg transition-transform group-hover:scale-105"
+                                    />
+                                    <a
+                                      href={mediaUrl}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="absolute bottom-2 right-2 px-3 py-1.5 bg-black/80 hover:bg-black/90 text-white rounded-xl text-[10px] font-bold flex items-center gap-1.5 backdrop-blur-sm border border-white/20 transition-colors"
+                                    >
+                                      <Eye className="w-3.5 h-3.5 text-sky-400" /> Buka Foto HD
+                                    </a>
+                                  </div>
+                                ) : (
+                                  <div className="p-5 flex items-center justify-center text-slate-400 gap-2 bg-slate-900/80">
+                                    <ImageIcon className="w-6 h-6 text-sky-400 animate-pulse" />
+                                    <span>{isLoading ? 'Memuat lampiran privat…' : '[Lampiran Gambar / Foto Laporan]'}</span>
+                                  </div>
+                                )}
+                              </PrivateMediaUrl>
                             </div>
                           )}
 
@@ -930,16 +936,23 @@ export function WhatsAppDashboard() {
                                   {msg.metadata?.size ? ` • ${(msg.metadata.size / (1024 * 1024)).toFixed(1)} MB` : ''}
                                 </span>
                               </div>
-                              {(msg.metadata?.fileUrl || msg.attachments?.[0]?.url) && (
-                                <a
-                                  href={msg.metadata?.fileUrl || msg.attachments?.[0]?.url}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="px-3.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition-all shrink-0 bg-blue-600 hover:bg-blue-500 text-white shadow-sm"
-                                >
-                                  <Download className="w-3.5 h-3.5" /> Buka
-                                </a>
-                              )}
+                              <PrivateMediaUrl
+                                storagePath={msg.metadata?.storagePath}
+                                fallbackUrl={msg.metadata?.fileUrl || msg.attachments?.[0]?.url || undefined}
+                              >
+                                {(mediaUrl, isLoading) => mediaUrl ? (
+                                  <a
+                                    href={mediaUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="px-3.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition-all shrink-0 bg-blue-600 hover:bg-blue-500 text-white shadow-sm"
+                                  >
+                                    <Download className="w-3.5 h-3.5" /> Buka
+                                  </a>
+                                ) : isLoading ? (
+                                  <span className="text-[10px] text-slate-400">Memuat…</span>
+                                ) : null}
+                              </PrivateMediaUrl>
                             </div>
                           )}
 

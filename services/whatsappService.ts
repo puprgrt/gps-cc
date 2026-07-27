@@ -69,7 +69,9 @@ export class WhatsAppService {
             category: c.category || 'Umum',
             messages: (c.wa_messages || []).map((m: any) => {
               const mt = (m.media_type || '').toLowerCase();
-              const mu = (m.media_url || '').toLowerCase();
+              const mediaLocation = m.media_url || '';
+              const mu = mediaLocation.toLowerCase();
+              const isPrivateStoragePath = mediaLocation.startsWith('inbound/') || mediaLocation.startsWith('outbound/') || mediaLocation.startsWith('legacy/');
               let normalizedType: 'image' | 'video' | 'audio' | 'document' | 'text' = 'text';
               if (mt.includes('image') || mu.endsWith('.jpg') || mu.endsWith('.jpeg') || mu.endsWith('.png') || mu.startsWith('data:image') || mt === 'image') {
                 normalizedType = 'image';
@@ -89,13 +91,15 @@ export class WhatsAppService {
                 status: m.status,
                 type: normalizedType,
                 metadata: {
-                  fileUrl: m.media_url,
+                  storagePath: isPrivateStoragePath ? mediaLocation : undefined,
+                  // Legacy external URLs remain compatible; private media never exposes a direct URL here.
+                  fileUrl: isPrivateStoragePath ? undefined : m.media_url,
                   fileName: m.media_url ? ((m.text && m.text.length < 35) ? m.text : `Lampiran_${normalizedType === 'image' ? 'Foto.jpg' : 'Dokumen.pdf'}`) : undefined,
                   mimetype: m.media_type
                 },
                 attachments: m.media_url ? [{
                   type: normalizedType === 'image' ? 'image' : 'pdf',
-                  url: m.media_url,
+                  url: isPrivateStoragePath ? '' : m.media_url,
                   name: (m.text && m.text.length < 35) ? m.text : `Lampiran_${normalizedType === 'image' ? 'Foto' : 'Dokumen'}`
                 }] : undefined
               };

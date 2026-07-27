@@ -70,26 +70,22 @@ class MessageHandler {
             enrichedMetadata.size = mediaBuffer.length;
             enrichedMetadata.base64 = mediaBase64;
             const mime = enrichedMetadata.mimetype || (type === 'image' ? 'image/jpeg' : 'application/pdf');
-            const dataUrl = `data:${mime};base64,${mediaBase64}`;
-
-            const fs = require('fs');
-            const path = require('path');
             try {
-              const publicDir = path.resolve(__dirname, '../../public', 'wa-media');
-              if (!fs.existsSync(publicDir)) {
-                fs.mkdirSync(publicDir, { recursive: true });
-              }
-              const ext = type === 'image' ? (mime.includes('png') ? 'png' : 'jpg') : 'pdf';
-              const safeName = `${Date.now()}_${msg.key.id.replace(/[^a-zA-Z0-9]/g, '')}.${ext}`;
-              const filePath = path.join(publicDir, safeName);
-              fs.writeFileSync(filePath, mediaBuffer);
-              console.log(`[MEDIA_SAVE] Berhasil menyimpan file media: ${filePath} (${(mediaBuffer.length / 1024).toFixed(1)} KB)`);
-              enrichedMetadata.fileUrl = `/wa-media/${safeName}`;
-              enrichedMetadata.fileName = enrichedMetadata.fileName || `Lampiran_${type === 'image' ? 'Foto' : 'Dokumen'}.${ext}`;
-            } catch (fsErr) {
-              console.error('[MEDIA_SAVE_ERROR] Gagal menyimpan file ke public/wa-media:', fsErr.message);
-              this.client.addLog('MEDIA_FS_ERROR', `Gagal menyimpan file ke public/wa-media: ${fsErr.message}`);
-              enrichedMetadata.fileUrl = dataUrl;
+              const uploaded = await supabaseService.uploadWhatsAppMedia({
+                buffer: mediaBuffer,
+                conversationId: `conv-${senderJid}`,
+                messageId: msg.key.id,
+                mimetype: mime,
+                type,
+              });
+              enrichedMetadata.storagePath = uploaded.storagePath;
+              enrichedMetadata.storageBucket = uploaded.bucket;
+              enrichedMetadata.fileName = enrichedMetadata.fileName || `Lampiran_${type === 'image' ? 'Foto' : 'Dokumen'}.${type === 'image' ? 'jpg' : 'pdf'}`;
+            } catch (storageErr) {
+              console.error('[MEDIA_STORAGE_ERROR] Gagal menyimpan lampiran ke Supabase Storage:', storageErr.message);
+              this.client.addLog('MEDIA_STORAGE_ERROR', `Gagal menyimpan lampiran privat: ${storageErr.message}`);
+              // Jangan pernah fallback ke public/ atau data URL; ini dapat membocorkan data warga.
+              enrichedMetadata.storageError = true;
             }
 
             this.client.addLog('MEDIA_DOWNLOAD', `Berhasil mengunduh lampiran ${type} (${(mediaBuffer.length / 1024).toFixed(1)} KB) dari ${pushName}`);
