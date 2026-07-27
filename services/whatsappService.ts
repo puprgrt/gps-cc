@@ -52,7 +52,9 @@ export class WhatsAppService {
         `)
         .order('updated_at', { ascending: false });
 
-      if (!error && data && data.length > 0) {
+      if (!error && data) {
+        if (data.length === 0) return [];
+        
         return data.map((c: any) => {
           const contactObj = Array.isArray(c.wa_contacts) ? c.wa_contacts[0] : c.wa_contacts;
           const fallbackPhone = c.id.replace('conv-', '').split('@')[0];
@@ -103,9 +105,9 @@ export class WhatsAppService {
         });
       }
     } catch (e) {
-      console.warn('Failed to fetch conversations from Supabase, using fallback PURI data:', e);
+      console.warn('Failed to fetch conversations from Supabase:', e);
     }
-    return WhatsAppService.getDefaultPuriConversations();
+    return [];
   }
 
   static enrichPuriConversation(conv: WhatsAppConversation): WhatsAppConversation {

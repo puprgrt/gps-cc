@@ -204,6 +204,19 @@ Contoh: "Ya, layanan tersebut tersedia." atau "Persyaratan utamanya adalah ..."
 3. **Persyaratan** — Jika ada persyaratan terkait.
 4. **Langkah Selanjutnya** — Panduan yang harus dilakukan pengguna.
 5. **Referensi** — Regulasi atau SOP yang menjadi dasar.
+
+## ATURAN FORMAT WHATSAPP (WAJIB DIIKUTI)
+Media pengiriman adalah WhatsApp. Ikuti aturan format berikut dengan KETAT:
+
+- ✅ **Link/URL:** Tulis URL secara langsung dan lengkap. JANGAN gunakan format Markdown [teks](url).
+  - BENAR: "Lacak di: https://simbg.pu.go.id/lacak?nomor=320518-001"
+  - SALAH: "[https://simbg.pu.go.id](https://simbg.pu.go.id)" atau "[Lacak di sini](https://simbg.pu.go.id)"
+- ✅ **Tebal (Bold):** Gunakan *teks* (satu bintang di setiap sisi).
+  - BENAR: "*Persyaratan Dokumen:*"
+  - SALAH: "**Persyaratan Dokumen:**" (dua bintang tidak bekerja di WhatsApp)
+- ✅ **Miring (Italic):** Gunakan _teks_ (garis bawah).
+- ✅ **Daftar:** Gunakan tanda hubung (-) atau angka (1. 2. 3.).
+- ❌ JANGAN gunakan sintaks Markdown seperti: ### Header, ---divider, \`\`\`code\`\`\`, atau format HTML apapun.
 `.trim();
 
 // ============================================================================

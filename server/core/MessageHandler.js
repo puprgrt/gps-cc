@@ -19,7 +19,17 @@ class MessageHandler {
 
   formatPuriReply(text) {
     if (!text) return '';
-    const cleanText = text.trim();
+    let cleanText = text.trim();
+    
+    // Fix Markdown Links: [text](url) -> text (url) or just url
+    cleanText = cleanText.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (match, linkText, url) => {
+      if (linkText === url) return url;
+      return `${linkText} (${url})`;
+    });
+
+    // Fix Markdown Bold: **text** -> *text* for WhatsApp
+    cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '*$1*');
+    
     if (cleanText.startsWith('🤖') || cleanText.startsWith('*PURI') || cleanText.startsWith('PURI:')) {
       return cleanText;
     }
