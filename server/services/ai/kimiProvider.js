@@ -59,8 +59,19 @@ class KimiProvider extends AIProviderInterface {
 
     const messages = [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: userText },
     ];
+
+    if (payload.conversationHistory && payload.conversationHistory.length > 0) {
+      for (const msg of payload.conversationHistory) {
+        if (!msg.text) continue;
+        messages.push({
+          role: msg.sender_type === 'user' ? 'user' : 'assistant',
+          content: msg.text
+        });
+      }
+    }
+
+    messages.push({ role: 'user', content: userText });
 
     // Use executeWithRetry for automatic retry + rate limit + circuit breaker
     return this.executeWithRetry(async () => {

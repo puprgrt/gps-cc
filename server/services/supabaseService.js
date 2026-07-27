@@ -383,6 +383,31 @@ async function saveSurveyResponse(responseData) {
   }
 }
 
+// ============================================================================
+// CONVERSATION HISTORY (MEMORY)
+// ============================================================================
+async function getConversationHistory(conversationId, limit = 10) {
+  try {
+    const { data, error } = await supabase
+      .from('wa_messages')
+      .select('*')
+      .eq('conversation_id', conversationId)
+      .order('timestamp', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.warn('[SupabaseService] Error fetching conversation history:', error.message);
+      return [];
+    }
+
+    // Return in chronological order for prompt injection
+    return (data || []).reverse();
+  } catch (err) {
+    console.error('[SupabaseService] Exception in getConversationHistory:', err.message || err);
+    return [];
+  }
+}
+
 module.exports = {
   supabase,
   saveMessage,
@@ -398,4 +423,5 @@ module.exports = {
   saveFAQEntry,
   getAllFAQEntries,
   saveSurveyResponse,
+  getConversationHistory,
 };

@@ -39,6 +39,16 @@ class LocalAIProvider extends AIProviderInterface {
       { role: 'system', content: systemPrompt },
     ];
 
+    if (payload.conversationHistory && payload.conversationHistory.length > 0) {
+      for (const msg of payload.conversationHistory) {
+        if (!msg.text) continue;
+        messages.push({
+          role: msg.sender_type === 'user' ? 'user' : 'assistant',
+          content: msg.text
+        });
+      }
+    }
+
     if (media && media.base64 && (media.mimetype || '').startsWith('image/')) {
       messages.push({
         role: 'user',

@@ -76,24 +76,38 @@ class GeminiProvider extends AIProviderInterface {
       systemPrompt +
       `\n\n[PURI SYSTEM METADATA]: Anda saat ini sedang dieksekusi menggunakan Provider [GEMINI] dengan model [${primaryModel}]. Jika pengguna/warga/admin menanyakan "cek model yang digunakan", "pakai model apa", atau "status model", Anda WAJIB menjawab dengan jelas menyebutkan nama model tersebut.`;
 
-    let contentsPayload;
+    let contentsPayload = [];
+
+    // Add conversation history if available
+    if (payload.conversationHistory && payload.conversationHistory.length > 0) {
+      for (const msg of payload.conversationHistory) {
+        if (!msg.text) continue;
+        contentsPayload.push({
+          role: msg.sender_type === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.text }]
+        });
+      }
+    }
+
+    // Add the current message
     if (media && media.base64) {
-      contentsPayload = [
-        {
-          role: 'user',
-          parts: [
-            { text: `${enrichedSystemPrompt}\n\n${userText}` },
-            {
-              inlineData: {
-                data: media.base64,
-                mimeType: media.mimetype || 'application/octet-stream',
-              },
+      contentsPayload.push({
+        role: 'user',
+        parts: [
+          { text: `${userText}` },
+          {
+            inlineData: {
+              data: media.base64,
+              mimeType: media.mimetype || 'application/octet-stream',
             },
-          ],
-        },
-      ];
+          },
+        ],
+      });
     } else {
-      contentsPayload = `${enrichedSystemPrompt}\n\n${userText}`;
+      contentsPayload.push({
+        role: 'user',
+        parts: [{ text: `${userText}` }]
+      });
     }
 
     // Fallback chain: primary model → gemini-2.5-flash → gemini-2.5-flash-lite
@@ -107,6 +121,9 @@ class GeminiProvider extends AIProviderInterface {
           const response = await aiClient.models.generateContent({
             model: modelName,
             contents: contentsPayload,
+            config: {
+              systemInstruction: enrichedSystemPrompt,
+            }
           });
 
           const text = response.text || '';

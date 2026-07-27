@@ -286,6 +286,9 @@ class MessageHandler {
       const cleanPhone = '+' + senderJid.split('@')[0];
       const convId = `conv-${senderJid}`;
 
+      // Fetch 10 previous messages for context
+      const conversationHistory = await supabaseService.getConversationHistory(convId, 10);
+
       // Call PURI Multi-Modal AI Orchestrator 2026 (Free Tier / Local Fallback + 6-Tier Routing)
       const orchestratorResult = await aiOrchestrator.processMessage({
         conversationId: convId,
@@ -294,6 +297,7 @@ class MessageHandler {
         mediaPayload: mediaPayload || undefined,
         preferredModel: botSettings.model || 'auto',
         customSystemPrompt: botSettings.system_prompt || undefined,
+        conversationHistory: conversationHistory,
       });
 
       const rawReply = orchestratorResult.text;
