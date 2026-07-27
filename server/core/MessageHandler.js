@@ -287,7 +287,15 @@ class MessageHandler {
       const convId = `conv-${senderJid}`;
 
       // Fetch 10 previous messages for context
-      const conversationHistory = await supabaseService.getConversationHistory(convId, 10);
+      let conversationHistory = await supabaseService.getConversationHistory(convId, 10);
+      
+      // Remove the current message from history to prevent AI provider crash on duplicate user roles
+      if (conversationHistory && conversationHistory.length > 0) {
+        const lastMsg = conversationHistory[conversationHistory.length - 1];
+        if (lastMsg.sender_type === 'user' && lastMsg.text === messageText) {
+          conversationHistory.pop();
+        }
+      }
 
       // Call PURI Multi-Modal AI Orchestrator 2026 (Free Tier / Local Fallback + 6-Tier Routing)
       const orchestratorResult = await aiOrchestrator.processMessage({

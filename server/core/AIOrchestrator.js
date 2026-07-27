@@ -284,9 +284,24 @@ class AIOrchestrator {
       supplementPrompts.push(request.customSystemPrompt);
     }
     
+    // Merge consecutive messages from the same sender to prevent strict API crashes (like Gemini)
+    let sanitizedHistory = [];
+    if (request.conversationHistory && request.conversationHistory.length > 0) {
+      for (const msg of request.conversationHistory) {
+        if (!msg.text) continue;
+        const currentRole = msg.sender_type === 'user' ? 'user' : 'bot';
+        
+        if (sanitizedHistory.length > 0 && sanitizedHistory[sanitizedHistory.length - 1].sender_type === currentRole) {
+          sanitizedHistory[sanitizedHistory.length - 1].text += '\n' + msg.text;
+        } else {
+          sanitizedHistory.push({ ...msg, sender_type: currentRole });
+        }
+      }
+    }
+
     let systemPrompt = puriPromptEngine.buildFullSystemPrompt({
       senderName: request.senderName,
-      conversationHistory: request.conversationHistory,
+      conversationHistory: sanitizedHistory,
       ragContext: ragResult,
       supplementPrompts: supplementPrompts
     });
@@ -347,7 +362,7 @@ class AIOrchestrator {
             systemPrompt: customSystemPrompt,
             userText,
             media,
-            conversationHistory: request.conversationHistory, // Pass multi-turn history
+            conversationHistory: sanitizedHistory, // Pass multi-turn history
           },
           { model: activeModel, temperature: activeTemperature }
         );
@@ -386,7 +401,7 @@ class AIOrchestrator {
           systemPrompt: localSystemPrompt,
           userText,
           media,
-          conversationHistory: request.conversationHistory,
+          conversationHistory: sanitizedHistory,
         });
 
         selectedResponse = {
