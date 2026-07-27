@@ -51,7 +51,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
 2. DILARANG meminta/menerima transfer ke rekening pribadi staf. Seluruh Retribusi Resmi PBG dibayar via Kode Billing Kas Daerah resmi.
 3. Apabila pertanyaan memerlukan pemeriksaan berkas fisik mendalam, arahkan warga berkonsultasi langsung ke Kantor Dinas PUPR Garut pada jam kerja.`;
 
-  const [activeSubTab, setActiveSubTab] = useState<'ai' | 'menu' | 'keyword'>('ai');
+  const [activeSubTab, setActiveSubTab] = useState<'ai' | 'menu' | 'keyword' | 'spreadsheet'>('ai');
   const [isAiActive, setIsAiActive] = useState(true);
   const [isMenuActive, setIsMenuActive] = useState(true);
   const [isKeywordActive, setIsKeywordActive] = useState(true);
@@ -72,10 +72,18 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
   const [editingKeyword, setEditingKeyword] = useState<any | null>(null);
   const [isKeywordModalOpen, setIsKeywordModalOpen] = useState(false);
 
+  // Spreadsheet Data State
+  const [spreadsheetItems, setSpreadsheetItems] = useState<any[]>([]);
+  const [editingSpreadsheet, setEditingSpreadsheet] = useState<any | null>(null);
+  const [isSpreadsheetModalOpen, setIsSpreadsheetModalOpen] = useState(false);
+  const [isTestingSpreadsheet, setIsTestingSpreadsheet] = useState(false);
+  const [testResult, setTestResult] = useState<any>(null);
+
   useEffect(() => {
     loadSettings();
     loadMenuFlows();
     loadKeywords();
+    loadSpreadsheets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -113,6 +121,15 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
       setKeywordItems(data || []);
     } catch (err) {
       console.warn('Failed to fetch keywords:', err);
+    }
+  }
+
+  async function loadSpreadsheets() {
+    try {
+      const data = await WhatsAppService.getSpreadsheets();
+      setSpreadsheetItems(data || []);
+    } catch (err) {
+      console.warn('Failed to fetch spreadsheets:', err);
     }
   }
 
@@ -240,30 +257,69 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
   // Keyword Handlers
   const handleSaveKeywordItem = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingKeyword || !editingKeyword.keyword || !editingKeyword.reply_text) {
-      alert('Kata Kunci dan Teks Balasan wajib diisi!');
-      return;
-    }
+    if (!editingKeyword) return;
     try {
       setIsSaving(true);
       await WhatsAppService.saveBotKeywordItem(editingKeyword);
-      setIsKeywordModalOpen(false);
-      setEditingKeyword(null);
       await loadKeywords();
-    } catch (err: any) {
-      alert('Gagal menyimpan kata kunci: ' + err.message);
+      setIsKeywordModalOpen(false);
+      setShowSuccessAlert(true);
+      setTimeout(() => setShowSuccessAlert(false), 3000);
+    } catch (err) {
+      alert('Gagal menyimpan kata kunci.');
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDeleteKeywordItem = async (item: any) => {
-    if (!confirm(`Hapus aturan kata kunci "${item.keyword}"?`)) return;
+    if (!confirm('Hapus kata kunci ini?')) return;
     try {
       await WhatsAppService.deleteBotKeywordItem(item);
       await loadKeywords();
     } catch (err: any) {
-      alert('Gagal menghapus: ' + err.message);
+      alert('Gagal menghapus kata kunci.');
+    }
+  };
+
+  const handleSaveSpreadsheet = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingSpreadsheet) return;
+    try {
+      setIsSaving(true);
+      await WhatsAppService.saveSpreadsheet(editingSpreadsheet);
+      await loadSpreadsheets();
+      setIsSpreadsheetModalOpen(false);
+      setShowSuccessAlert(true);
+      setTimeout(() => setShowSuccessAlert(false), 3000);
+    } catch (err) {
+      alert('Gagal menyimpan spreadsheet.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteSpreadsheet = async (item: any) => {
+    if (!confirm('Hapus konfigurasi spreadsheet ini?')) return;
+    try {
+      await WhatsAppService.deleteSpreadsheet(item.id);
+      await loadSpreadsheets();
+    } catch (err: any) {
+      alert('Gagal menghapus spreadsheet.');
+    }
+  };
+
+  const handleTestSpreadsheet = async () => {
+    if (!editingSpreadsheet || !editingSpreadsheet.spreadsheet_id) return;
+    try {
+      setIsTestingSpreadsheet(true);
+      setTestResult(null);
+      const res = await WhatsAppService.testSpreadsheet(editingSpreadsheet.spreadsheet_id, editingSpreadsheet.sheet_name || 'Sheet1');
+      setTestResult(res);
+    } catch (err: any) {
+      setTestResult({ success: false, error: err.message });
+    } finally {
+      setIsTestingSpreadsheet(false);
     }
   };
 
@@ -384,6 +440,21 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
           <span>Keyword Reply (Kata Kunci)</span>
           <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-200 text-[10px] font-mono border border-purple-400/30">
             {keywordItems.length} Aturan
+          </span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('spreadsheet')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            activeSubTab === 'spreadsheet'
+              ? 'bg-amber-600 text-white shadow-md'
+              : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          <FileText className="w-4 h-4" />
+          <span>Spreadsheet Data</span>
+          <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200 text-[10px] font-mono border border-amber-400/30">
+            {spreadsheetItems.length} Layanan
           </span>
         </button>
       </div>
@@ -919,6 +990,228 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
               <div className="pt-3 border-t border-white/10 flex items-center justify-end gap-2">
                 <button type="button" onClick={() => setIsKeywordModalOpen(false)} className="px-4 py-2 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl font-semibold">Batal</button>
                 <button type="submit" disabled={isSaving} className="px-5 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl flex items-center gap-1.5"><Save className="w-4 h-4" /> Simpan Kata Kunci</button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* TAB 4: SPREADSHEET DATA */}
+      {activeSubTab === 'spreadsheet' && (
+        <div className="space-y-4 animate-fade-in">
+          <div className="flex items-center justify-between p-4 bg-slate-950/80 border border-white/10 rounded-2xl">
+            <div>
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <FileText className="w-4 h-4 text-amber-400" />
+                Integrasi Data Google Spreadsheet Publik (CSV)
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">Berikan AI akses ke data permohonan eksternal (selain SIMBG/PBG/SLF) dari link CSV Publik Google Sheets.</p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingSpreadsheet({
+                    layanan_name: '',
+                    bidang: 'SEKRETARIAT',
+                    spreadsheet_id: '',
+                    sheet_name: 'Sheet1',
+                    description: '',
+                    is_active: true,
+                    cache_ttl_minutes: 15
+                  });
+                  setTestResult(null);
+                  setIsSpreadsheetModalOpen(true);
+                }}
+                className="px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-md"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Tambah Layanan Spreadsheet</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {spreadsheetItems.map((item, idx) => (
+              <div key={item.id || idx} className="bg-slate-950/50 border border-white/10 hover:border-white/20 transition-all rounded-2xl p-4 flex flex-col justify-between shadow-sm hover:shadow-md h-full">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-lg text-xs font-bold flex items-center gap-1">
+                       {item.layanan_name}
+                    </span>
+                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${item.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
+                      {item.is_active ? 'AKTIF' : 'OFF'}
+                    </span>
+                  </div>
+
+                  <div className="text-xs text-slate-300 mt-2">
+                    <span className="block mb-1 text-slate-500 text-[10px] uppercase font-bold">Bidang</span>
+                    <span className="font-medium text-slate-300 bg-white/5 px-2 py-1 rounded">{item.bidang}</span>
+                  </div>
+
+                  <div className="text-[10px] text-slate-400 mt-2 pt-2 border-t border-white/5 break-all font-mono bg-black/20 p-2 rounded-lg">
+                    ID: {item.spreadsheet_id}
+                    <br />
+                    Sheet: {item.sheet_name}
+                  </div>
+                </div>
+
+                <div className="pt-3 mt-3 border-t border-white/5 flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => handleDeleteSpreadsheet(item)}
+                    className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+                    title="Hapus Spreadsheet"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setEditingSpreadsheet({ ...item });
+                      setTestResult(null);
+                      setIsSpreadsheetModalOpen(true);
+                    }}
+                    className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                  >
+                    <Edit3 className="w-3 h-3 text-amber-400" /> Edit
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* EDIT SPREADSHEET ITEM MODAL */}
+      {isSpreadsheetModalOpen && editingSpreadsheet && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="modal-container bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-5 space-y-4 text-white w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <FileText className="w-4 h-4 text-amber-400" />
+                {editingSpreadsheet.id ? 'Edit Data Spreadsheet' : 'Tambah Data Spreadsheet Baru'}
+              </h3>
+              <button onClick={() => setIsSpreadsheetModalOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+            </div>
+
+            <form onSubmit={handleSaveSpreadsheet} className="space-y-4 text-xs">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">Nama Layanan (Contoh: Rekomendasi Tata Ruang)</label>
+                  <input
+                    type="text"
+                    value={editingSpreadsheet.layanan_name || ''}
+                    onChange={(e) => setEditingSpreadsheet({ ...editingSpreadsheet, layanan_name: e.target.value })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl p-2.5 text-white focus:border-amber-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">Bidang PUPR</label>
+                  <select
+                    value={editingSpreadsheet.bidang || 'SEKRETARIAT'}
+                    onChange={(e) => setEditingSpreadsheet({ ...editingSpreadsheet, bidang: e.target.value })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl p-2.5 text-white focus:border-amber-500"
+                  >
+                    <option value="SEKRETARIAT">Sekretariat</option>
+                    <option value="PENATAAN_RUANG">Tata Ruang (PR)</option>
+                    <option value="BANGUNAN_GEDUNG">Bangunan Gedung (PBG/SLF)</option>
+                    <option value="BINA_MARGA">Bina Marga (Jalan/Jembatan)</option>
+                    <option value="SDA">Sumber Daya Air (SDA/Irigasi)</option>
+                    <option value="JASA_KONSTRUKSI">Jasa Konstruksi (Jakon)</option>
+                    <option value="AMPL">Air Minum & PL (AMPL)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-300 block mb-1">Google Spreadsheet ID <span className="text-[10px] text-slate-400 font-normal ml-1">(Bisa didapat dari URL antara /d/ dan /edit)</span></label>
+                <input
+                  type="text"
+                  value={editingSpreadsheet.spreadsheet_id || ''}
+                  onChange={(e) => setEditingSpreadsheet({ ...editingSpreadsheet, spreadsheet_id: e.target.value })}
+                  placeholder="Contoh: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+                  className="w-full bg-slate-950 border border-white/10 rounded-xl p-2.5 text-white font-mono focus:border-amber-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">Nama Sheet (Opsional)</label>
+                  <input
+                    type="text"
+                    value={editingSpreadsheet.sheet_name || 'Sheet1'}
+                    onChange={(e) => setEditingSpreadsheet({ ...editingSpreadsheet, sheet_name: e.target.value })}
+                    placeholder="Contoh: Sheet1"
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl p-2.5 text-white focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">Waktu Simpan Cache (Menit)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={editingSpreadsheet.cache_ttl_minutes || 15}
+                    onChange={(e) => setEditingSpreadsheet({ ...editingSpreadsheet, cache_ttl_minutes: parseInt(e.target.value) })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl p-2.5 text-white focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-300 block mb-1">Deskripsi & Instruksi Untuk AI</label>
+                <textarea
+                  value={editingSpreadsheet.description || ''}
+                  onChange={(e) => setEditingSpreadsheet({ ...editingSpreadsheet, description: e.target.value })}
+                  rows={3}
+                  placeholder="Beri tahu AI isi data ini, contoh: 'Gunakan data ini untuk menjawab pertanyaan warga tentang proses Persetujuan Rekomendasi Tata Ruang'"
+                  className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-white leading-relaxed focus:border-amber-500 resize-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="ssActive"
+                  checked={editingSpreadsheet.is_active ?? true}
+                  onChange={(e) => setEditingSpreadsheet({ ...editingSpreadsheet, is_active: e.target.checked })}
+                  className="accent-amber-500 w-4 h-4 cursor-pointer"
+                />
+                <label htmlFor="ssActive" className="text-slate-300 font-semibold cursor-pointer">
+                  Aktifkan Integrasi Spreadsheet Ini
+                </label>
+              </div>
+              
+              <div className="bg-blue-500/10 border border-blue-500/20 p-3 rounded-xl flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-blue-300 text-[11px]">
+                    <strong>PENTING:</strong> Pastikan spreadsheet Anda telah di-share dengan pengaturan <span className="text-white">"Anyone with the link" (Viewer)</span>. Jika tidak, data tidak dapat diakses.
+                  </p>
+                  <button 
+                    type="button" 
+                    onClick={handleTestSpreadsheet}
+                    disabled={isTestingSpreadsheet || !editingSpreadsheet.spreadsheet_id}
+                    className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-[10px] font-bold whitespace-nowrap disabled:opacity-50"
+                  >
+                    {isTestingSpreadsheet ? 'Menguji...' : 'Uji Koneksi'}
+                  </button>
+                </div>
+                {testResult && (
+                  <div className={`p-2 rounded text-[10px] font-mono ${testResult.success ? 'bg-emerald-500/20 text-emerald-300' : 'bg-red-500/20 text-red-300'}`}>
+                    {testResult.success ? testResult.message : testResult.error}
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-3 border-t border-white/10 flex items-center justify-end gap-2">
+                <button type="button" onClick={() => setIsSpreadsheetModalOpen(false)} className="px-4 py-2 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl font-semibold">Batal</button>
+                <button type="submit" disabled={isSaving} className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl flex items-center gap-1.5"><Save className="w-4 h-4" /> Simpan</button>
               </div>
             </form>
           </motion.div>

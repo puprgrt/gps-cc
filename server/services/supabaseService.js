@@ -408,6 +408,77 @@ async function getConversationHistory(conversationId, limit = 10) {
   }
 }
 
+// ============================================================================
+// SPREADSHEET INTEGRATION
+// ============================================================================
+async function getSpreadsheetConfigs() {
+  try {
+    const { data, error } = await supabase
+      .from('puri_spreadsheets')
+      .select('*')
+      .order('layanan_name', { ascending: true });
+
+    if (error) {
+      if (error.code === '42P01') {
+        console.warn('[SupabaseService] Table puri_spreadsheets does not exist yet.');
+        return [];
+      }
+      throw error;
+    }
+    return data || [];
+  } catch (err) {
+    console.error('[SupabaseService] Error getting spreadsheet configs:', err.message || err);
+    return [];
+  }
+}
+
+async function saveSpreadsheetConfig(config) {
+  try {
+    const payload = {
+      layanan_name: config.layanan_name,
+      bidang: config.bidang || 'SEKRETARIAT',
+      spreadsheet_id: config.spreadsheet_id,
+      sheet_name: config.sheet_name || 'Sheet1',
+      description: config.description || '',
+      column_mapping: config.column_mapping || {},
+      is_active: config.is_active !== undefined ? config.is_active : true,
+      cache_ttl_minutes: config.cache_ttl_minutes || 15,
+      updated_at: new Date().toISOString()
+    };
+
+    if (config.id) {
+      payload.id = config.id;
+    }
+
+    const { data, error } = await supabase
+      .from('puri_spreadsheets')
+      .upsert(payload, { onConflict: 'id' })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error('[SupabaseService] Error saving spreadsheet config:', err.message || err);
+    throw err;
+  }
+}
+
+async function deleteSpreadsheetConfig(id) {
+  try {
+    const { error } = await supabase
+      .from('puri_spreadsheets')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    return true;
+  } catch (err) {
+    console.error('[SupabaseService] Error deleting spreadsheet config:', err.message || err);
+    throw err;
+  }
+}
+
 module.exports = {
   supabase,
   saveMessage,
@@ -424,4 +495,7 @@ module.exports = {
   getAllFAQEntries,
   saveSurveyResponse,
   getConversationHistory,
+  getSpreadsheetConfigs,
+  saveSpreadsheetConfig,
+  deleteSpreadsheetConfig,
 };

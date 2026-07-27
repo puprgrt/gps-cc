@@ -673,6 +673,58 @@ export class WhatsAppService {
     }
     throw new Error('Gagal memuat template kata kunci default');
   }
+
+  // ==========================================
+  // SPREADSHEET CONFIGURATION API
+  // ==========================================
+  
+  static async getSpreadsheets() {
+    try {
+      const res = await fetch('/api/whatsapp/spreadsheets', { cache: 'no-store' });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      console.warn('Failed fetching spreadsheets:', e);
+    }
+    return [];
+  }
+
+  static async saveSpreadsheet(config: any) {
+    const res = await fetch('/api/whatsapp/spreadsheets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config)
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    throw new Error('Gagal menyimpan konfigurasi spreadsheet');
+  }
+
+  static async deleteSpreadsheet(id: string) {
+    const res = await fetch('/api/whatsapp/spreadsheets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete', id })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    throw new Error('Gagal menghapus konfigurasi spreadsheet');
+  }
+
+  static async testSpreadsheet(spreadsheetId: string, sheetName: string) {
+    const res = await fetch('/api/whatsapp/spreadsheets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'test', spreadsheet_id: spreadsheetId, sheet_name: sheetName })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    throw new Error('Gagal menguji koneksi spreadsheet');
+  }
 }
 
 

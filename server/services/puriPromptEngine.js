@@ -479,6 +479,11 @@ function buildFullSystemPrompt(options = {}) {
     parts.push(injectRAGContext(ragContext.snippets));
   }
 
+  // === Spreadsheet Data Context ===
+  if (options.spreadsheetContext) {
+    parts.push(options.spreadsheetContext);
+  }
+
   // === Conversation History (Memory) ===
   if (conversationHistory && conversationHistory.length > 0) {
     parts.push(buildConversationContext(conversationHistory, senderName));

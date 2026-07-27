@@ -31,6 +31,7 @@ const cacheService = require('../services/cacheService');
 const ragService = require('../services/ragService');
 const aiSettingsService = require('../services/aiSettingsService');
 const puriPromptEngine = require('../services/puriPromptEngine');
+const spreadsheetService = require('../services/spreadsheetService');
 
 class AIOrchestrator {
   constructor() {
@@ -284,6 +285,8 @@ class AIOrchestrator {
       supplementPrompts.push(request.customSystemPrompt);
     }
     
+    const ragContextForPrompt = ragResult; // use local var
+    
     // Merge consecutive messages from the same sender to prevent strict API crashes (like Gemini)
     let sanitizedHistory = [];
     if (request.conversationHistory && request.conversationHistory.length > 0) {
@@ -299,11 +302,52 @@ class AIOrchestrator {
       }
     }
 
+    // 3a. Spreadsheet Service Retrieval
+    let spreadsheetContext = '';
+    const lowerUserText = userText.toLowerCase();
+    const isStatusCheck = lowerUserText.includes('status') || lowerUserText.includes('lacak') || lowerUserText.includes('permohonan');
+    
+    if (isStatusCheck) {
+      // Try to find a registration number like pattern (at least 3 characters)
+      // Extract all potential alphanumeric tokens
+      const words = userText.split(/[\s,]+/);
+      const possibleNumbers = words.filter(w => w.length >= 3 && /[0-9]/.test(w) && !['dan','atau','saya','ini'].includes(w.toLowerCase()));
+      
+      let spreadsheetResults = [];
+      let foundInSpreadsheet = false;
+      
+      // Try searching by specific numbers first
+      for (const num of possibleNumbers) {
+        const res = await spreadsheetService.searchByNomor(num);
+        if (res.found) {
+          spreadsheetResults = spreadsheetResults.concat(res.results);
+          foundInSpreadsheet = true;
+        }
+      }
+      
+      // If no specific number found but user asks for status, maybe try keyword search
+      if (!foundInSpreadsheet && words.length > 2) {
+         // Use the first few meaningful words as keyword
+         const keyword = words.filter(w => w.length > 3 && !['status', 'permohonan', 'tolong', 'lacak', 'saya'].includes(w.toLowerCase())).join(' ');
+         if (keyword.length >= 3) {
+           const res = await spreadsheetService.searchByKeyword(keyword);
+           if (res.found) {
+             spreadsheetResults = spreadsheetResults.concat(res.results);
+           }
+         }
+      }
+      
+      if (spreadsheetResults.length > 0) {
+        spreadsheetContext = spreadsheetService.formatResultsForAI(spreadsheetResults);
+      }
+    }
+
     let systemPrompt = puriPromptEngine.buildFullSystemPrompt({
       senderName: request.senderName,
       conversationHistory: sanitizedHistory,
-      ragContext: ragResult,
-      supplementPrompts: supplementPrompts
+      ragContext: ragContextForPrompt,
+      supplementPrompts: supplementPrompts,
+      spreadsheetContext: spreadsheetContext
     });
 
     // 4. Circuit Breaker-Aware Fallback Execution (Dynamic AI Settings integrated)
