@@ -1,5 +1,19 @@
 [
   {
+    "id": "log-1785219084812",
+    "timestamp": "2026-07-28T06:11:24.812Z",
+    "event": "AI_CACHE_HIT",
+    "details": "Respon [LOCAL - PURI-Cache-Engine] dikirim ke by.enjangwahyudin (1ms, Conf: 100%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1785219080723",
+    "timestamp": "2026-07-28T06:11:20.723Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"pelayanan apa saja yang ada?...\"",
+    "level": "info"
+  },
+  {
     "id": "log-1785214840693",
     "timestamp": "2026-07-28T05:00:40.693Z",
     "event": "USER_INFO",
@@ -3481,20 +3495,6 @@
   {
     "id": "log-1785075227674",
     "timestamp": "2026-07-26T14:13:47.674Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075207653",
-    "timestamp": "2026-07-26T14:13:27.653Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075187637",
-    "timestamp": "2026-07-26T14:13:07.637Z",
     "event": "QR_RECEIVED",
     "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
     "level": "info"
