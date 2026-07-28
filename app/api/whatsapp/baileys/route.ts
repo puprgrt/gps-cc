@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 function getTargetUrl(): string {
-  let targetUrl = process.env.BAILEYS_API_URL || 'http://localhost:3001';
+  let targetUrl = process.env.BAILEYS_API_URL || 'https://gps-cc-whatsapp-bot-production.up.railway.app';
+  
+  // Jika Vercel tidak sengaja diarahkan ke dirinya sendiri (circular), paksa ke Railway
+  if (targetUrl.includes('vercel.app')) {
+    targetUrl = 'https://gps-cc-whatsapp-bot-production.up.railway.app';
+  }
+
   if (process.env.NODE_ENV === 'development' && !process.env.FORCE_REMOTE_BAILEYS) {
     targetUrl = 'http://localhost:3001';
   }
