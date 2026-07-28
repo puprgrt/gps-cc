@@ -28,13 +28,13 @@ export async function GET(req: NextRequest) {
       const data = await res.json();
       return NextResponse.json({ source: 'standalone_server', ...data });
     } else {
-      return NextResponse.json({ source: 'standalone_error', error: await res.text() }, { status: res.status });
+      return NextResponse.json({ source: 'standalone_error', error: await res.text(), debugTargetUrl: targetUrl }, { status: res.status });
     }
   } catch (e: any) {
     return NextResponse.json(
       { 
         source: 'standalone_error', 
-        error: `Server Standalone Baileys sedang restart/tidak terhubung: ${e?.message}`,
+        error: `Server Standalone Baileys sedang restart/tidak terhubung: ${e?.message}. Target URL was: ${getTargetUrl()}`,
         status: 'disconnected'
       },
       { status: 200 }
