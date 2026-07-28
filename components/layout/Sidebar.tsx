@@ -61,7 +61,7 @@ export function Sidebar() {
     { icon: Map, label: 'GIS & Peta', href: '/gis' },
     { icon: PieChart, label: 'Analytics', href: '/analisis' },
     { icon: AlertTriangle, label: 'Pengaduan', href: '/pengaduan' },
-    { icon: Settings, label: 'Pengaturan', href: '/pengaturan' },
+    { icon: Settings, label: 'Pengaturan', href: '/spms/pengaturan' },
   ];
 
   return (
