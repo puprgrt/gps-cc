@@ -20,7 +20,7 @@ class CallHandler {
           this.client.addLog('CALL_REJECTED', `Panggilan ${callType} dari ${callerJid} ditolak secara otomatis`);
 
           // Send an automatic polite reply
-          const replyText = `_🤖 Sistem Otomatis_\n\nMohon maaf, layanan WhatsApp Center PUPR Garut saat ini tidak dapat menerima Panggilan ${callType}. \n\nSilakan sampaikan pertanyaan atau keluhan Anda melalui pesan teks/media (gambar/dokumen). Admin atau Asisten Virtual kami akan segera merespons Anda. Terima kasih.`;
+          const replyText = `_🏛️ Sistem Otomatis PURI_\n\nMohon maaf, layanan WhatsApp Center PUPR Garut saat ini tidak dapat menerima Panggilan ${callType}. \n\nSilakan sampaikan pertanyaan atau keluhan Anda melalui pesan teks/media (gambar/dokumen). Admin atau Asisten Virtual kami akan segera merespons Anda. Terima kasih.`;
           
           await this.client.sendMessageReliable(callerJid, { text: replyText });
           

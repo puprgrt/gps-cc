@@ -155,10 +155,24 @@ CREATE TABLE IF NOT EXISTS public.psic_reputation_index (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 7. AKTIFKAN REALTIME UNTUK DASHBOARD OMNICHANNEL
-ALTER PUBLICATION supabase_realtime ADD TABLE public.psic_conversations;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.psic_messages;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.psic_issues;
+-- 7. AKTIFKAN REALTIME UNTUK DASHBOARD OMNICHANNEL (idempotent block)
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.psic_conversations;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.psic_messages;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.psic_issues;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN OTHERS THEN NULL;
+END $$;
 
 -- 8. ROW LEVEL SECURITY (RLS) & POLICY
 ALTER TABLE public.psic_channels ENABLE ROW LEVEL SECURITY;
@@ -168,13 +182,24 @@ ALTER TABLE public.psic_issues ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.psic_collaboration_tickets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.psic_reputation_index ENABLE ROW LEVEL SECURITY;
 
--- Allow read & write for anon and authenticated in development (bisa diperketat untuk produksi)
-CREATE POLICY "Enable all access for psic_channels" ON public.psic_channels FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Enable all access for psic_conversations" ON public.psic_conversations FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Enable all access for psic_messages" ON public.psic_messages FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Enable all access for psic_issues" ON public.psic_issues FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Enable all access for psic_collaboration_tickets" ON public.psic_collaboration_tickets FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Enable all access for psic_reputation_index" ON public.psic_reputation_index FOR ALL USING (true) WITH CHECK (true);
+-- Allow read & write for authenticated users (idempotent migration)
+DROP POLICY IF EXISTS "Enable all access for psic_channels" ON public.psic_channels;
+CREATE POLICY "Enable all access for psic_channels" ON public.psic_channels FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Enable all access for psic_conversations" ON public.psic_conversations;
+CREATE POLICY "Enable all access for psic_conversations" ON public.psic_conversations FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Enable all access for psic_messages" ON public.psic_messages;
+CREATE POLICY "Enable all access for psic_messages" ON public.psic_messages FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Enable all access for psic_issues" ON public.psic_issues;
+CREATE POLICY "Enable all access for psic_issues" ON public.psic_issues FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Enable all access for psic_collaboration_tickets" ON public.psic_collaboration_tickets;
+CREATE POLICY "Enable all access for psic_collaboration_tickets" ON public.psic_collaboration_tickets FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Enable all access for psic_reputation_index" ON public.psic_reputation_index;
+CREATE POLICY "Enable all access for psic_reputation_index" ON public.psic_reputation_index FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 -- ============================================================================
 -- 9. SEED DATA AWAL - KANAL OMNICHANNEL & SAMPLE TICKETS

@@ -394,7 +394,7 @@ export class ChatwootService {
       });
 
       // 4. Tambahkan Private Note di Chatwoot untuk panduan Operator Bidang
-      const privateNoteContent = `🤖 [PURI AI 6-Tier Smart Routing]
+      const privateNoteContent = `🏛️ [PURI AI 6-Tier Smart Routing]
 • Bidang: ${classification.bidang.replace(/_/g, ' ')}
 • Layanan/Intent: ${classification.intent} (${classification.smartLabel})
 • Prioritas: ${classification.priority}

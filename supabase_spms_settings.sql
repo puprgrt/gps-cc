@@ -52,20 +52,20 @@ ALTER TABLE public.spms_survey_responses ENABLE ROW LEVEL SECURITY;
 -- Settings dapat dibaca publik
 DROP POLICY IF EXISTS "Settings viewable by everyone" ON public.spms_survey_settings;
 CREATE POLICY "Settings viewable by everyone"
-ON public.spms_survey_settings FOR SELECT USING ( true );
+ON public.spms_survey_settings FOR SELECT USING (auth.role() = 'authenticated');
 
 DROP POLICY IF EXISTS "Allow all updates for testing" ON public.spms_survey_settings;
 CREATE POLICY "Allow all updates for testing" 
-ON public.spms_survey_settings FOR UPDATE USING ( true );
+ON public.spms_survey_settings FOR UPDATE USING (auth.role() = 'authenticated');
 
 DROP POLICY IF EXISTS "Allow all inserts for settings" ON public.spms_survey_settings;
 CREATE POLICY "Allow all inserts for settings" 
-ON public.spms_survey_settings FOR INSERT WITH CHECK ( true );
+ON public.spms_survey_settings FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
 -- Responses dapat diinsert publik (anonim)
 DROP POLICY IF EXISTS "Anyone can submit survey" ON public.spms_survey_responses;
 CREATE POLICY "Anyone can submit survey"
-ON public.spms_survey_responses FOR INSERT WITH CHECK ( true );
+ON public.spms_survey_responses FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
 -- Responses hanya bisa dibaca admin (authenticated)
 DROP POLICY IF EXISTS "Authenticated users can read responses" ON public.spms_survey_responses;

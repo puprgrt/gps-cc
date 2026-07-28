@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const { GoogleGenAI } = require('@google/genai');
 const { downloadMediaMessage, normalizeMessageContent, getContentType } = require('@whiskeysockets/baileys');
 const supabaseService = require('../services/supabaseService');
@@ -17,6 +19,23 @@ class MessageHandler {
     return this.ai;
   }
 
+  async sendPuriReply(senderJid, replyText, isGreeting = false) {
+    const logoPath = path.resolve(__dirname, '../../public/puri.png');
+    if (isGreeting && fs.existsSync(logoPath)) {
+      try {
+        await this.client.sendMessageReliable(senderJid, {
+          image: fs.readFileSync(logoPath),
+          caption: replyText,
+          mimetype: 'image/png'
+        });
+        return;
+      } catch (err) {
+        console.warn(`[PURI Bot] Gagal mengirim media gambar logo puri.png: ${err.message}. Mengirim sebagai teks biasa...`);
+      }
+    }
+    await this.client.sendMessageReliable(senderJid, { text: replyText });
+  }
+
   formatPuriReply(text) {
     if (!text) return '';
     let cleanText = text.trim();
@@ -30,10 +49,10 @@ class MessageHandler {
     // Fix Markdown Bold: **text** -> *text* for WhatsApp
     cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '*$1*');
     
-    if (cleanText.startsWith('🤖') || cleanText.startsWith('*PURI') || cleanText.startsWith('PURI:')) {
+    if (cleanText.startsWith('🤖') || cleanText.startsWith('🏛️') || cleanText.startsWith('*PURI') || cleanText.startsWith('PURI:')) {
       return cleanText;
     }
-    return `🤖 *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\n${cleanText}`;
+    return `🏛️ *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\n${cleanText}`;
   }
 
   async handleIncoming(messages) {
@@ -161,7 +180,7 @@ class MessageHandler {
             type: 'text'
           };
 
-          await this.client.sendMessageReliable(senderJid, { text: replyText });
+          await this.sendPuriReply(senderJid, replyText, matchedFlow.menu_key.toLowerCase() === 'menu');
           await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
           this.client.addLog('MENU_REPLY', `Respon Menu Interaktif [${matchedFlow.menu_key}] dikirim ke ${pushName}`);
         }
@@ -190,7 +209,7 @@ class MessageHandler {
             type: 'text'
           };
 
-          await this.client.sendMessageReliable(senderJid, { text: replyText });
+          await this.sendPuriReply(senderJid, replyText, false);
           await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
           this.client.addLog('KEYWORD_REPLY', `Respon Kata Kunci [${matchedKeyword.keyword}] dikirim ke ${pushName}`);
         }
@@ -341,7 +360,7 @@ class MessageHandler {
           },
         };
 
-        await this.client.sendMessageReliable(senderJid, { text: replyText });
+        await this.sendPuriReply(senderJid, replyText, false);
         await supabaseService.saveMessage(convId, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
 
         // Update conversation status & 6-Tier PURI Routing metadata
@@ -428,7 +447,7 @@ class MessageHandler {
     const isEscalating = escalateKeywords.some(kw => lower === kw || lower.startsWith(kw + ' ') || lower.includes(' ' + kw));
 
     if (isEscalating) {
-      const replyText = `🤖 *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\n🙏 *PENGALIHAN KE OPERATOR MANUSIA*\n\nPesan Anda telah kami teruskan ke *Operator Bidang Pelayanan PUPR Garut*. Petugas kami akan segera merespons obrolan ini pada jam kerja operasional (Senin - Jumat, 08:00 - 15:30 WIB).\n\nTerima kasih atas kesabaran Anda!`;
+      const replyText = `🏛️ *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\n🙏 *PENGALIHAN KE OPERATOR MANUSIA*\n\nPesan Anda telah kami teruskan ke *Operator Bidang Pelayanan PUPR Garut*. Petugas kami akan segera merespons obrolan ini pada jam kerja operasional (Senin - Jumat, 08:00 - 15:30 WIB).\n\nTerima kasih atas kesabaran Anda!`;
 
       const botMsgObj = {
         id: `msg-esc-${Date.now()}`,
@@ -440,7 +459,7 @@ class MessageHandler {
         type: 'text'
       };
 
-      await this.client.sendMessageReliable(senderJid, { text: replyText });
+      await this.sendPuriReply(senderJid, replyText, false);
       await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
       await supabaseService.updateConversationStatus(`conv-${senderJid}`, 'pending', {
         prioritas: 'TINGGI',

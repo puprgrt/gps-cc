@@ -1,20 +1,13 @@
-// import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { User, UserRole } from '@/domain/models';
 
 export function useAuth() {
-  // === SEMENTARA KITA BYPASS UNTUK DEV ===
-  // const { data: session, status } = useSession();
+  const { data: session, status } = useSession();
 
-  const user = {
-    id: "dev-bypass",
-    name: "Developer",
-    email: "dev@garutkab.go.id",
-    role: "admin" as UserRole,
-  };
-  
-  const isAuthenticated = true;
-  const isLoading = false;
-  const isInitialized = true;
+  const user = session?.user as any;
+  const isAuthenticated = status === "authenticated";
+  const isLoading = status === "loading";
+  const isInitialized = status !== "loading";
 
   return {
     user,
@@ -22,10 +15,16 @@ export function useAuth() {
     isLoading,
     isInitialized,
 
-    loginWithSSO: async () => {},
-    loginBypass: async () => {},
-    logout: async () => {},
+    loginWithSSO: async () => {
+      await signIn("keycloak");
+    },
+    logout: async () => {
+      await signOut();
+    },
 
-    hasRole: (roles: UserRole[]) => true
+    hasRole: (roles: UserRole[]) => {
+      if (!user || !user.role) return false;
+      return roles.includes(user.role as UserRole);
+    }
   };
 }

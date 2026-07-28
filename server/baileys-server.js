@@ -27,11 +27,21 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' })); // Increased limit for documents/media
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', service: 'PUPR Garut Baileys Standalone Server', timestamp: new Date().toISOString() });
+});
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.use('/api', baileysRoutes);
+app.use('/api', (req, res, next) => {
+  const apiKey = req.headers['x-baileys-api-key'];
+  if (!process.env.BAILEYS_API_KEY || apiKey !== process.env.BAILEYS_API_KEY) {
+    return res.status(401).json({ error: 'Unauthorized Service-to-Service Request' });
+  }
+  next();
+}, baileysRoutes);
 
 app.use((err, req, res, next) => {
   console.error('[PUPR Baileys] Error:', err.message);
@@ -41,7 +51,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, async () => {
+const HOST = process.env.BAILEYS_HOST || process.env.HOST || '0.0.0.0'; // Bind to 0.0.0.0 for container/cloud compatibility
+app.listen(PORT, HOST, async () => {
   console.log(`=======================================================`);
   console.log(`   PUPR GARUT BAILEYS STANDALONE SERVER READY ON :${PORT}  `);
   console.log(`   CORS Whitelist: ${CORS_WHITELIST.join(', ')}`);

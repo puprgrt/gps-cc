@@ -93,37 +93,54 @@ ALTER TABLE meetings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE meeting_participants ENABLE ROW LEVEL SECURITY;
 
 -- Allow authenticated users to read all meetings
+DROP POLICY IF EXISTS "meetings_select_all" ON meetings;
 CREATE POLICY "meetings_select_all" ON meetings
-  FOR SELECT USING (true);
+  FOR SELECT USING (auth.role() = 'authenticated');
 
 -- Allow authenticated users to insert meetings
+DROP POLICY IF EXISTS "meetings_insert_auth" ON meetings;
 CREATE POLICY "meetings_insert_auth" ON meetings
-  FOR INSERT WITH CHECK (true);
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
 -- Allow update only by creator or admin
+DROP POLICY IF EXISTS "meetings_update_auth" ON meetings;
 CREATE POLICY "meetings_update_auth" ON meetings
-  FOR UPDATE USING (true);
+  FOR UPDATE USING (auth.role() = 'authenticated');
 
 -- Allow delete only by creator or admin
+DROP POLICY IF EXISTS "meetings_delete_auth" ON meetings;
 CREATE POLICY "meetings_delete_auth" ON meetings
-  FOR DELETE USING (true);
+  FOR DELETE USING (auth.role() = 'authenticated');
 
 -- Participants policies
+DROP POLICY IF EXISTS "participants_select_all" ON meeting_participants;
 CREATE POLICY "participants_select_all" ON meeting_participants
-  FOR SELECT USING (true);
+  FOR SELECT USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "participants_insert_auth" ON meeting_participants;
 CREATE POLICY "participants_insert_auth" ON meeting_participants
-  FOR INSERT WITH CHECK (true);
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "participants_update_auth" ON meeting_participants;
 CREATE POLICY "participants_update_auth" ON meeting_participants
-  FOR UPDATE USING (true);
+  FOR UPDATE USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "participants_delete_auth" ON meeting_participants;
 CREATE POLICY "participants_delete_auth" ON meeting_participants
-  FOR DELETE USING (true);
+  FOR DELETE USING (auth.role() = 'authenticated');
 
 -- ============================================================
 -- Realtime subscription
 -- ============================================================
--- Enable realtime for meetings table
-ALTER PUBLICATION supabase_realtime ADD TABLE meetings;
-ALTER PUBLICATION supabase_realtime ADD TABLE meeting_participants;
+-- Enable realtime for meetings table (idempotent block)
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE meetings;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE meeting_participants;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN OTHERS THEN NULL;
+END $$;

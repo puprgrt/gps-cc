@@ -46,25 +46,25 @@ DROP POLICY IF EXISTS "Allow service role full access on FAQ Cache" ON public.pu
 CREATE POLICY "Allow public read access on RAG KB"
   ON public.puri_rag_knowledge_base
   FOR SELECT
-  USING (true);
+  USING (auth.role() = 'authenticated');
 
 CREATE POLICY "Allow public read access on FAQ Cache"
   ON public.puri_faq_cache
   FOR SELECT
-  USING (true);
+  USING (auth.role() = 'authenticated');
 
 -- Izinkan service role (backend server) melakukan insert/update/delete penuh
 CREATE POLICY "Allow service role full access on RAG KB"
   ON public.puri_rag_knowledge_base
   FOR ALL
-  USING (true)
-  WITH CHECK (true);
+  USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
 
 CREATE POLICY "Allow service role full access on FAQ Cache"
   ON public.puri_faq_cache
   FOR ALL
-  USING (true)
-  WITH CHECK (true);
+  USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
 
 -- 4. Tabel Pengaturan Terpusat Model Semua AI (5 AI Providers)
 CREATE TABLE IF NOT EXISTS public.puri_ai_provider_settings (
@@ -88,10 +88,10 @@ DROP POLICY IF EXISTS "Allow service role full access on AI Provider Settings" O
 CREATE POLICY "Allow public read access on AI Provider Settings"
   ON public.puri_ai_provider_settings
   FOR SELECT
-  USING (true);
+  USING (auth.role() = 'authenticated');
 
 CREATE POLICY "Allow service role full access on AI Provider Settings"
   ON public.puri_ai_provider_settings
   FOR ALL
-  USING (true)
-  WITH CHECK (true);
+  USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');

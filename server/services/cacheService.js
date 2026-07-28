@@ -15,6 +15,7 @@ class CacheService {
   constructor() {
     this.cacheMap = new Map();
     this.hitCountTotal = 0;
+    this.missCountTotal = 0;
     this.maxCacheSize = 500;
     this.seedDefaultFaqCache();
     this.loadPersistedFaqEntries();
@@ -77,13 +78,16 @@ class CacheService {
   }
 
   /**
-   * Check if query hits the cache
+   * Check if query hits the cache (Exact + Semantic Canonical + Token Similarity)
    * @param {string} userText
-   * @returns {{hit: boolean, entry?: {replyText: string, category: string, hitCount: number}}}
+   * @returns {{hit: boolean, entry?: {replyText: string, category: string, hitCount: number}, matchType?: string}}
    */
   get(userText) {
     const key = this.normalizeKey(userText);
-    if (!key) return { hit: false };
+    if (!key) {
+      this.missCountTotal += 1;
+      return { hit: false };
+    }
 
     // 1. Exact normalized match
     if (this.cacheMap.has(key)) {
@@ -91,19 +95,62 @@ class CacheService {
       entry.hitCount += 1;
       entry.updatedAt = new Date().toISOString();
       this.hitCountTotal += 1;
-      return { hit: true, entry };
+      return { hit: true, entry, matchType: 'EXACT' };
     }
 
-    // 2. Keyword check for canonical common questions
-    for (const [cachedKey, entry] of this.cacheMap.entries()) {
-      if (key.length > 5 && (key === cachedKey || (key.includes(cachedKey) && cachedKey.length > 10))) {
-        entry.hitCount += 1;
-        entry.updatedAt = new Date().toISOString();
+    // 2. Canonical topic mapping (Semantic Cache - Point 5)
+    // "Apa syarat PBG?" -> "Persyaratan PBG" -> "Dokumen PBG" -> "Syarat membuat PBG"
+    const lowerWords = key.split(/\s+/);
+    const hasPbg = lowerWords.includes('pbg') || lowerWords.includes('imb');
+    const hasSyarat = lowerWords.includes('syarat') || lowerWords.includes('persyaratan') || lowerWords.includes('dokumen') || lowerWords.includes('urus') || lowerWords.includes('membuat');
+    if (hasPbg && hasSyarat) {
+      const pbgEntry = this.cacheMap.get('apa syarat pbg persetujuan bangunan gedung') ||
+        Array.from(this.cacheMap.values()).find((e) => e.replyText && e.replyText.includes('Persyaratan PBG'));
+      if (pbgEntry) {
+        pbgEntry.hitCount += 1;
+        pbgEntry.updatedAt = new Date().toISOString();
         this.hitCountTotal += 1;
-        return { hit: true, entry };
+        return { hit: true, entry: pbgEntry, matchType: 'SEMANTIC_CANONICAL' };
       }
     }
 
+    const hasAlamat = lowerWords.includes('alamat') || (lowerWords.includes('dimana') && lowerWords.includes('kantor')) || lowerWords.includes('lokasi');
+    if (hasAlamat && lowerWords.includes('pupr')) {
+      const alamatEntry = this.cacheMap.get('dimana alamat kantor pupr garut alamat dinas pupr garut') ||
+        Array.from(this.cacheMap.values()).find((e) => e.replyText && e.replyText.includes('Alamat Kantor'));
+      if (alamatEntry) {
+        alamatEntry.hitCount += 1;
+        alamatEntry.updatedAt = new Date().toISOString();
+        this.hitCountTotal += 1;
+        return { hit: true, entry: alamatEntry, matchType: 'SEMANTIC_CANONICAL' };
+      }
+    }
+
+    // 3. Jaccard Token Similarity Matching (Semantic Cache & Duplicate Detection - Point 5 & 17)
+    const userTokens = new Set(lowerWords.filter((w) => w.length > 2));
+    if (userTokens.size >= 2) {
+      for (const [cachedKey, entry] of this.cacheMap.entries()) {
+        const cachedTokens = new Set(cachedKey.split(/\s+/).filter((w) => w.length > 2));
+        if (cachedTokens.size < 2) continue;
+
+        let intersection = 0;
+        for (const token of userTokens) {
+          if (cachedTokens.has(token)) intersection++;
+        }
+        const union = userTokens.size + cachedTokens.size - intersection;
+        const jaccard = intersection / union;
+
+        // If similarity >= 0.65 or keyword containment for long queries
+        if (jaccard >= 0.65 || (key.length > 15 && key.includes(cachedKey))) {
+          entry.hitCount += 1;
+          entry.updatedAt = new Date().toISOString();
+          this.hitCountTotal += 1;
+          return { hit: true, entry, matchType: 'SEMANTIC_JACCARD', similarity: Math.round(jaccard * 100) };
+        }
+      }
+    }
+
+    this.missCountTotal += 1;
     return { hit: false };
   }
 
@@ -177,9 +224,14 @@ class CacheService {
   }
 
   getStats() {
+    const totalRequests = this.hitCountTotal + this.missCountTotal;
+    const hitRatePercentage = totalRequests > 0 ? ((this.hitCountTotal / totalRequests) * 100).toFixed(1) : '0.0';
     return {
       totalCachedItems: this.cacheMap.size,
       totalCacheHits: this.hitCountTotal,
+      totalCacheMisses: this.missCountTotal,
+      hitRatePercentage: `${hitRatePercentage}%`,
+      aiEfficiencyRate: `${hitRatePercentage}%`,
     };
   }
 

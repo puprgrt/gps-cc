@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
 import KeycloakProvider from "next-auth/providers/keycloak"
-import CredentialsProvider from "next-auth/providers/credentials"
+
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -9,24 +9,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.AUTH_KEYCLOAK_SECRET,
       issuer: process.env.AUTH_KEYCLOAK_ISSUER,
     }),
-    CredentialsProvider({
-      id: "dev-bypass",
-      name: "Bypass (Dev Only)",
-      credentials: {
-        bypass_token: { label: "Bypass Token", type: "text" }
-      },
-      async authorize(credentials) {
-        if (credentials?.bypass_token === "DEV_BYPASS") {
-          return {
-            id: "dev-admin-1",
-            name: "Administrator (Bypass)",
-            email: "admin@garutkab.go.id",
-            image: "https://ui-avatars.com/api/?name=Admin+Bypass&background=0D8ABC&color=fff"
-          }
-        }
-        return null
-      }
-    })
+
   ],
   callbacks: {
     async jwt({ token, user, account }) {

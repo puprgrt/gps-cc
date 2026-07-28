@@ -116,9 +116,33 @@ CREATE TABLE IF NOT EXISTS wa_bot_keywords (
 );
 
 -- Realtime Configuration
--- Mengaktifkan pengiriman event realtime untuk tabel-tabel penting ke Frontend (Vercel)
-ALTER PUBLICATION supabase_realtime ADD TABLE wa_conversations;
-ALTER PUBLICATION supabase_realtime ADD TABLE wa_messages;
-ALTER PUBLICATION supabase_realtime ADD TABLE wa_bot_settings;
-ALTER PUBLICATION supabase_realtime ADD TABLE wa_bot_menu_flows;
-ALTER PUBLICATION supabase_realtime ADD TABLE wa_bot_keywords;
+-- Mengaktifkan pengiriman event realtime untuk tabel-tabel penting ke Frontend (Vercel) (idempotent block)
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE wa_conversations;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE wa_messages;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE wa_bot_settings;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE wa_bot_menu_flows;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE wa_bot_keywords;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN OTHERS THEN NULL;
+END $$;

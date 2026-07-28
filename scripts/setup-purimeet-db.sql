@@ -17,12 +17,14 @@ CREATE TABLE IF NOT EXISTS public.meeting_chat_messages (
 ALTER TABLE public.meeting_chat_messages ENABLE ROW LEVEL SECURITY;
 
 -- Allow read access to all authenticated users
+DROP POLICY IF EXISTS "Enable read access for all users" ON public.meeting_chat_messages;
 CREATE POLICY "Enable read access for all users" ON public.meeting_chat_messages
-  FOR SELECT USING (true);
+  FOR SELECT USING (auth.role() = 'authenticated');
 
 -- Allow insert access
+DROP POLICY IF EXISTS "Enable insert for all users" ON public.meeting_chat_messages;
 CREATE POLICY "Enable insert for all users" ON public.meeting_chat_messages
-  FOR INSERT WITH CHECK (true);
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
 
 -- 2. MEETING FILES
@@ -41,16 +43,19 @@ CREATE TABLE IF NOT EXISTS public.meeting_files (
 ALTER TABLE public.meeting_files ENABLE ROW LEVEL SECURITY;
 
 -- Allow read access
+DROP POLICY IF EXISTS "Enable read access for all users" ON public.meeting_files;
 CREATE POLICY "Enable read access for all users" ON public.meeting_files
-  FOR SELECT USING (true);
+  FOR SELECT USING (auth.role() = 'authenticated');
 
 -- Allow insert access
+DROP POLICY IF EXISTS "Enable insert for all users" ON public.meeting_files;
 CREATE POLICY "Enable insert for all users" ON public.meeting_files
-  FOR INSERT WITH CHECK (true);
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
 -- Allow delete access
+DROP POLICY IF EXISTS "Enable delete for all users" ON public.meeting_files;
 CREATE POLICY "Enable delete for all users" ON public.meeting_files
-  FOR DELETE USING (true);
+  FOR DELETE USING (auth.role() = 'authenticated');
 
 
 -- 3. STORAGE BUCKET
@@ -60,14 +65,18 @@ VALUES ('meeting-files', 'meeting-files', false)
 ON CONFLICT (id) DO NOTHING;
 
 -- Storage Policies untuk meeting-files
+DROP POLICY IF EXISTS "Enable read access for all users" ON storage.objects;
 CREATE POLICY "Enable read access for all users" ON storage.objects
   FOR SELECT USING (bucket_id = 'meeting-files');
 
+DROP POLICY IF EXISTS "Enable insert for all users" ON storage.objects;
 CREATE POLICY "Enable insert for all users" ON storage.objects
   FOR INSERT WITH CHECK (bucket_id = 'meeting-files');
 
+DROP POLICY IF EXISTS "Enable update for all users" ON storage.objects;
 CREATE POLICY "Enable update for all users" ON storage.objects
   FOR UPDATE USING (bucket_id = 'meeting-files');
 
+DROP POLICY IF EXISTS "Enable delete for all users" ON storage.objects;
 CREATE POLICY "Enable delete for all users" ON storage.objects
   FOR DELETE USING (bucket_id = 'meeting-files');

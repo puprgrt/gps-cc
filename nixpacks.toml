@@ -1,0 +1,14 @@
+# Nixpacks configuration for Railway / container deployments
+# Ensures all devDependencies and build tools are installed properly without omitting dev deps
+
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[phases.install]
+cmds = ["npm ci --include=dev"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm start"

@@ -35,6 +35,9 @@ class LocalDBService {
   }
 
   ensureDbFiles() {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
     if (!fs.existsSync(RAG_DB_FILE)) {
       fs.writeFileSync(RAG_DB_FILE, JSON.stringify([], null, 2), 'utf8');
     }

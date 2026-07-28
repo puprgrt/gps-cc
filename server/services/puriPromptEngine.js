@@ -518,7 +518,7 @@ function buildConversationContext(messages, senderName) {
   let currentLength = historyText.length;
 
   for (const msg of messages) {
-    const role = msg.sender_type === 'user' ? `👤 ${userName}` : '🤖 PURI';
+    const role = msg.sender_type === 'user' ? `👤 ${userName}` : '🏛️ PURI';
     const text = (msg.text || '').trim();
     
     // Skip empty messages or internal metadata

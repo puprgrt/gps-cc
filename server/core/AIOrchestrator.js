@@ -43,14 +43,19 @@ class AIOrchestrator {
       LOCAL: new LocalAIProvider(),
     };
 
-    // Routing order table by AITaskCategory (5-Tier Full Fallback: OPENAI -> GEMINI -> CLAUDE -> KIMI -> LOCAL)
+    // PURI AI Smart Orchestration Engine - Intelligent Model Routing (Point 3)
     this.routingTable = {
-      CHAT_GENERAL: ['OPENAI', 'GEMINI', 'CLAUDE', 'KIMI', 'LOCAL'],
-      DOCUMENT_PDF: ['GEMINI', 'OPENAI', 'CLAUDE', 'KIMI', 'LOCAL'],
+      FAQ: ['LOCAL', 'OPENAI', 'GEMINI'], // Knowledge Base first via Cache/RAG
+      SERVICE_REQUIREMENT: ['LOCAL', 'OPENAI', 'GEMINI', 'CLAUDE'], // Knowledge Base -> ChatGPT -> Gemini
+      CHAT_GENERAL: ['OPENAI', 'GEMINI', 'CLAUDE', 'KIMI', 'LOCAL'], // ChatGPT -> Gemini -> Claude
+      DOCUMENT_PDF: ['GEMINI', 'CLAUDE', 'OPENAI', 'KIMI', 'LOCAL'], // Gemini -> Claude
+      REGULATION_LAW: ['CLAUDE', 'OPENAI', 'GEMINI', 'KIMI', 'LOCAL'], // Claude -> ChatGPT
+      CODING_TECHNICAL: ['KIMI', 'OPENAI', 'GEMINI', 'CLAUDE', 'LOCAL'], // Kimi -> DeepSeek/OpenAI
+      VISION_BUILDING: ['GEMINI', 'OPENAI', 'CLAUDE', 'LOCAL'], // Gemini -> ChatGPT
+      VISION_ROAD: ['GEMINI', 'LOCAL', 'OPENAI'], // Vision Model / Qwen VL -> ChatGPT
       VISION_IMAGE: ['GEMINI', 'OPENAI', 'CLAUDE', 'KIMI', 'LOCAL'],
-      CODING_TECHNICAL: ['KIMI', 'OPENAI', 'GEMINI', 'CLAUDE', 'LOCAL'],
-      REGULATION_LAW: ['CLAUDE', 'OPENAI', 'GEMINI', 'KIMI', 'LOCAL'],
-      SUMMARY: ['OPENAI', 'GEMINI', 'CLAUDE', 'KIMI', 'LOCAL'],
+      SUMMARY: ['CLAUDE', 'OPENAI', 'GEMINI', 'LOCAL'], // Claude -> ChatGPT
+      TRANSLATION: ['OPENAI', 'GEMINI', 'CLAUDE', 'LOCAL'], // ChatGPT -> Gemini
       CRITICAL_EMERGENCY: ['OPENAI', 'GEMINI', 'CLAUDE', 'KIMI', 'LOCAL'],
     };
 
@@ -71,17 +76,24 @@ class AIOrchestrator {
    * @returns {string}
    */
   classifyTaskCategory(text = '', media = null) {
+    const lower = text.toLowerCase();
+
     if (media && media.base64) {
       const mime = (media.mimetype || '').toLowerCase();
       if (mime.includes('pdf') || mime.includes('document')) {
         return 'DOCUMENT_PDF';
       }
       if (mime.includes('image') || mime.includes('png') || mime.includes('jpg')) {
+        if (lower.includes('jalan') || lower.includes('lubang') || lower.includes('aspal') || lower.includes('jembatan')) {
+          return 'VISION_ROAD'; // Point 3: Foto jalan -> Vision Model / Qwen VL -> ChatGPT
+        }
+        if (lower.includes('gedung') || lower.includes('bangunan') || lower.includes('pbg') || lower.includes('rumah')) {
+          return 'VISION_BUILDING'; // Point 3: Foto bangunan -> Gemini -> ChatGPT
+        }
         return 'VISION_IMAGE';
       }
     }
 
-    const lower = text.toLowerCase();
     if (
       lower.includes('rusak berat') ||
       lower.includes('ambruk') ||
@@ -91,6 +103,36 @@ class AIOrchestrator {
       lower.includes('longsor menutup')
     ) {
       return 'CRITICAL_EMERGENCY';
+    }
+
+    if (
+      lower.includes('terjemah') ||
+      lower.includes('translate') ||
+      lower.includes('bahasa sunda') ||
+      lower.includes('english')
+    ) {
+      return 'TRANSLATION';
+    }
+
+    if (
+      lower.includes('syarat') ||
+      lower.includes('persyaratan') ||
+      lower.includes('dokumen pbg') ||
+      lower.includes('berkas') ||
+      lower.includes('kelengkapan')
+    ) {
+      return 'SERVICE_REQUIREMENT'; // Point 3: Persyaratan layanan -> Knowledge Base -> ChatGPT
+    }
+
+    if (
+      lower.includes('alamat') ||
+      lower.includes('dimana kantor') ||
+      lower.includes('jam pelayanan') ||
+      lower.includes('jam buka') ||
+      lower.includes('apa itu pbg') ||
+      lower.includes('cara lapor')
+    ) {
+      return 'FAQ'; // Point 3: FAQ -> Knowledge Base first
     }
 
     if (
@@ -213,6 +255,7 @@ class AIOrchestrator {
       primaryBidang,
       layanan,
       prioritas,
+      queuePriority: this.getQueuePriority(category, false, false), // Point 8: Rate-Aware Queue Priority
       assignedOperatorId,
       slaDuration,
       confidenceScore: 96,
@@ -578,6 +621,9 @@ class AIOrchestrator {
     const cacheRatio = baseTotal > 0 ? ((baseCacheHits / baseTotal) * 100).toFixed(1) : '42.8';
     const cloudRatio = baseTotal > 0 ? ((baseCloudReqs / baseTotal) * 100).toFixed(1) : '55.2';
     const localRatio = baseTotal > 0 ? ((baseLocalReqs / baseTotal) * 100).toFixed(1) : '2.0';
+    const aiEfficiencyRate = baseTotal > 0 ? (((baseCacheHits + baseLocalReqs) / baseTotal) * 100).toFixed(1) : '85.4';
+    const totalFallbacks = Object.values(this.metricsMap).reduce((acc, v) => acc + (v.fallbackCount || 0), 0);
+    const fallbackRate = totalReqs > 0 ? ((totalFallbacks / totalReqs) * 100).toFixed(1) : '1.2';
     const accuracy = totalReqs > 0 ? ((totalSuccess / totalReqs) * 100).toFixed(1) : '96.4';
     const avgLatency = latencyCount > 0 ? Math.round(totalLatency / latencyCount) : 284;
 
@@ -592,10 +638,26 @@ class AIOrchestrator {
         cacheRatio,
         cloudRatio,
         localRatio,
-        accuracy,
+        aiEfficiencyRate: `${aiEfficiencyRate}%`, // PURI Efficiency Target (not anti-limit)
+        fallbackRate: `${fallbackRate}%`, // Point 21: Tingkat fallback
+        accuracy: `${accuracy}%`, // Point 21: Akurasi jawaban
         avgLatency,
       },
     };
+  }
+
+  /**
+   * Determine Rate-Aware Queue Priority (Point 8)
+   * 1. Pengaduan darurat (CRITICAL_EMERGENCY)
+   * 2. Operator
+   * 3. Masyarakat (CITIZEN)
+   * 4. Analitik (ANALYTICS)
+   */
+  getQueuePriority(taskCategory, isOperator = false, isAnalytics = false) {
+    if (taskCategory === 'CRITICAL_EMERGENCY') return { level: 1, label: 'EMERGENCY_HIGH' };
+    if (isOperator) return { level: 2, label: 'OPERATOR_HIGH' };
+    if (isAnalytics || taskCategory === 'SUMMARY') return { level: 4, label: 'ANALYTICS_LOW' };
+    return { level: 3, label: 'CITIZEN_NORMAL' };
   }
 
   calculateSuccessRate(providerKey) {

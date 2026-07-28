@@ -68,7 +68,7 @@ export default function AICustomerServicePage() {
       id: 'welcome-1',
       sender: 'ai',
       senderName: 'PURI (AI Front Office)',
-      text: '🤖 *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\nSelamat datang di Layanan Customer Service Digital 24/7 Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.\n\nSilakan ajukan pertanyaan seputar pelayanan (PBG, SLF, KRK, PKKPR), laporkan infrastruktur jalan/jembatan rusak, atau konsultasikan informasi teknik sipil Anda.',
+      text: '🏛️ *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\nSelamat datang di Layanan Customer Service Digital 24/7 Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.\n\nSilakan ajukan pertanyaan seputar pelayanan (PBG, SLF, KRK, PKKPR), laporkan infrastruktur jalan/jembatan rusak, atau konsultasikan informasi teknik sipil Anda.',
       timestamp: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
       metadata: {
         providerUsed: 'LOCAL',
@@ -164,17 +164,20 @@ export default function AICustomerServicePage() {
     <div className="min-h-screen bg-[#0D1117] text-slate-100 p-4 md:p-8 space-y-6">
       {/* TOP HEADER */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-5">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-400 border border-blue-500/20 mb-2">
-            <Sparkles className="h-3.5 w-3.5" />
-            Front Office Digital 24/7 • PURI AI Orchestrator
+        <div className="flex items-center gap-4">
+          <img src="/puri.png" alt="Logo PURI PUPR Garut" className="h-14 w-auto object-contain drop-shadow-lg shrink-0" />
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-400 border border-blue-500/20 mb-2">
+              <Sparkles className="h-3.5 w-3.5" />
+              Front Office Digital 24/7 • PURI AI Orchestrator
+            </div>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+              AI Customer Service & Konsultasi Publik
+            </h1>
+            <p className="text-sm text-slate-400">
+              Diteruskan secara otomatis melalui 6-Tier Hierarchical Routing dan didukung RAG First Knowledge Base 7 Bidang PUPR.
+            </p>
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
-            AI Customer Service & Konsultasi Publik
-          </h1>
-          <p className="text-sm text-slate-400">
-            Diteruskan secara otomatis melalui 6-Tier Hierarchical Routing dan didukung RAG First Knowledge Base 7 Bidang PUPR.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -268,7 +271,7 @@ export default function AICustomerServicePage() {
                       : 'bg-emerald-600/20 text-emerald-400 border-emerald-500/40'
                   )}
                 >
-                  {msg.sender === 'user' ? <UserIcon className="h-4 w-4" /> : <img src="/favicon.ico" alt="PURI" className="h-5 w-5 object-contain" />}
+                  {msg.sender === 'user' ? <UserIcon className="h-4 w-4" /> : <img src="/puri.png" alt="PURI" className="h-7 w-7 object-contain" />}
                 </div>
 
                 {/* BUBBLE CONTENT */}
