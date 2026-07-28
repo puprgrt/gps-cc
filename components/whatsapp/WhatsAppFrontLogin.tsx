@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
-  ShieldCheck, QrCode, Smartphone, RefreshCw, CheckCircle2, 
+  ShieldCheck, QrCode, Smartphone, RefreshCw, 
   Sparkles, Terminal, Lock, Copy, Check, Info, Server, MessageSquare
 } from 'lucide-react';
 import { WhatsAppConnectionStatus, WhatsAppBotLog } from '@/domain/whatsapp';
@@ -12,7 +12,7 @@ interface WhatsAppFrontLoginProps {
   connectionStatus: WhatsAppConnectionStatus | null;
   pairingMode: 'qr' | 'pairing';
   setPairingMode: (mode: 'qr' | 'pairing') => void;
-  regenerateBaileysQr: () => void;
+  regenerateBaileysQr: () => Promise<void>;
   confirmAuthentication: () => Promise<void>;
   connect: (mode?: 'qr' | 'pairing', phoneNumber?: string) => Promise<void>;
   refreshConnection?: () => Promise<void>;
@@ -82,7 +82,7 @@ export function WhatsAppFrontLogin({
     }
   };
 
-  const qrString = connectionStatus?.qrCodeRaw || '2@baileys_initial_qr_string_sample_pupr_garut_6281234567890';
+  const qrString = connectionStatus?.qrCodeRaw;
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6 pb-12 animate-fade-in">
@@ -163,19 +163,35 @@ export function WhatsAppFrontLogin({
               {/* QR Box Container (5 cols) */}
               <div className="md:col-span-5 flex flex-col items-center justify-center p-6 bg-white rounded-2xl shadow-xl relative border border-slate-200">
                 <div className="p-3 bg-white rounded-xl flex items-center justify-center w-full max-w-[220px] aspect-square relative">
-                  <QRCodeSVG 
-                    value={qrString} 
-                    size={220}
-                    level="M"
-                    includeMargin={true}
-                    className="w-full h-full"
-                  />
+                  {qrString ? (
+                    <QRCodeSVG 
+                      value={qrString} 
+                      size={220}
+                      level="M"
+                      includeMargin={true}
+                      className="w-full h-full"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center gap-3 text-slate-600">
+                      <RefreshCw className="w-8 h-8 animate-spin text-emerald-600" />
+                      <span className="text-xs font-semibold text-center leading-tight">
+                        Menunggu QR Code dari<br />server WhatsApp...
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        Pastikan server Baileys berjalan
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* QR Rotation Timer & Refresh Button */}
                 <div className="mt-4 flex items-center justify-between w-full px-1 text-xs text-slate-800 gap-2 border-t border-slate-100 pt-3">
                   <span className="text-xs font-medium text-slate-600">
-                    Kedaluwarsa: <strong className="text-slate-900 font-mono text-sm">{countdown}s</strong>
+                    {qrString ? (
+                      <>Kedaluwarsa: <strong className="text-slate-900 font-mono text-sm">{countdown}s</strong></>
+                    ) : (
+                      <span className="text-amber-600 font-semibold">Menghubungkan ke server...</span>
+                    )}
                   </span>
                   <button
                     onClick={handleManualRefresh}
@@ -222,28 +238,28 @@ export function WhatsAppFrontLogin({
                 </ol>
 
                 <div className="pt-2">
-                  {/* Notice Box about Meta Server QR Validation */}
-                  <div className="mb-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-200/90 leading-relaxed">
+                  {/* Notice Box about server connection */}
+                  <div className="mb-3 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-200/90 leading-relaxed">
                     <div className="flex items-start gap-2">
-                      <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                      <Lock className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-amber-300 font-semibold block mb-0.5">Catatan Pemautan Kamera HP:</strong>
-                        Aplikasi WhatsApp HP memverifikasi token QR langsung ke server Meta (<code className="text-amber-200 font-mono">web.whatsapp.com</code>). Untuk menyambung langsung dengan HP fisik, hubungkan instance backend Node.js Baileys. Gunakan tombol di bawah ini atau <strong className="text-white">Kode Tautan Telepon</strong> untuk menguji penuh fitur Command Center.
+                        <strong className="text-emerald-300 font-semibold block mb-0.5">Koneksi Aman End-to-End</strong>
+                        QR Code di atas dihasilkan langsung dari server Meta WhatsApp melalui protokol Noise. Pindai menggunakan kamera HP WhatsApp untuk menautkan perangkat secara resmi.
                       </div>
                     </div>
                   </div>
 
-                  <button
-                    onClick={confirmAuthentication}
-                    className="hidden w-full py-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-xl font-bold text-sm shadow-xl hover:shadow-emerald-900/40 transition-all items-center justify-center gap-2.5 cursor-pointer"
-                  >
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span>Simulasikan Berhasil Pindai & Masuk Ke Dashboard</span>
-                  </button>
-                  <p className="text-[11px] text-slate-400 text-center mt-2 flex items-center justify-center gap-1">
-                    <Info className="w-3.5 h-3.5 text-blue-400" />
-                    Klik tombol di atas untuk menyelesaikan autentikasi dan masuk ke Command Center.
-                  </p>
+                  {!qrString && (
+                    <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-200/90 leading-relaxed">
+                      <div className="flex items-start gap-2">
+                        <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        <div>
+                          <strong className="text-amber-300 font-semibold block mb-0.5">Server Baileys Belum Terhubung</strong>
+                          Pastikan server backend Baileys (<code className="text-amber-200 font-mono">server/baileys-server.js</code>) sudah berjalan agar QR Code otentik dari WhatsApp dapat ditampilkan.
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -276,7 +292,7 @@ export function WhatsAppFrontLogin({
 
                 {/* 8-Character Pairing Code Display Container */}
                 {(() => {
-                  const rawCode = connectionStatus?.pairingCode || 'K9X2-M7P4';
+                  const rawCode = connectionStatus?.pairingCode || '';
                   const cleanCode = rawCode.replace('-', '');
                   const group1 = cleanCode.substring(0, 4).split('');
                   const group2 = cleanCode.substring(4, 8).split('');
@@ -380,13 +396,6 @@ export function WhatsAppFrontLogin({
                 </ol>
 
                 <div className="pt-1">
-                  <button
-                    onClick={confirmAuthentication}
-                    className="hidden w-full py-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-xl font-bold text-sm shadow-xl hover:shadow-emerald-900/40 transition-all items-center justify-center gap-2.5 cursor-pointer"
-                  >
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span>Simulasikan Kode Tautan Berhasil & Masuk Dashboard</span>
-                  </button>
                   <p className="text-[11px] text-slate-400 text-center mt-2 flex items-center justify-center gap-1">
                     <Info className="w-3.5 h-3.5 text-blue-400" />
                     Memasukkan kode ini akan menautkan sesi Baileys PUPR Garut secara otomatis.
@@ -411,15 +420,20 @@ export function WhatsAppFrontLogin({
           </div>
 
           <div className="bg-slate-900 border border-white/10 rounded-xl p-3 font-mono text-xs text-slate-300 h-28 overflow-y-auto space-y-1 scrollbar-thin">
-            <div className="text-emerald-400">[Baileys WS] Handshake established with wss://web.whatsapp.com/ws/chat</div>
-            <div className="text-blue-400">[Baileys Auth] Noise protocol keys initialized (session: garut_pupr)</div>
-            <div className="text-amber-300">[Baileys QR] Multi-device payload active. Expiry: 45s</div>
-            {logs.slice(0, 3).map((log) => (
-              <div key={log.id} className="text-slate-400 truncate">
-                [{typeof log.timestamp === 'string' ? log.timestamp : log.timestamp.toLocaleTimeString('id-ID')}] [{log.level.toUpperCase()}] {log.event} - {log.details}
-              </div>
-            ))}
-            <div className="text-slate-500 italic animate-pulse">[Baileys System] Menunggu respon pemindai dari perangkat WhatsApp...</div>
+            {logs.length > 0 ? (
+              logs.slice(0, 8).map((log) => (
+                <div key={log.id} className={`truncate ${
+                  log.level === 'success' ? 'text-emerald-400' :
+                  log.level === 'error' ? 'text-red-400' :
+                  log.level === 'warn' ? 'text-amber-300' :
+                  'text-slate-400'
+                }`}>
+                  [{typeof log.timestamp === 'string' ? log.timestamp : log.timestamp.toLocaleTimeString('id-ID')}] [{log.level.toUpperCase()}] {log.event} - {log.details}
+                </div>
+              ))
+            ) : (
+              <div className="text-slate-500 italic animate-pulse">[Baileys System] Menunggu koneksi ke server Baileys...</div>
+            )}
           </div>
         </div>
       </div>

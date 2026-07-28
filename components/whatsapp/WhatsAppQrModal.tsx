@@ -170,7 +170,8 @@ export const WhatsAppQrModal: React.FC = () => {
                 ) : (
                   <div className="w-[180px] h-[180px] flex flex-col items-center justify-center gap-3 text-slate-800">
                     <RefreshCw className="w-8 h-8 animate-spin text-emerald-600" />
-                    <span className="text-xs font-semibold text-center">Membuat Kode QR Baileys...</span>
+                    <span className="text-xs font-semibold text-center">Menunggu QR Code dari server WhatsApp...</span>
+                    <span className="text-[10px] text-slate-500">Pastikan server Baileys berjalan</span>
                   </div>
                 )}
 
@@ -211,13 +212,9 @@ export const WhatsAppQrModal: React.FC = () => {
                 </ol>
 
                 <div className="pt-1">
-                  <button
-                    onClick={confirmAuthentication}
-                    className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Simulasi Berhasil Terhubung</span>
-                  </button>
+                  <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-[11px] text-emerald-300 leading-relaxed text-center">
+                    QR Code dihasilkan langsung dari server Meta WhatsApp. Pindai dengan kamera HP untuk menautkan perangkat.
+                  </div>
                 </div>
               </div>
             </div>
@@ -310,13 +307,9 @@ export const WhatsAppQrModal: React.FC = () => {
               })()}
 
               <div className="pt-2">
-                <button
-                  onClick={confirmAuthentication}
-                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  Simulasi Kode Terkonfirmasi di WhatsApp
-                </button>
+                <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-[11px] text-emerald-300 leading-relaxed text-center">
+                  Kode tautan dihasilkan dari server Baileys. Masukkan kode ini di HP WhatsApp untuk menautkan perangkat.
+                </div>
               </div>
             </div>
           )}
@@ -334,14 +327,21 @@ export const WhatsAppQrModal: React.FC = () => {
               </span>
             </div>
             <div className="bg-slate-950 p-3 rounded-xl border border-white/10 font-mono text-[11px] text-slate-300 space-y-1 max-h-32 overflow-y-auto leading-relaxed shadow-inner">
-              {terminalLogs.map((log, idx) => (
-                <div key={idx} className="flex items-start gap-2">
-                  <span className="text-slate-600 shrink-0">&gt;</span>
-                  <span className={log.includes('Event') ? 'text-emerald-400' : log.includes('WS') ? 'text-blue-300' : 'text-slate-400'}>
-                    {log}
-                  </span>
+              {terminalLogs.length > 0 ? (
+                terminalLogs.map((log, idx) => (
+                  <div key={idx} className="flex items-start gap-2">
+                    <span className="text-slate-600 shrink-0">&gt;</span>
+                    <span className={log.includes('Event') || log.includes('QR') ? 'text-emerald-400' : log.includes('WS') || log.includes('Connecting') ? 'text-blue-300' : log.includes('Error') || log.includes('Gagal') ? 'text-red-400' : 'text-slate-400'}>
+                      {log}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="flex items-start gap-2">
+                  <span className="text-slate-600">&gt;</span>
+                  <span className="text-slate-500 animate-pulse">Menunggu koneksi ke server Baileys...</span>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>

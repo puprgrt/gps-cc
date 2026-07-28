@@ -29,7 +29,7 @@ interface WhatsAppState {
   updateConversationStatus: (conversationId: string, status: 'bot_handling' | 'pending' | 'active' | 'resolved') => Promise<void>;
   connect: (mode?: 'qr' | 'pairing', phoneNumber?: string) => Promise<void>;
   confirmAuthentication: () => Promise<void>;
-  regenerateBaileysQr: () => void;
+  regenerateBaileysQr: () => Promise<void>;
   disconnect: () => Promise<void>;
   refreshConnection: () => Promise<void>;
   refreshLogs: () => Promise<void>;
@@ -256,16 +256,13 @@ export const useWhatsAppStore = create<WhatsAppState>((set, get) => ({
     }
   },
 
-  regenerateBaileysQr: () => {
-    const freshQr = BaileysService.generateBaileysQrString();
-    set((state) => ({
-      connectionStatus: state.connectionStatus ? {
-        ...state.connectionStatus,
-        status: 'qr_ready',
-        qrCodeRaw: freshQr,
-        lastSync: new Date(),
-      } : null
-    }));
+  regenerateBaileysQr: async () => {
+    try {
+      const freshStatus = await BaileysService.requestFreshQr();
+      set({ connectionStatus: freshStatus });
+    } catch {
+      set({ error: 'Gagal memperbarui QR Code dari server Baileys' });
+    }
   },
 
   confirmAuthentication: async () => {

@@ -1,37 +1,11 @@
 import { WhatsAppConnectionStatus } from '../domain/whatsapp';
 
 export class BaileysService {
-  private static version = '@whiskeysockets/baileys v6.7.8';
+  private static version = '@whiskeysockets/baileys v7.0.0-rc13';
 
   /**
-   * Generates a valid Baileys WhatsApp MD multi-device pairing QR string
-   */
-  public static generateBaileysQrString(): string {
-    const timestamp = Date.now();
-    const randomRef = Array.from({ length: 32 }, () =>
-      Math.floor(Math.random() * 16).toString(16)
-    ).join('');
-    const randomKey1 = btoa(`baileys_pub_${timestamp}_${Math.random()}`).substring(0, 44);
-    const randomKey2 = btoa(`baileys_client_${timestamp}`).substring(0, 22);
-
-    return `2@${randomRef},${randomKey1},${randomKey2}`;
-  }
-
-  /**
-   * Generates 8-character Baileys WhatsApp Pairing Code (e.g. "K92A-4X88")
-   */
-  public static generatePairingCode(phoneNumber?: string): string {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let code = '';
-    for (let i = 0; i < 8; i++) {
-      if (i === 4) code += '-';
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return code;
-  }
-
-  /**
-   * Retrieve real Baileys socket connection state from backend API
+   * Retrieve real Baileys socket connection state from backend API.
+   * Returns actual QR code from WhatsApp Meta servers (via Baileys backend).
    */
   public static async getConnectionStatus(): Promise<WhatsAppConnectionStatus> {
     try {
@@ -39,35 +13,35 @@ export class BaileysService {
       if (res.ok) {
         const data = await res.json();
         return {
-          status: data.status || 'qr_ready',
-          phoneNumber: data.phoneNumber || data.userInfo?.phoneNumber,
-          userJid: data.userJid || data.userInfo?.userJid,
-          pushName: data.pushName || data.userInfo?.pushName,
-          qrCodeRaw: data.qrCodeRaw || data.qr,
-          pairingCode: data.pairingCode,
-          activeSince: data.activeSince || data.userInfo?.connectedAt,
+          status: data.status || 'disconnected',
+          phoneNumber: data.userInfo?.phone ? `+${data.userInfo.phone}` : undefined,
+          userJid: data.userInfo?.id,
+          pushName: data.userInfo?.name,
+          qrCodeRaw: data.qrCodeRaw || undefined,
+          pairingCode: data.pairingCode || undefined,
+          activeSince: data.userInfo?.connectedAt,
           lastSync: new Date(),
           baileysVersion: data.baileysVersion || this.version,
-          sessionPath: data.sessionPath || './baileys_auth_garut',
-          pingMs: data.pingMs || Math.floor(Math.random() * 12) + 15,
+          sessionPath: './baileys_auth_garut',
+          pingMs: data.pingMs || undefined,
         };
       }
     } catch {
-      // Fallback
+      // Backend unreachable
     }
 
     return {
-      status: 'qr_ready',
-      qrCodeRaw: this.generateBaileysQrString(),
+      status: 'disconnected',
       baileysVersion: this.version,
       sessionPath: './baileys_auth_garut',
       lastSync: new Date(),
-      pingMs: 20,
     };
   }
 
   /**
-   * Triggers Baileys WASocket pairing flow (QR or Phone Pairing Code)
+   * Triggers Baileys WASocket connection flow (QR or Phone Pairing Code).
+   * The backend will initialize the WhatsApp socket and generate a REAL QR code
+   * from Meta's servers, which will be available via getConnectionStatus() polling.
    */
   public static async startBaileysHandshake(type: 'qr' | 'pairing' = 'qr', phoneNumber?: string): Promise<{
     status: WhatsAppConnectionStatus;
@@ -82,75 +56,72 @@ export class BaileysService {
       });
       if (res.ok) {
         const data = await res.json();
+        // After POST /connect, the backend starts the Baileys socket.
+        // The real QR code will arrive asynchronously via connection.update event.
+        // We need to poll getConnectionStatus() to get it.
         return {
-          status: data.status,
+          status: {
+            status: data.status || 'connecting',
+            qrCodeRaw: data.qrCodeRaw || undefined,
+            pairingCode: data.pairingCode || undefined,
+            baileysVersion: this.version,
+            sessionPath: './baileys_auth_garut',
+            lastSync: new Date(),
+          },
           qrRaw: data.qrCodeRaw,
           pairingCode: data.pairingCode,
         };
       }
     } catch {
-      // Fallback
+      // Backend unreachable
     }
 
-    if (type === 'qr') {
-      const qrRaw = this.generateBaileysQrString();
-      return {
-        status: {
-          status: 'qr_ready',
-          qrCodeRaw: qrRaw,
-          baileysVersion: this.version,
-          sessionPath: './baileys_auth_garut',
-          lastSync: new Date(),
-          pingMs: 25,
-        },
-        qrRaw,
-      };
-    } else {
-      const pairingCode = this.generatePairingCode(phoneNumber);
-      return {
-        status: {
-          status: 'pairing_ready',
-          pairingCode,
-          phoneNumber: phoneNumber || '+62 812-3456-7890',
-          baileysVersion: this.version,
-          sessionPath: './baileys_auth_garut',
-          lastSync: new Date(),
-          pingMs: 22,
-        },
-        pairingCode,
-      };
-    }
+    // Backend unavailable — return connecting state without fake QR
+    return {
+      status: {
+        status: 'connecting',
+        baileysVersion: this.version,
+        sessionPath: './baileys_auth_garut',
+        lastSync: new Date(),
+      },
+    };
   }
 
   /**
-   * Confirms simulated authentication or retrieves active user profile
+   * Requests a fresh QR code by triggering reconnect on the Baileys backend.
+   * Returns the new connection status (QR will be available after polling).
    */
-  public static async confirmAuthentication(): Promise<WhatsAppConnectionStatus> {
+  public static async requestFreshQr(): Promise<WhatsAppConnectionStatus> {
     try {
       const res = await fetch('/api/whatsapp/baileys', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'confirm_auth' }),
+        body: JSON.stringify({ action: 'reconnect' }),
       });
       if (res.ok) {
-        const data = await res.json();
-        return data.status;
+        // Wait briefly for new QR to generate, then poll status
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        return this.getConnectionStatus();
       }
     } catch {
-      // Fallback
+      // Backend unreachable
     }
 
     return {
-      status: 'connected',
-      phoneNumber: '+62 812-3456-7890',
-      userJid: '6281234567890@s.whatsapp.net',
-      pushName: 'PUPR Garut Command Center',
-      activeSince: new Date().toLocaleString('id-ID'),
-      lastSync: new Date(),
+      status: 'disconnected',
       baileysVersion: this.version,
       sessionPath: './baileys_auth_garut',
-      pingMs: 18,
+      lastSync: new Date(),
     };
+  }
+
+  /**
+   * Confirms authentication by checking the current connection status.
+   * With real Baileys, authentication happens automatically when the user
+   * scans the QR code with their phone — no simulation needed.
+   */
+  public static async confirmAuthentication(): Promise<WhatsAppConnectionStatus> {
+    return this.getConnectionStatus();
   }
 
   /**
@@ -191,4 +162,3 @@ export class BaileysService {
     };
   }
 }
-

@@ -28,9 +28,8 @@ export const WhatsAppRightQrPanel: React.FC = () => {
   const [showServerSettings, setShowServerSettings] = useState(false);
   const [serverStatusMsg, setServerStatusMsg] = useState<string | null>(null);
 
-  // Default simulated Baileys QR String
-  const qrString = connectionStatus?.qrCodeRaw || 
-    '2@BaileysWABot_PUPRGarut_CommandCenter_Token_2026_LiveSync_v6_7_8_AES256GCM';
+  // Real QR string from Baileys backend (null if not yet available)
+  const qrString = connectionStatus?.qrCodeRaw;
 
   const handleConnectStandaloneServer = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,18 +140,31 @@ export const WhatsAppRightQrPanel: React.FC = () => {
         <div className="space-y-3">
           <div className="flex flex-col items-center justify-center p-4 bg-white rounded-xl border border-slate-200 shadow-inner">
             <div className="p-2 bg-white rounded-lg flex items-center justify-center w-full max-w-[170px] aspect-square">
-              <QRCodeSVG 
-                value={qrString} 
-                size={170}
-                level="M"
-                includeMargin={true}
-                className="w-full h-full"
-              />
+              {qrString ? (
+                <QRCodeSVG 
+                  value={qrString} 
+                  size={170}
+                  level="M"
+                  includeMargin={true}
+                  className="w-full h-full"
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center gap-2 text-slate-600">
+                  <RefreshCw className="w-6 h-6 animate-spin text-emerald-600" />
+                  <span className="text-[10px] font-semibold text-center leading-tight">
+                    Menunggu QR dari server...
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="mt-3 flex items-center justify-between w-full px-1 text-xs text-slate-800 border-t border-slate-100 pt-2.5">
               <span className="text-[11px] font-medium text-slate-600">
-                Kedaluwarsa: <strong className="text-slate-900 font-mono">{countdown}s</strong>
+                {qrString ? (
+                  <>Kedaluwarsa: <strong className="text-slate-900 font-mono">{countdown}s</strong></>
+                ) : (
+                  <span className="text-amber-600 text-[10px]">Menghubungkan...</span>
+                )}
               </span>
               <button
                 onClick={handleRefreshQr}
@@ -171,14 +183,6 @@ export const WhatsAppRightQrPanel: React.FC = () => {
               <span>Buka WhatsApp &rarr; Perangkat Tertaut &rarr; Tautkan Perangkat untuk memindai QR ini.</span>
             </div>
           </div>
-
-          <button
-            onClick={confirmAuthentication}
-            className="hidden w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-md transition-all items-center justify-center gap-2 cursor-pointer"
-          >
-            <CheckCircle2 className="w-4 h-4" />
-            <span>Simulasikan Pindai QR Berhasil</span>
-          </button>
         </div>
       ) : (
         /* TAB CONTENT 2: PAIRING CODE (PHONE LINKING) */
@@ -207,7 +211,7 @@ export const WhatsAppRightQrPanel: React.FC = () => {
 
           {/* 8-Character Official WhatsApp Web Box Display */}
           {(() => {
-            const rawCode = connectionStatus?.pairingCode || 'K9X2-M7P4';
+            const rawCode = connectionStatus?.pairingCode || '';
             const cleanCode = rawCode.replace('-', '');
             const group1 = cleanCode.substring(0, 4).split('');
             const group2 = cleanCode.substring(4, 8).split('');
@@ -270,14 +274,7 @@ export const WhatsAppRightQrPanel: React.FC = () => {
             );
           })()}
 
-          <button
-            onClick={confirmAuthentication}
-            className="hidden w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-md transition-all items-center justify-center gap-2 cursor-pointer"
-          >
-            <CheckCircle2 className="w-4 h-4" />
-            <span>Simulasikan Tautan Kode Berhasil</span>
-          </button>
-        </div>
+          </div>
       )}
 
       {/* Standalone Server Configuration Toggle */}
@@ -325,7 +322,7 @@ export const WhatsAppRightQrPanel: React.FC = () => {
         <div className="flex items-center gap-2 text-slate-300">
           <ShieldCheck className="w-4 h-4 text-emerald-400" />
           <span className="truncate max-w-[140px]">
-            {connectionStatus?.phoneNumber || '+62 812-3456-7890'}
+            {connectionStatus?.phoneNumber || 'Belum terhubung'}
           </span>
         </div>
         <button
