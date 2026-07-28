@@ -24,7 +24,7 @@ export function useAuth() {
       await signIn("credentials", {
         email: targetEmail,
         password: targetPassword,
-        callbackUrl: "/dashboard",
+        callbackUrl: "/",
       });
     },
     logout: async () => {

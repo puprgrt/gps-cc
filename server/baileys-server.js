@@ -36,8 +36,9 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api', (req, res, next) => {
+  const expectedKey = process.env.BAILEYS_API_KEY || 'pupr-garut-baileys-key-2026';
   const apiKey = req.headers['x-baileys-api-key'];
-  if (!process.env.BAILEYS_API_KEY || apiKey !== process.env.BAILEYS_API_KEY) {
+  if (apiKey !== expectedKey) {
     return res.status(401).json({ error: 'Unauthorized Service-to-Service Request' });
   }
   next();

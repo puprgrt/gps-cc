@@ -5,6 +5,7 @@
 // ============================================================
 // a. React / Next.js core
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 // b. Third-party libraries
 import {
@@ -431,8 +432,8 @@ export default function AIOrchestratorDashboard() {
             ⚙️ Pengaturan Model AI (All Engines)
           </TabsTrigger>
           <TabsTrigger value="bot" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-medium transition-all flex items-center cursor-pointer border border-emerald-500/20 bg-emerald-500/5 text-emerald-300">
-            <Bot className="h-4 w-4 mr-2 text-emerald-400" />
-            🤖 Bot AI WhatsApp & Menu (Integrated)
+            <Image src="/puri.png" alt="PURI" width={16} height={16} className="w-4 h-4 mr-2 rounded-full object-contain shrink-0" />
+            Bot AI WhatsApp & Menu (Integrated)
           </TabsTrigger>
         </TabsList>
 
@@ -680,8 +681,10 @@ export default function AIOrchestratorDashboard() {
                   {/* AI RESPONSE BOX */}
                   <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3">
                     <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                      <span className="text-xs font-semibold text-slate-400">
-                        Draf Jawaban Resmi Warga (🤖 PURI)
+                      <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+                        <span>Draf Jawaban Resmi Warga (</span>
+                        <Image src="/puri.png" alt="PURI" width={14} height={14} className="w-3.5 h-3.5 rounded-full object-contain inline-block" />
+                        <span>PURI)</span>
                       </span>
                       <span className="text-xs text-slate-500">
                         {simResult.routingDecision?.draftResponse?.knowledgeBaseSource || 'Knowledge Base PUPR Garut'}

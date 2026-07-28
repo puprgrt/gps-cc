@@ -522,7 +522,7 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
                 <option value="auto">🚀 PURI 6-Tier AI Orchestrator (Auto-Route Smart Consensus - Rekomendasi Utama)</option>
                 <option value="gemini-2.0-flash">🔥 Google Gemini 2.0 Flash (Vision & 128k Context - Unggulan PURI)</option>
                 <option value="gemini-2.0-flash-lite-preview-02-05">⚡ Google Gemini 2.0 Flash-Lite (Hemat Quota & Cepat)</option>
-                <option value="gpt-4o-mini">🤖 OpenAI ChatGPT-4o Mini (CS & FAQ Publik 24/7)</option>
+                <option value="gpt-4o-mini">✨ OpenAI ChatGPT-4o Mini (CS & FAQ Publik 24/7)</option>
                 <option value="claude-3-5-sonnet-20241022">🧠 Anthropic Claude 3.5 Sonnet (Analisis Regulasi & PBG)</option>
                 <option value="moonshot-v1-8k">🌙 Kimi AI Global Moonshot (BIM / IFC / GIS Spasial)</option>
                 <option value="qwen2.5:7b">🖥️ Local AI Ollama Qwen 2.5 (Offline On-Premise Tanpa Kuota)</option>

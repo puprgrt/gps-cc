@@ -1,5 +1,5 @@
 const path = require('path');
-const PORT = process.env.PORT || process.env.BAILEYS_PORT || 3001;
+const PORT = process.env.BAILEYS_PORT || process.env.PORT || 3001;
 const SESSION_PATH = process.env.BAILEYS_SESSION_PATH || path.resolve(__dirname, '../../baileys_auth_garut');
 
 // CORS whitelist - hanya izinkan domain frontend

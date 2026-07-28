@@ -726,7 +726,14 @@ export function WhatsAppDashboard() {
                       }`}
                       title="Toggle antara penanganan Otomatis AI PURI dan Operator Manusia"
                     >
-                      {activeConversation.status === 'bot_handling' ? '🤖 Bot Aktif (Ambil Alih)' : '🧑‍💻 Mode Manusia'}
+                      {activeConversation.status === 'bot_handling' ? (
+                        <span className="flex items-center gap-1.5">
+                          <Image src="/puri.png" alt="PURI" width={16} height={16} className="w-4 h-4 rounded-full object-contain shrink-0" />
+                          <span>PURI Aktif (Ambil Alih)</span>
+                        </span>
+                      ) : (
+                        '🧑‍💻 Mode Manusia'
+                      )}
                     </button>
                     <button 
                       className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 hidden md:flex items-center gap-1.5 transition-colors cursor-pointer"
@@ -772,8 +779,9 @@ export function WhatsAppDashboard() {
                       </span>
                     )}
                     {activeConversation.status === 'bot_handling' && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-md font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
-                        🤖 AI Menjawab
+                      <span className="text-[10px] px-2 py-0.5 rounded-md font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap flex items-center gap-1">
+                        <Image src="/puri.png" alt="PURI" width={14} height={14} className="w-3.5 h-3.5 rounded-full object-contain shrink-0" />
+                        <span>AI PURI Menjawab</span>
                       </span>
                     )}
                     {activeConversation.status === 'resolved' && (

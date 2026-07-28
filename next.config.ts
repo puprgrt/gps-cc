@@ -55,6 +55,15 @@ const nextConfig: NextConfig = {
     ],
   },
   transpilePackages: ['motion'],
+  async redirects() {
+    return [
+      {
+        source: '/dashboard',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

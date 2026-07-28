@@ -26,17 +26,17 @@ export function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
       return;
     }
 
-    // Jika sudah login dan mencoba akses halaman login, redirect ke dashboard
+    // Jika sudah login dan mencoba akses halaman login, redirect ke dashboard (/)
     if (isAuthenticated && pathname === '/login') {
-      router.push('/dashboard');
+      router.push('/');
       return;
     }
 
     // Pengecekan Role (RBAC)
     if (isAuthenticated && user && allowedRoles && allowedRoles.length > 0) {
       if (!allowedRoles.includes(user.role)) {
-        // Redirect ke unauthorized page atau dashboard utama
-        router.push('/dashboard'); 
+        // Redirect ke unauthorized page atau dashboard utama (/)
+        router.push('/'); 
       }
     }
   }, [isInitialized, isAuthenticated, user, router, pathname, allowedRoles]);

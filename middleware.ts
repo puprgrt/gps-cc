@@ -6,6 +6,7 @@ const PUBLIC_API_ROUTES = [
   '/api/auth',
   '/api/psic/webhook',
   '/api/psic/chatwoot',
+  '/api/whatsapp/baileys',
 ];
 
 export default auth((req) => {

@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BAILEYS_URL = process.env.BAILEYS_API_URL || 'http://localhost:3001';
+function getTargetUrl(): string {
+  let targetUrl = process.env.BAILEYS_API_URL || 'http://localhost:3001';
+  if (process.env.NODE_ENV === 'development' && !process.env.FORCE_REMOTE_BAILEYS) {
+    targetUrl = 'http://localhost:3001';
+  }
+  return targetUrl.replace(/\/$/, '');
+}
 
 export async function GET(req: NextRequest) {
   try {
-    let targetUrl = process.env.BAILEYS_API_URL || 'http://localhost:3001';
-    
-    // Remove trailing slash if any
-    targetUrl = targetUrl.replace(/\/$/, '');
+    const targetUrl = getTargetUrl();
 
     const res = await fetch(`${targetUrl}/api/status`, { 
       cache: 'no-store',
       headers: {
-        'x-baileys-api-key': process.env.BAILEYS_API_KEY || ''
+        'x-baileys-api-key': process.env.BAILEYS_API_KEY || 'pupr-garut-baileys-key-2026'
       }
     });
     if (res.ok) {
@@ -38,8 +41,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { action, mode, phoneNumber } = body;
 
-    let targetUrl = process.env.BAILEYS_API_URL || 'http://localhost:3001';
-    targetUrl = targetUrl.replace(/\/$/, '');
+    const targetUrl = getTargetUrl();
 
     let targetEndpoint = '/api/connect';
     if (action === 'disconnect') targetEndpoint = '/api/disconnect';
@@ -49,7 +51,7 @@ export async function POST(req: NextRequest) {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'x-baileys-api-key': process.env.BAILEYS_API_KEY || ''
+        'x-baileys-api-key': process.env.BAILEYS_API_KEY || 'pupr-garut-baileys-key-2026'
       },
       body: JSON.stringify({ mode, phoneNumber }),
     });
