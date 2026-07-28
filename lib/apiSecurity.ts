@@ -37,7 +37,7 @@ export async function validateApiRequest(
   const mergedOptions = { ...DEFAULT_OPTIONS, ...options };
   
   // 1. Rate Limiting
-  const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+  const ip = req.headers.get('x-forwarded-for') || (req as any).ip || 'unknown';
   const now = Date.now();
   const windowMs = 60 * 1000; // 1 minute window
 

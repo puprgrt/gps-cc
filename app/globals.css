@@ -69,11 +69,29 @@ body {
 .modal-container {
   width: 95vw;
   max-width: 900px;
+  min-width: 320px;
+  flex-shrink: 0;
 }
 
 .modal-container-sm {
   width: 95vw;
   max-width: 450px;
+  min-width: 340px;
+  flex-shrink: 0;
+}
+
+.modal-container-auth {
+  width: 92vw;
+  max-width: 480px;
+  min-width: 360px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .modal-container-auth {
+    width: 480px;
+    min-width: 440px;
+  }
 }
 
 /* Custom Scrollbar */

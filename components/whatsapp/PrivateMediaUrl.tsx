@@ -35,7 +35,7 @@ export function PrivateMediaUrl({ storagePath, fallbackUrl, children }: PrivateM
 
   const isPrivateMedia = Boolean(storagePath);
   const hasResultForCurrentPath = result?.path === storagePath;
-  const url = isPrivateMedia ? (hasResultForCurrentPath ? result.url : undefined) : fallbackUrl;
+  const url = isPrivateMedia ? (hasResultForCurrentPath ? result?.url : undefined) : fallbackUrl;
   const isLoading = isPrivateMedia && !hasResultForCurrentPath;
   return <>{children(url, isLoading)}</>;
 }

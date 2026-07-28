@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -25,14 +25,24 @@ import {
   Headphones,
   Target,
   Video,
-  ClipboardCheck
+  ClipboardCheck,
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/hooks/useSidebar';
+import { useAuth } from '@/hooks/useAuth';
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { isOpen, isCollapsed, close } = useSidebar();
+  const { isOpen, isCollapsed, close, setCollapsed } = useSidebar();
+  const { logout } = useAuth();
+  
+  // Otomatis minimize saat berpindah halaman atau pada resolusi standar
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1280) {
+      setCollapsed(true);
+    }
+  }, [pathname, setCollapsed]);
   
   const menuItems = [
     { icon: Home, label: 'Dashboard', href: '/' },
@@ -146,6 +156,21 @@ export function Sidebar() {
             </div>
           </div>
         )}
+
+        {/* Footer Tombol Logout */}
+        <div className={cn("p-3 border-t border-white/10 mt-auto bg-slate-950/50", isCollapsed ? "flex justify-center" : "")}>
+          <button
+            onClick={() => logout()}
+            title="Keluar Sesi (Logout)"
+            className={cn(
+              "flex items-center gap-3 w-full rounded-xl bg-danger/20 hover:bg-danger/30 text-rose-300 hover:text-rose-100 border border-danger/40 transition-all font-semibold text-xs shadow-sm cursor-pointer",
+              isCollapsed ? "justify-center p-3" : "px-4 py-2.5"
+            )}
+          >
+            <LogOut className="w-4 h-4 shrink-0 text-rose-400" />
+            {!isCollapsed && <span className="whitespace-nowrap">Keluar (Logout)</span>}
+          </button>
+        </div>
       </aside>
     </>
   );

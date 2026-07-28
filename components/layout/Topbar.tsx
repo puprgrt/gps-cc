@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Bell, Settings, CloudSun, Menu, Search } from 'lucide-react';
+import { Bell, Settings, CloudSun, Menu, Search, LogOut } from 'lucide-react';
 import { useSidebar } from '@/hooks/useSidebar';
+import { useAuth } from '@/hooks/useAuth';
 import { Badge } from '@/components/ui/badge';
 
 export function Topbar() {
   const router = useRouter();
+  const { user, logout } = useAuth();
   const [time, setTime] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isMounted, setIsMounted] = useState(false);
@@ -154,15 +156,23 @@ export function Topbar() {
             </button>
           </div>
           
-          {/* Executive Profile Avatar */}
-          <div className="flex items-center gap-2.5 pl-1">
+          {/* Executive Profile Avatar & Logout */}
+          <div className="flex items-center gap-2 pl-1">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-garut-blue to-blue-600 overflow-hidden border border-blue-400/30 shadow-md flex items-center justify-center text-white font-bold text-xs shrink-0">
-              AP
+              {user?.name ? user.name.slice(0, 2).toUpperCase() : 'AP'}
             </div>
             <div className="hidden lg:flex flex-col leading-tight">
-              <span className="text-xs font-bold text-white">Admin PUPR</span>
-              <span className="text-[10px] text-slate-400">Super Admin</span>
+              <span className="text-xs font-bold text-white truncate max-w-[120px]">{user?.name || "Admin PUPR"}</span>
+              <span className="text-[10px] text-slate-400">{user?.role === "operator" ? "Operator TIK" : "Super Admin"}</span>
             </div>
+            <button
+              onClick={() => logout()}
+              title="Keluar Sesi (Logout)"
+              className="ml-1.5 p-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/30 text-rose-300 hover:text-rose-100 border border-rose-500/30 transition-colors flex items-center gap-1.5 text-xs font-semibold cursor-pointer shrink-0"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden xl:inline">Keluar</span>
+            </button>
           </div>
         </div>
       </div>
