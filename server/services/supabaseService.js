@@ -1,13 +1,13 @@
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder_key';
 const WHATSAPP_MEDIA_BUCKET = 'whatsapp-media';
 const MAX_WHATSAPP_MEDIA_BYTES = 20 * 1024 * 1024;
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('[SupabaseService] Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.error('[SupabaseService] WARNING: Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY. Using fallback placeholder.');
 }
 
 // Gunakan Service Role Key agar Backend punya hak akses penuh (bypass RLS)
