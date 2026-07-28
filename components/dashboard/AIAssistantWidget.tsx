@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Bot, X, Minus, Send, Sparkles, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 export function AIAssistantWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -79,7 +80,7 @@ export function AIAssistantWidget() {
           title="Buka AI Assistant"
         >
           <div className="relative flex items-center justify-center">
-            <Bot className="w-5 h-5 text-white animate-pulse" />
+            <Image src="/puri.png" alt="PURI" width={20} height={20} className="w-5 h-5 rounded-full object-contain animate-pulse" />
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-slate-900"></span>
           </div>
           <span className="text-xs font-bold tracking-wide">AI ASSISTANT</span>
@@ -94,7 +95,7 @@ export function AIAssistantWidget() {
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-900/60 to-indigo-900/60 border-b border-blue-500/20 p-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Bot className="w-5 h-5 text-blue-400" />
+          <Image src="/puri.png" alt="PURI" width={20} height={20} className="w-5 h-5 rounded-full object-contain" />
           <span className="text-xs font-bold text-white tracking-wider">AI ASSISTANT</span>
           <span className="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/30 font-mono">
             READY

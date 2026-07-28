@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import {
   Bot,
   Sparkles,
@@ -83,7 +84,7 @@ export function AIAssistant({ message }: { message: any | null }) {
   if (!message) {
     return (
       <div className="bg-slate-900/90 border border-slate-800 rounded-xl h-[700px] flex flex-col items-center justify-center p-6 text-center shadow-xl">
-        <Bot className="w-10 h-10 text-purple-400 mb-3" />
+        <Image src="/puri.png" alt="PURI" width={40} height={40} className="w-10 h-10 rounded-full object-contain mb-3" />
         <h3 className="text-sm font-bold text-white mb-1">PURI Smart Assistant</h3>
         <p className="text-xs text-slate-400">
           Asisten AI PURI akan otomatis menganalisis intensi warga dan menyusun draf balasan resmi Dinas PUPR.
@@ -214,7 +215,7 @@ export function AIAssistant({ message }: { message: any | null }) {
       <div className="bg-purple-950/25 border border-purple-800/40 rounded-xl p-3.5 flex-1 flex flex-col">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-bold text-purple-300 flex items-center gap-1.5">
-            <Bot className="w-3.5 h-3.5" />
+            <Image src="/puri.png" alt="PURI" width={14} height={14} className="w-3.5 h-3.5 rounded-full object-contain" />
             <span>Draf Jawaban AI PURI</span>
           </span>
           <span className="text-[10px] bg-purple-900/60 text-purple-300 px-2 py-0.5 rounded-full font-mono">

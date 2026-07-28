@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { 
   Home, 
@@ -137,7 +138,7 @@ export function Sidebar() {
               </button>
               <button className="flex flex-col items-center justify-center gap-2 p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
                 <div className="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center">
-                  <Bot className="w-5 h-5" />
+                  <Image src="/puri.png" alt="PURI" width={20} height={20} className="w-5 h-5 rounded-full object-contain" />
                 </div>
                 <span className="text-[10px] text-slate-300 text-center leading-tight">AI<br/>Assistant</span>
               </button>

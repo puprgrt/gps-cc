@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import {
   Send,
   Paperclip,
@@ -101,7 +102,7 @@ export function ConversationView({ message }: { message: any | null }) {
     return (
       <div className="bg-slate-900/90 border border-slate-800 rounded-xl h-[700px] flex flex-col items-center justify-center p-8 text-center shadow-xl">
         <div className="w-16 h-16 rounded-full bg-slate-800/80 border border-slate-700/60 flex items-center justify-center mb-3">
-          <Bot className="w-8 h-8 text-blue-400" />
+          <Image src="/puri.png" alt="PURI" width={32} height={32} className="w-8 h-8 rounded-full object-contain" />
         </div>
         <h3 className="text-base font-bold text-white mb-1">Pilih Percakapan Warga</h3>
         <p className="text-xs text-slate-400 max-w-sm">
@@ -262,7 +263,7 @@ export function ConversationView({ message }: { message: any | null }) {
                     : 'bg-blue-600 border border-blue-500 text-white'
                 }`}
               >
-                {isUser ? <User className="w-3.5 h-3.5" /> : isAI ? <Bot className="w-3.5 h-3.5" /> : 'OP'}
+                {isUser ? <User className="w-3.5 h-3.5" /> : isAI ? <Image src="/puri.png" alt="PURI" width={14} height={14} className="w-3.5 h-3.5 rounded-full object-contain" /> : 'OP'}
               </div>
 
               <div
