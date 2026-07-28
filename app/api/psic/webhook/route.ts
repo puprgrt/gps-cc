@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { ChatwootService } from '@/services/chatwootService';
+import { validateApiRequest } from '@/lib/apiSecurity';
 
 /**
  * ============================================================================
@@ -11,9 +12,10 @@ import { ChatwootService } from '@/services/chatwootService';
  * secara real-time dan menyimpannya ke dalam database Supabase PSIC.
  */
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const payload = await request.json();
+    const { errorResponse, payload } = await validateApiRequest(request);
+    if (errorResponse) return errorResponse;
 
     // Deteksi otomatis jika payload berasal dari Chatwoot
     if (payload && (payload.event || payload.conversation?.id || payload.inbox?.id)) {

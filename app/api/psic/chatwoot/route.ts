@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ChatwootService, type ChatwootWebhookPayload } from '@/services/chatwootService';
+import { validateApiRequest } from '@/lib/apiSecurity';
 
 /**
  * ============================================================================
@@ -19,7 +20,8 @@ import { ChatwootService, type ChatwootWebhookPayload } from '@/services/chatwoo
 
 export async function POST(req: NextRequest) {
   try {
-    const payload = (await req.json()) as ChatwootWebhookPayload;
+    const { errorResponse, payload } = await validateApiRequest(req);
+    if (errorResponse) return errorResponse;
 
     if (!payload || !payload.event) {
       return NextResponse.json(

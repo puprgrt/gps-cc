@@ -15,7 +15,7 @@
  *
  * Model Versions (Juli 2026 - All Current GA):
  * - OPENAI: gpt-4o-mini
- * - GEMINI: gemini-2.5-flash
+ * - GEMINI: gemini-3.6-flash
  * - CLAUDE: claude-sonnet-5
  * - KIMI: kimi-k2.6
  * - LOCAL: qwen2.5:7b (open-weight, zero limits)

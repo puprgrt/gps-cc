@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import aiOrchestrator from '@/server/core/AIOrchestrator';
+import { validateApiRequest } from '@/lib/apiSecurity';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,8 +11,13 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { text, forceCategory } = body;
+    const { errorResponse, payload } = await validateApiRequest(req, {
+      requireSignature: false, // Internal simulate API doesn't use webhooks
+      rateLimitMaxRequests: 30, // 30 req/min for simulations
+    });
+    if (errorResponse) return errorResponse;
+
+    const { text, forceCategory } = payload;
 
     if (!text || typeof text !== 'string') {
       return NextResponse.json(

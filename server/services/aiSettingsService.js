@@ -5,7 +5,7 @@
  * ============================================================================
  *
  * Manages configuration and default models for all 5 PURI AI Engines:
- * - GEMINI (Google Gemini 2.5 Flash / 3.5 Flash-Lite)
+ * - GEMINI (Google Gemini 3.6 Flash / 3.5 Flash-Lite)
  * - OPENAI (OpenAI GPT-4o-mini / GPT-4o)
  * - CLAUDE (Anthropic Claude Sonnet 5 / Haiku 3.5)
  * - KIMI (Moonshot Kimi K2.6 / K3)
@@ -25,7 +25,7 @@ const DEFAULT_AI_SETTINGS = {
   GEMINI: {
     provider: 'GEMINI',
     name: 'Google Gemini AI',
-    model: 'gemini-1.5-flash',
+    model: 'gemini-3.6-flash',
     isActive: true,
     temperature: 0.7,
     maxTokens: 2048,
@@ -98,7 +98,7 @@ class AISettingsService {
             if (parsed[key]) {
               settings[key] = { ...settings[key], ...parsed[key] };
               // Auto-migrate legacy models in local JSON
-              if (settings[key].model === 'gemini-2.0-flash') settings[key].model = 'gemini-2.5-flash';
+              if (settings[key].model === 'gemini-2.0-flash' || settings[key].model === 'gemini-2.5-flash' || settings[key].model === 'gemini-1.5-flash') settings[key].model = 'gemini-3.6-flash';
               if (settings[key].model === 'claude-3-5-sonnet-20241022') settings[key].model = 'claude-sonnet-5';
               if (settings[key].model === 'moonshot-v1-8k') settings[key].model = 'kimi-k2.6';
             }
@@ -136,7 +136,7 @@ class AISettingsService {
             if (row.provider && DEFAULT_AI_SETTINGS[row.provider]) {
               let activeModel = row.model || DEFAULT_AI_SETTINGS[row.provider].model;
               // Auto-migrate legacy models in Supabase DB
-              if (activeModel === 'gemini-2.0-flash') activeModel = 'gemini-2.5-flash';
+              if (activeModel === 'gemini-2.0-flash' || activeModel === 'gemini-2.5-flash' || activeModel === 'gemini-1.5-flash') activeModel = 'gemini-3.6-flash';
               if (activeModel === 'claude-3-5-sonnet-20241022') activeModel = 'claude-sonnet-5';
               if (activeModel === 'moonshot-v1-8k') activeModel = 'kimi-k2.6';
 
