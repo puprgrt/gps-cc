@@ -423,7 +423,6 @@ export function WhatsAppFrontLogin({
             {logs.length > 0 ? (
               logs.slice(0, 8).map((log) => (
                 <div key={log.id} className={`truncate ${
-                  log.level === 'success' ? 'text-emerald-400' :
                   log.level === 'error' ? 'text-red-400' :
                   log.level === 'warn' ? 'text-amber-300' :
                   'text-slate-400'

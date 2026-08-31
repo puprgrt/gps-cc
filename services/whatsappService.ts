@@ -729,6 +729,66 @@ export class WhatsAppService {
     }
     throw new Error('Gagal menguji koneksi spreadsheet');
   }
+
+  // ==========================================
+  // EXTERNAL APP INTEGRATIONS & GATEWAY API
+  // ==========================================
+
+  static async getIntegrationsData() {
+    try {
+      const res = await fetch('/api/whatsapp/integrations', { cache: 'no-store' });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      console.warn('Failed fetching WhatsApp integrations settings:', e);
+    }
+    return null;
+  }
+
+  static async saveIntegrationsSettings(settings: any) {
+    const res = await fetch('/api/whatsapp/integrations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save_settings', settings })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || 'Gagal menyimpan pengaturan integrasi.');
+  }
+
+  static async generateApiKey(payload: { name: string; role: string; allowedBidang: string[]; rateLimitPerMinute: number }) {
+    const res = await fetch('/api/whatsapp/integrations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'generate_api_key', ...payload })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || 'Gagal membuat Kunci API baru.');
+  }
+
+  static async testWebhook(payload: { targetUrl: string; event: string; secretToken?: string; sampleMessageText?: string }) {
+    const res = await fetch('/api/whatsapp/integrations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'test_webhook', ...payload })
+    });
+    return await res.json();
+  }
+
+  static async testChatwoot(payload: { baseUrl: string; apiAccessToken: string; accountId: string }) {
+    const res = await fetch('/api/whatsapp/integrations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'test_chatwoot', ...payload })
+    });
+    return await res.json();
+  }
 }
 
 

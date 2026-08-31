@@ -321,6 +321,17 @@ export function WhatsAppDashboard() {
             <span>⚙️ Pengaturan di AI Center</span>
             <ExternalLink className="w-3.5 h-3.5 text-emerald-200" />
           </button>
+
+          {/* WhatsApp Integrations Settings Button */}
+          <button
+            onClick={() => router.push('/whatsapp/integrasi')}
+            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg border border-blue-400/30 transition-all flex items-center gap-1.5 group cursor-pointer"
+            title="Buka Pengaturan Integrasi & Gateway WhatsApp Center ke aplikasi lain"
+          >
+            <Share2 className="w-3.5 h-3.5 text-blue-200 group-hover:scale-110 transition-transform" />
+            <span>⚙️ Integrasi Eksternal</span>
+            <ExternalLink className="w-3.5 h-3.5 text-blue-200" />
+          </button>
         </div>
       </div>
 
