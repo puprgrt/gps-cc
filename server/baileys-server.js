@@ -9,6 +9,7 @@ const localDb = require('./services/localDbService');
 const puriMeetReminder = require('./workers/puriMeetReminder');
 
 const autoResolveWorker = require('./workers/autoResolveWorker');
+const supabaseKeepAliveWorker = require('./workers/supabaseKeepAliveWorker');
 
 const app = express();
 
@@ -69,4 +70,5 @@ app.listen(PORT, HOST, async () => {
   // Start workers
   puriMeetReminder.start();
   autoResolveWorker.start();
+  supabaseKeepAliveWorker.start();
 });

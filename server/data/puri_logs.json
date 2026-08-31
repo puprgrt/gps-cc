@@ -1,5 +1,54 @@
 [
   {
+    "id": "log-1788156088224",
+    "timestamp": "2026-08-31T06:01:28.224Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke by.enjangwahyudin (21398ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1788156064775",
+    "timestamp": "2026-08-31T06:01:04.775Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [document]: \"2022.pdf...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1788156064773",
+    "timestamp": "2026-08-31T06:01:04.773Z",
+    "event": "MEDIA_DOWNLOAD",
+    "details": "Berhasil mengunduh lampiran document (1211.3 KB) dari by.enjangwahyudin",
+    "level": "info"
+  },
+  {
+    "id": "log-1788155887719",
+    "timestamp": "2026-08-31T05:58:07.719Z",
+    "event": "AI_CACHE_HIT",
+    "details": "Respon [LOCAL - PURI-Cache-Engine] dikirim ke by.enjangwahyudin (0ms, Conf: 100%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1788155887692",
+    "timestamp": "2026-08-31T05:58:07.692Z",
+    "event": "AI_CACHE_HIT",
+    "details": "Respon [LOCAL - PURI-Cache-Engine] dikirim ke by.enjangwahyudin (0ms, Conf: 100%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1788155885468",
+    "timestamp": "2026-08-31T05:58:05.468Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"Mau Tanya kalau saya mau bangun rumah, persyaratan...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1788155885151",
+    "timestamp": "2026-08-31T05:58:05.151Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"Pagi...\"",
+    "level": "info"
+  },
+  {
     "id": "log-1788155510963",
     "timestamp": "2026-08-31T05:51:50.963Z",
     "event": "AI_GEMINI_REPLY",
@@ -3448,55 +3497,6 @@
     "timestamp": "2026-07-26T14:31:24.346Z",
     "event": "QR_RECEIVED",
     "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076264320",
-    "timestamp": "2026-07-26T14:31:04.320Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076244303",
-    "timestamp": "2026-07-26T14:30:44.303Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076224287",
-    "timestamp": "2026-07-26T14:30:24.287Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076204265",
-    "timestamp": "2026-07-26T14:30:04.265Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076144240",
-    "timestamp": "2026-07-26T14:29:04.240Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076143281",
-    "timestamp": "2026-07-26T14:29:03.281Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD version 2.3000.1035194821",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076128009",
-    "timestamp": "2026-07-26T14:28:48.009Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis #7 dijadwalkan dalam 15.1 detik.",
     "level": "info"
   }
 ]

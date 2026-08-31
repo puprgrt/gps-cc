@@ -1,0 +1,37 @@
+name: Supabase Keep-Alive (Anti-Pause 2-Day Ping)
+
+on:
+  schedule:
+    # Berjalan setiap 2 hari sekali pada pukul 00:00 UTC (07:00 WIB)
+    - cron: '0 0 */2 * *'
+  workflow_dispatch: # Memungkinkan trigger manual dari GitHub Actions tab
+
+jobs:
+  ping-supabase:
+    name: Ultra-Low Egress Supabase Ping
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Database with Minimal Egress
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ "$SUPABASE_URL" == "https://placeholder.supabase.co" ]; then
+            echo "⚠️ Secret NEXT_PUBLIC_SUPABASE_URL belum diatur di GitHub Secrets repository. Melewati ping."
+            exit 0
+          fi
+
+          echo "🚀 Mengirim ping query HEAD ultra-ringan ke Supabase..."
+          
+          # Kirim request HEAD ke REST endpoint Supabase
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -I \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY" \
+            "$SUPABASE_URL/rest/v1/wa_conversations?select=id&limit=1")
+
+          echo "Status HTTP Response: $RESPONSE"
+          if [ "$RESPONSE" -ge 200 ] && [ "$RESPONSE" -le 404 ]; then
+            echo "✅ Supabase Berhasil Di-ping! Database aktif (Estimasi egress < 100 bytes)."
+          else
+            echo "⚠️ Response code: $RESPONSE"
+          fi
