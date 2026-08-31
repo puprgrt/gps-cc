@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ApiService } from '../services/apiService';
 import { DashboardMetrics, LayananKinerja, ComplaintData } from '../domain/models';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 export function useDashboard() {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
@@ -40,22 +40,27 @@ export function useDashboard() {
       fetchData(true);
     }, 5000);
 
-    // Supabase Realtime subscription untuk mendengarkan perubahan tabel secara instan
-    const channel = supabase.channel('dashboard_realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public' },
-        () => {
-          fetchData(true);
-        }
-      )
-      .subscribe((status) => {
-        setIsLiveSyncing(status === 'SUBSCRIBED' || status === 'CLOSED');
-      });
+    // Supabase Realtime subscription untuk mendengarkan perubahan tabel secara instan (jika terkonfigurasi)
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    if (isSupabaseConfigured) {
+      channel = supabase.channel('dashboard_realtime')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public' },
+          () => {
+            fetchData(true);
+          }
+        )
+        .subscribe((status) => {
+          setIsLiveSyncing(status === 'SUBSCRIBED' || status === 'CLOSED');
+        });
+    }
 
     return () => {
       clearInterval(pollingInterval);
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [fetchData]);
 

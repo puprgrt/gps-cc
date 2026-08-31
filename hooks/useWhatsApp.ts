@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { WhatsAppConnectionStatus, WhatsAppConversation, WhatsAppBotLog, OperatorStatus, WhatsAppMessage } from '../domain/whatsapp';
 import { WhatsAppService } from '../services/whatsappService';
 import { BaileysService } from '../services/baileysService';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface WhatsAppState {
   activeTab: string;
@@ -327,34 +327,39 @@ export function useWhatsApp() {
       store.fetchData(true);
     }, 5000);
 
-    // Supabase Realtime Subscription
-    const channel = supabase.channel('whatsapp_realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'wa_messages' },
-        (payload) => {
-          console.log('[Supabase Realtime] Pesan baru:', payload);
-          // Silent fetch to prevent UI reload/flicker
-          store.fetchData(true);
-        }
-      )
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'wa_conversations' },
-        (payload) => {
-          console.log('[Supabase Realtime] Update percakapan:', payload);
-          store.fetchData(true);
-        }
-      )
-      .subscribe((status, err) => {
-        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || err) {
-          console.warn('[Supabase Realtime] WebSocket tidak dapat terhubung (menggunakan polling auto-refresh 5 detik sebagai fallback):', status);
-        }
-      });
+    // Supabase Realtime Subscription (Hanya jika Supabase sudah dikonfigurasi)
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    if (isSupabaseConfigured) {
+      channel = supabase.channel('whatsapp_realtime')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'wa_messages' },
+          (payload) => {
+            console.log('[Supabase Realtime] Pesan baru:', payload);
+            // Silent fetch to prevent UI reload/flicker
+            store.fetchData(true);
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'wa_conversations' },
+          (payload) => {
+            console.log('[Supabase Realtime] Update percakapan:', payload);
+            store.fetchData(true);
+          }
+        )
+        .subscribe((status, err) => {
+          if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || err) {
+            console.warn('[Supabase Realtime] WebSocket tidak dapat terhubung (menggunakan polling auto-refresh 5 detik sebagai fallback):', status);
+          }
+        });
+    }
 
     return () => {
       clearInterval(pollingInterval);
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

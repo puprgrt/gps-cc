@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { create } from 'zustand';
 import { PuriMeetService } from '@/services/puriMeetService';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import type {
   Meeting,
   MeetingStats,
@@ -247,8 +247,10 @@ export function usePuriMeet(): PuriMeetState {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Realtime subscription for meeting updates
+  // Realtime subscription for meeting updates (jika Supabase terkonfigurasi)
   useEffect(() => {
+    if (!isSupabaseConfigured) return;
+
     const channel = supabase
       .channel('puri-meet-realtime')
       .on(

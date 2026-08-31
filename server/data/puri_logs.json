@@ -1,5 +1,201 @@
 [
   {
+    "id": "log-1788155510963",
+    "timestamp": "2026-08-31T05:51:50.963Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke kang.jay (25994ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1788155483300",
+    "timestamp": "2026-08-31T05:51:23.300Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari kang.jay [text]: \"Saya butuh penjelasan terkait perijinan sda...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1788155416238",
+    "timestamp": "2026-08-31T05:50:16.238Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke kang.jay (30384ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1788155381909",
+    "timestamp": "2026-08-31T05:49:41.909Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari kang.jay [text]: \"Tes...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1788155360225",
+    "timestamp": "2026-08-31T05:49:20.225Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri.puprgrt",
+    "level": "info"
+  },
+  {
+    "id": "log-1788155360223",
+    "timestamp": "2026-08-31T05:49:20.223Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1788155358493",
+    "timestamp": "2026-08-31T05:49:18.493Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1788154947669",
+    "timestamp": "2026-08-31T05:42:27.669Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri.puprgrt",
+    "level": "info"
+  },
+  {
+    "id": "log-1788154947666",
+    "timestamp": "2026-08-31T05:42:27.666Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1788154944476",
+    "timestamp": "2026-08-31T05:42:24.476Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1788154943387",
+    "timestamp": "2026-08-31T05:42:23.387Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #1 dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1788154943380",
+    "timestamp": "2026-08-31T05:42:23.380Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 515). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1788154938018",
+    "timestamp": "2026-08-31T05:42:18.018Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1788154917992",
+    "timestamp": "2026-08-31T05:41:57.992Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1788154897954",
+    "timestamp": "2026-08-31T05:41:37.954Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1788154837901",
+    "timestamp": "2026-08-31T05:40:37.901Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1788154836955",
+    "timestamp": "2026-08-31T05:40:36.955Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1788153299377",
+    "timestamp": "2026-08-31T05:14:59.377Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri.puprgrt",
+    "level": "info"
+  },
+  {
+    "id": "log-1788153299373",
+    "timestamp": "2026-08-31T05:14:59.373Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1788153296654",
+    "timestamp": "2026-08-31T05:14:56.654Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1788153295556",
+    "timestamp": "2026-08-31T05:14:55.556Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis #1 dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1788153295549",
+    "timestamp": "2026-08-31T05:14:55.549Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 515). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1788153239880",
+    "timestamp": "2026-08-31T05:13:59.880Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1788153239000",
+    "timestamp": "2026-08-31T05:13:59.000Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1788153201215",
+    "timestamp": "2026-08-31T05:13:21.215Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1788153181198",
+    "timestamp": "2026-08-31T05:13:01.198Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1788153121151",
+    "timestamp": "2026-08-31T05:12:01.151Z",
+    "event": "QR_RECEIVED",
+    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
+    "level": "info"
+  },
+  {
+    "id": "log-1788153120129",
+    "timestamp": "2026-08-31T05:12:00.129Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
     "id": "log-1785221645146",
     "timestamp": "2026-07-28T06:54:05.146Z",
     "event": "QR_RECEIVED",
@@ -3302,201 +3498,5 @@
     "event": "RECONNECT_SCHEDULED",
     "details": "Penyambungan kembali otomatis #7 dijadwalkan dalam 15.1 detik.",
     "level": "info"
-  },
-  {
-    "id": "log-1785076128004",
-    "timestamp": "2026-07-26T14:28:48.004Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup dengan kode: 408",
-    "level": "warn"
-  },
-  {
-    "id": "log-1785076107614",
-    "timestamp": "2026-07-26T14:28:27.614Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076087588",
-    "timestamp": "2026-07-26T14:28:07.588Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076067560",
-    "timestamp": "2026-07-26T14:27:47.560Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076047548",
-    "timestamp": "2026-07-26T14:27:27.548Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785076027534",
-    "timestamp": "2026-07-26T14:27:07.534Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075967511",
-    "timestamp": "2026-07-26T14:26:07.511Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075966443",
-    "timestamp": "2026-07-26T14:26:06.443Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD version 2.3000.1035194821",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075955407",
-    "timestamp": "2026-07-26T14:25:55.407Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis #6 dijadwalkan dalam 10.8 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075955402",
-    "timestamp": "2026-07-26T14:25:55.402Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup dengan kode: 408",
-    "level": "warn"
-  },
-  {
-    "id": "log-1785075934983",
-    "timestamp": "2026-07-26T14:25:34.983Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075914970",
-    "timestamp": "2026-07-26T14:25:14.970Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075894958",
-    "timestamp": "2026-07-26T14:24:54.958Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075874936",
-    "timestamp": "2026-07-26T14:24:34.936Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075854925",
-    "timestamp": "2026-07-26T14:24:14.925Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075794908",
-    "timestamp": "2026-07-26T14:23:14.908Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075793885",
-    "timestamp": "2026-07-26T14:23:13.885Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD version 2.3000.1035194821",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075785991",
-    "timestamp": "2026-07-26T14:23:05.991Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis #5 dijadwalkan dalam 7.7 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075785988",
-    "timestamp": "2026-07-26T14:23:05.988Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup dengan kode: 408",
-    "level": "warn"
-  },
-  {
-    "id": "log-1785075765606",
-    "timestamp": "2026-07-26T14:22:45.606Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075745585",
-    "timestamp": "2026-07-26T14:22:25.585Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075725567",
-    "timestamp": "2026-07-26T14:22:05.567Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075705551",
-    "timestamp": "2026-07-26T14:21:45.551Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075685533",
-    "timestamp": "2026-07-26T14:21:25.533Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075625514",
-    "timestamp": "2026-07-26T14:20:25.514Z",
-    "event": "QR_RECEIVED",
-    "details": "QR Code autentikasi baru diterima dari Meta WhatsApp",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075624540",
-    "timestamp": "2026-07-26T14:20:24.540Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD version 2.3000.1035194821",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075618820",
-    "timestamp": "2026-07-26T14:20:18.820Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis #4 dijadwalkan dalam 5.5 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1785075618817",
-    "timestamp": "2026-07-26T14:20:18.817Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup dengan kode: 408",
-    "level": "warn"
   }
 ]
