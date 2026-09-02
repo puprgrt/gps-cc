@@ -59,173 +59,192 @@ class MessageHandler {
     for (const msg of messages) {
       if (!msg.message || msg.key.fromMe) continue;
 
-      const senderJid = msg.key.remoteJid;
-      const pushName = msg.pushName || 'Warga PUPR';
-      const cleanPhone = '+' + senderJid.split('@')[0];
-      
-      const { text, type, metadata } = this.extractMessageContent(msg);
+      try {
+        const senderJid = msg.key.remoteJid;
+        const pushName = msg.pushName || 'Warga PUPR';
+        const cleanPhone = '+' + senderJid.split('@')[0];
+        
+        const { text, type, metadata } = this.extractMessageContent(msg);
 
-      let mediaBase64 = null;
-      let enrichedMetadata = { ...(metadata || {}) };
-      if (type === 'document' || type === 'image') {
-        try {
-          let mediaBuffer = null;
+        let mediaBase64 = null;
+        let enrichedMetadata = { ...(metadata || {}) };
+        if (type === 'document' || type === 'image') {
           try {
-            mediaBuffer = await downloadMediaMessage(
-              msg,
-              'buffer',
-              {},
-              { 
-                logger: this.client.waSocket?.logger,
-                reuploadRequest: this.client.waSocket?.updateMediaMessage ? this.client.waSocket.updateMediaMessage.bind(this.client.waSocket) : undefined
-              }
-            );
-          } catch (innerErr) {
-            mediaBuffer = await downloadMediaMessage(msg, 'buffer');
-          }
-
-          if (mediaBuffer) {
-            mediaBase64 = mediaBuffer.toString('base64');
-            enrichedMetadata.size = mediaBuffer.length;
-            enrichedMetadata.base64 = mediaBase64;
-            const mime = enrichedMetadata.mimetype || (type === 'image' ? 'image/jpeg' : 'application/pdf');
+            let mediaBuffer = null;
             try {
-              const uploaded = await supabaseService.uploadWhatsAppMedia({
-                buffer: mediaBuffer,
-                conversationId: `conv-${senderJid}`,
-                messageId: msg.key.id,
-                mimetype: mime,
-                type,
-              });
-              enrichedMetadata.storagePath = uploaded.storagePath;
-              enrichedMetadata.storageBucket = uploaded.bucket;
-              enrichedMetadata.fileName = enrichedMetadata.fileName || `Lampiran_${type === 'image' ? 'Foto' : 'Dokumen'}.${type === 'image' ? 'jpg' : 'pdf'}`;
-            } catch (storageErr) {
-              console.error('[MEDIA_STORAGE_ERROR] Gagal menyimpan lampiran ke Supabase Storage:', storageErr.message);
-              this.client.addLog('MEDIA_STORAGE_ERROR', `Gagal menyimpan lampiran privat: ${storageErr.message}`);
-              // Jangan pernah fallback ke public/ atau data URL; ini dapat membocorkan data warga.
-              enrichedMetadata.storageError = true;
+              mediaBuffer = await downloadMediaMessage(
+                msg,
+                'buffer',
+                {},
+                { 
+                  logger: this.client.waSocket?.logger,
+                  reuploadRequest: this.client.waSocket?.updateMediaMessage ? this.client.waSocket.updateMediaMessage.bind(this.client.waSocket) : undefined
+                }
+              );
+            } catch (innerErr) {
+              mediaBuffer = await downloadMediaMessage(msg, 'buffer');
             }
 
-            this.client.addLog('MEDIA_DOWNLOAD', `Berhasil mengunduh lampiran ${type} (${(mediaBuffer.length / 1024).toFixed(1)} KB) dari ${pushName}`);
+            if (mediaBuffer) {
+              mediaBase64 = mediaBuffer.toString('base64');
+              enrichedMetadata.size = mediaBuffer.length;
+              enrichedMetadata.base64 = mediaBase64;
+              const mime = enrichedMetadata.mimetype || (type === 'image' ? 'image/jpeg' : 'application/pdf');
+              try {
+                const uploaded = await supabaseService.uploadWhatsAppMedia({
+                  buffer: mediaBuffer,
+                  conversationId: `conv-${senderJid}`,
+                  messageId: msg.key.id,
+                  mimetype: mime,
+                  type,
+                });
+                enrichedMetadata.storagePath = uploaded.storagePath;
+                enrichedMetadata.storageBucket = uploaded.bucket;
+                enrichedMetadata.fileName = enrichedMetadata.fileName || `Lampiran_${type === 'image' ? 'Foto' : 'Dokumen'}.${type === 'image' ? 'jpg' : 'pdf'}`;
+              } catch (storageErr) {
+                console.error('[MEDIA_STORAGE_ERROR] Gagal menyimpan lampiran ke Supabase Storage:', storageErr.message);
+                this.client.addLog('MEDIA_STORAGE_ERROR', `Gagal menyimpan lampiran privat: ${storageErr.message}`);
+                enrichedMetadata.storageError = true;
+              }
+
+              this.client.addLog('MEDIA_DOWNLOAD', `Berhasil mengunduh lampiran ${type} (${(mediaBuffer.length / 1024).toFixed(1)} KB) dari ${pushName}`);
+            }
+          } catch (downloadErr) {
+            this.client.addLog('MEDIA_ERROR', `Gagal mengunduh media dari ${pushName}: ${downloadErr.message}`);
           }
-        } catch (downloadErr) {
-          this.client.addLog('MEDIA_ERROR', `Gagal mengunduh media dari ${pushName}: ${downloadErr.message}`);
         }
-      }
 
-      const inboundData = {
-        id: msg.key.id,
-        sender: 'user',
-        text,
-        type,
-        metadata: enrichedMetadata,
-        timestamp: new Date((msg.messageTimestamp || Date.now() / 1000) * 1000).toISOString(),
-        status: 'read',
-      };
+        const inboundData = {
+          id: msg.key.id,
+          sender: 'user',
+          text,
+          type,
+          metadata: enrichedMetadata,
+          timestamp: new Date((msg.messageTimestamp || Date.now() / 1000) * 1000).toISOString(),
+          status: 'read',
+        };
 
-      // Add to cache
-      this.client.inboundMessagesCache.unshift({ jid: senderJid, pushName, ...inboundData });
-      if (this.client.inboundMessagesCache.length > 200) this.client.inboundMessagesCache.pop();
+        // Add to cache
+        this.client.inboundMessagesCache.unshift({ jid: senderJid, pushName, ...inboundData });
+        if (this.client.inboundMessagesCache.length > 200) this.client.inboundMessagesCache.pop();
 
-      this.client.addLog('INBOUND_MESSAGE', `Pesan masuk dari ${pushName || senderJid} [${type}]: "${text.slice(0, 50)}..."`);
-      
-      // Save to Supabase
-      await supabaseService.saveMessage(`conv-${senderJid}`, inboundData, { name: pushName, phoneNumber: cleanPhone });
-      
-      // Fetch dynamic Bot Settings, Menu Flows, & Keyword Rules
-      const botSettings = await supabaseService.getBotSettings();
-      const menuFlows = await supabaseService.getBotMenuFlows();
-      const keywordRules = await supabaseService.getBotKeywords();
-
-      let handledByBot = false;
-      const cleanInput = text.trim().toLowerCase();
-
-      // Priority 0: Cek Status Permohonan / Tiket
-      if (!handledByBot && type === 'text') {
-        const isStatusHandled = await this.tryHandleStatusCheck(senderJid, text, pushName, cleanPhone);
-        if (isStatusHandled) {
-          handledByBot = true;
-        }
-      }
-
-      // Priority 0.5: Human Operator Escalation Request
-      if (!handledByBot && type === 'text') {
-        const isEscalateHandled = await this.tryHandleHumanEscalation(senderJid, text, pushName, cleanPhone);
-        if (isEscalateHandled) {
-          handledByBot = true;
-        }
-      }
-
-      // Priority 1: Interactive Menu Key (Check if is_menu_active is enabled)
-      const isMenuEnabled = botSettings.is_menu_active ?? true;
-      if (isMenuEnabled && type === 'text' && menuFlows.length > 0) {
-        const matchedFlow = menuFlows.find(f => 
-          f.menu_key.toLowerCase() === cleanInput || 
-          (cleanInput === '0' && f.menu_key.toLowerCase() === 'menu') ||
-          (cleanInput === 'bantuan' && f.menu_key.toLowerCase() === 'menu') ||
-          (cleanInput === 'help' && f.menu_key.toLowerCase() === 'menu')
-        );
-
-        if (matchedFlow) {
-          handledByBot = true;
-          const replyText = this.formatPuriReply(matchedFlow.reply_text);
-          const botMsgObj = {
-            id: `msg-menu-${Date.now()}`,
-            sender: 'bot',
-            senderName: 'PURI',
-            text: replyText,
-            timestamp: new Date().toISOString(),
-            status: 'sent',
-            type: 'text'
-          };
-
-          await this.sendPuriReply(senderJid, replyText, matchedFlow.menu_key.toLowerCase() === 'menu');
-          await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
-          this.client.addLog('MENU_REPLY', `Respon Menu Interaktif [${matchedFlow.menu_key}] dikirim ke ${pushName}`);
-        }
-      }
-
-      // Priority 2: Keyword Reply Rules (Check if is_keyword_active is enabled)
-      const isKeywordEnabled = botSettings.is_keyword_active ?? true;
-      if (!handledByBot && isKeywordEnabled && type === 'text' && keywordRules.length > 0) {
-        const matchedKeyword = keywordRules.find(k => {
-          const kw = k.keyword.toLowerCase();
-          if (k.match_type === 'EXACT') return cleanInput === kw;
-          if (k.match_type === 'STARTS_WITH') return cleanInput.startsWith(kw);
-          return cleanInput.includes(kw); // CONTAINS (default)
+        this.client.addLog('INBOUND_MESSAGE', `Pesan masuk dari ${pushName || senderJid} [${type}]: "${text.slice(0, 50)}..."`);
+        
+        // Save to Supabase in non-blocking fashion
+        supabaseService.saveMessage(`conv-${senderJid}`, inboundData, { name: pushName, phoneNumber: cleanPhone }).catch(err => {
+          console.warn('[MessageHandler] Non-blocking save inbound error:', err.message);
         });
+        
+        // Fetch dynamic Bot Settings, Menu Flows, & Keyword Rules with fallback
+        let botSettings = { is_active: true, is_menu_active: true, is_keyword_active: true, model: 'gemini-2.0-flash', min_text_length: 2 };
+        let menuFlows = [];
+        let keywordRules = [];
 
-        if (matchedKeyword) {
-          handledByBot = true;
-          const replyText = this.formatPuriReply(matchedKeyword.reply_text);
-          const botMsgObj = {
-            id: `msg-kw-${Date.now()}`,
-            sender: 'bot',
-            senderName: 'PURI',
-            text: replyText,
-            timestamp: new Date().toISOString(),
-            status: 'sent',
-            type: 'text'
-          };
-
-          await this.sendPuriReply(senderJid, replyText, false);
-          await supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
-          this.client.addLog('KEYWORD_REPLY', `Respon Kata Kunci [${matchedKeyword.keyword}] dikirim ke ${pushName}`);
+        try {
+          const [sRes, mRes, kRes] = await Promise.allSettled([
+            supabaseService.getBotSettings(),
+            supabaseService.getBotMenuFlows(),
+            supabaseService.getBotKeywords()
+          ]);
+          if (sRes.status === 'fulfilled' && sRes.value) botSettings = sRes.value;
+          if (mRes.status === 'fulfilled' && mRes.value) menuFlows = mRes.value;
+          if (kRes.status === 'fulfilled' && kRes.value) keywordRules = kRes.value;
+        } catch (settingsFetchErr) {
+          console.warn('[MessageHandler] Error loading dynamic settings, using resilient defaults:', settingsFetchErr.message);
         }
-      }
 
-      // Priority 3: Gemini AI Fallback (Check if is_active is enabled)
-      const isAiEnabled = botSettings.is_active ?? true;
-      const isValidText = text && text.length >= (botSettings.min_text_length || 2);
-      const isMediaMessage = (type === 'document' || type === 'image');
-      if (!handledByBot && isAiEnabled && (isValidText || isMediaMessage)) {
-         const mediaPayload = (isMediaMessage && mediaBase64) ? {
-           base64: mediaBase64,
-           mimetype: enrichedMetadata?.mimetype || (type === 'image' ? 'image/jpeg' : 'application/pdf'),
-           fileName: enrichedMetadata?.fileName || `lampiran.${type === 'image' ? 'jpg' : 'pdf'}`
-         } : null;
-         await this.handleGeminiAiReply(senderJid, text || `[Lampiran ${type}]`, pushName, botSettings, mediaPayload);
+        let handledByBot = false;
+        const cleanInput = text.trim().toLowerCase();
+
+        // Priority 0: Cek Status Permohonan / Tiket
+        if (!handledByBot && type === 'text') {
+          const isStatusHandled = await this.tryHandleStatusCheck(senderJid, text, pushName, cleanPhone);
+          if (isStatusHandled) {
+            handledByBot = true;
+          }
+        }
+
+        // Priority 0.5: Human Operator Escalation Request
+        if (!handledByBot && type === 'text') {
+          const isEscalateHandled = await this.tryHandleHumanEscalation(senderJid, text, pushName, cleanPhone);
+          if (isEscalateHandled) {
+            handledByBot = true;
+          }
+        }
+
+        // Priority 1: Interactive Menu Key (Check if is_menu_active is enabled)
+        const isMenuEnabled = botSettings.is_menu_active ?? true;
+        if (isMenuEnabled && type === 'text' && menuFlows.length > 0) {
+          const matchedFlow = menuFlows.find(f => 
+            f.menu_key.toLowerCase() === cleanInput || 
+            (cleanInput === '0' && f.menu_key.toLowerCase() === 'menu') ||
+            (cleanInput === 'bantuan' && f.menu_key.toLowerCase() === 'menu') ||
+            (cleanInput === 'help' && f.menu_key.toLowerCase() === 'menu')
+          );
+
+          if (matchedFlow) {
+            handledByBot = true;
+            const replyText = this.formatPuriReply(matchedFlow.reply_text);
+            const botMsgObj = {
+              id: `msg-menu-${Date.now()}`,
+              sender: 'bot',
+              senderName: 'PURI',
+              text: replyText,
+              timestamp: new Date().toISOString(),
+              status: 'sent',
+              type: 'text'
+            };
+
+            await this.sendPuriReply(senderJid, replyText, matchedFlow.menu_key.toLowerCase() === 'menu');
+            supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone }).catch(() => {});
+            this.client.addLog('MENU_REPLY', `Respon Menu Interaktif [${matchedFlow.menu_key}] dikirim ke ${pushName}`);
+          }
+        }
+
+        // Priority 2: Keyword Reply Rules (Check if is_keyword_active is enabled)
+        const isKeywordEnabled = botSettings.is_keyword_active ?? true;
+        if (!handledByBot && isKeywordEnabled && type === 'text' && keywordRules.length > 0) {
+          const matchedKeyword = keywordRules.find(k => {
+            const kw = k.keyword.toLowerCase();
+            if (k.match_type === 'EXACT') return cleanInput === kw;
+            if (k.match_type === 'STARTS_WITH') return cleanInput.startsWith(kw);
+            return cleanInput.includes(kw); // CONTAINS (default)
+          });
+
+          if (matchedKeyword) {
+            handledByBot = true;
+            const replyText = this.formatPuriReply(matchedKeyword.reply_text);
+            const botMsgObj = {
+              id: `msg-kw-${Date.now()}`,
+              sender: 'bot',
+              senderName: 'PURI',
+              text: replyText,
+              timestamp: new Date().toISOString(),
+              status: 'sent',
+              type: 'text'
+            };
+
+            await this.sendPuriReply(senderJid, replyText, false);
+            supabaseService.saveMessage(`conv-${senderJid}`, botMsgObj, { name: pushName, phoneNumber: cleanPhone }).catch(() => {});
+            this.client.addLog('KEYWORD_REPLY', `Respon Kata Kunci [${matchedKeyword.keyword}] dikirim ke ${pushName}`);
+          }
+        }
+
+        // Priority 3: Gemini AI Fallback (Check if is_active is enabled)
+        const isAiEnabled = botSettings.is_active ?? true;
+        const isValidText = text && text.length >= (botSettings.min_text_length || 2);
+        const isMediaMessage = (type === 'document' || type === 'image');
+        if (!handledByBot && isAiEnabled && (isValidText || isMediaMessage)) {
+          const mediaPayload = (isMediaMessage && mediaBase64) ? {
+            base64: mediaBase64,
+            mimetype: enrichedMetadata?.mimetype || (type === 'image' ? 'image/jpeg' : 'application/pdf'),
+            fileName: enrichedMetadata?.fileName || `lampiran.${type === 'image' ? 'jpg' : 'pdf'}`
+          } : null;
+          await this.handleGeminiAiReply(senderJid, text || `[Lampiran ${type}]`, pushName, botSettings, mediaPayload);
+        }
+      } catch (msgError) {
+        console.error('[MessageHandler] Uncaught error processing inbound message:', msgError);
+        this.client.addLog('INBOUND_PROCESSING_ERROR', `Error memproses pesan: ${msgError.message}`, 'error');
       }
     }
   }

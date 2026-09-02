@@ -32,6 +32,13 @@ class KimiProvider extends AIProviderInterface {
     this.apiUrl = 'https://api.moonshot.cn/v1/chat/completions';
   }
 
+  isConfigured() {
+    return Boolean(
+      (process.env.MOONSHOT_API_KEY && process.env.MOONSHOT_API_KEY.trim().length > 0) ||
+      (process.env.KIMI_API_KEY && process.env.KIMI_API_KEY.trim().length > 0)
+    );
+  }
+
   /**
    * Migrate deprecated model names to current GA models
    * @param {string} modelName

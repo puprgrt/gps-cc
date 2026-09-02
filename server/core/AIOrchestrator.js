@@ -43,20 +43,20 @@ class AIOrchestrator {
       LOCAL: new LocalAIProvider(),
     };
 
-    // PURI AI Smart Orchestration Engine - Intelligent Model Routing (Point 3)
+    // PURI AI Smart Orchestration Engine - Intelligent Model Routing (Production Optimized)
     this.routingTable = {
-      FAQ: ['LOCAL', 'OPENAI', 'GEMINI'], // Knowledge Base first via Cache/RAG
-      SERVICE_REQUIREMENT: ['LOCAL', 'OPENAI', 'GEMINI', 'CLAUDE'], // Knowledge Base -> ChatGPT -> Gemini
-      CHAT_GENERAL: ['OPENAI', 'GEMINI', 'CLAUDE', 'KIMI', 'LOCAL'], // ChatGPT -> Gemini -> Claude
-      DOCUMENT_PDF: ['GEMINI', 'CLAUDE', 'OPENAI', 'KIMI', 'LOCAL'], // Gemini -> Claude
-      REGULATION_LAW: ['CLAUDE', 'OPENAI', 'GEMINI', 'KIMI', 'LOCAL'], // Claude -> ChatGPT
-      CODING_TECHNICAL: ['KIMI', 'OPENAI', 'GEMINI', 'CLAUDE', 'LOCAL'], // Kimi -> DeepSeek/OpenAI
-      VISION_BUILDING: ['GEMINI', 'OPENAI', 'CLAUDE', 'LOCAL'], // Gemini -> ChatGPT
-      VISION_ROAD: ['GEMINI', 'LOCAL', 'OPENAI'], // Vision Model / Qwen VL -> ChatGPT
+      FAQ: ['GEMINI', 'OPENAI', 'CLAUDE', 'LOCAL'],
+      SERVICE_REQUIREMENT: ['GEMINI', 'OPENAI', 'CLAUDE', 'LOCAL'],
+      CHAT_GENERAL: ['GEMINI', 'OPENAI', 'CLAUDE', 'KIMI', 'LOCAL'],
+      DOCUMENT_PDF: ['GEMINI', 'CLAUDE', 'OPENAI', 'KIMI', 'LOCAL'],
+      REGULATION_LAW: ['GEMINI', 'CLAUDE', 'OPENAI', 'KIMI', 'LOCAL'],
+      CODING_TECHNICAL: ['GEMINI', 'KIMI', 'OPENAI', 'CLAUDE', 'LOCAL'],
+      VISION_BUILDING: ['GEMINI', 'OPENAI', 'CLAUDE', 'LOCAL'],
+      VISION_ROAD: ['GEMINI', 'OPENAI', 'LOCAL'],
       VISION_IMAGE: ['GEMINI', 'OPENAI', 'CLAUDE', 'KIMI', 'LOCAL'],
-      SUMMARY: ['CLAUDE', 'OPENAI', 'GEMINI', 'LOCAL'], // Claude -> ChatGPT
-      TRANSLATION: ['OPENAI', 'GEMINI', 'CLAUDE', 'LOCAL'], // ChatGPT -> Gemini
-      CRITICAL_EMERGENCY: ['OPENAI', 'GEMINI', 'CLAUDE', 'KIMI', 'LOCAL'],
+      SUMMARY: ['GEMINI', 'CLAUDE', 'OPENAI', 'LOCAL'],
+      TRANSLATION: ['GEMINI', 'OPENAI', 'CLAUDE', 'LOCAL'],
+      CRITICAL_EMERGENCY: ['GEMINI', 'OPENAI', 'CLAUDE', 'KIMI', 'LOCAL'],
     };
 
     // Cost tracking metrics in memory (persisted via Supabase/Firestore logs if needed)
@@ -417,6 +417,11 @@ class AIOrchestrator {
       const provider = this.providers[providerKey];
       if (!provider) continue;
 
+      // Check if provider has necessary API keys or is enabled
+      if (!provider.isConfigured()) {
+        continue; // Skip in 0ms without delay
+      }
+
       // Check if provider is disabled in AI Settings
       const setting = allAiSettings[providerKey];
       if (setting && setting.isActive === false) {
@@ -453,21 +458,23 @@ class AIOrchestrator {
           { model: activeModel, temperature: activeTemperature }
         );
 
-        selectedResponse = {
-          text: response.text,
-          providerUsed: providerKey,
-          modelName: response.modelName || provider.defaultModel,
-          confidenceScore: response.confidence || 95,
-          tokensUsed: response.tokensUsed || 0,
-          latencyMs: response.latencyMs || (Date.now() - startTime),
-        };
+        if (response && response.text && response.text.trim().length > 0) {
+          selectedResponse = {
+            text: response.text,
+            providerUsed: providerKey,
+            modelName: response.modelName || provider.defaultModel,
+            confidenceScore: response.confidence || 95,
+            tokensUsed: response.tokensUsed || 0,
+            latencyMs: response.latencyMs || (Date.now() - startTime),
+          };
 
-        // Update metrics
-        this.metricsMap[providerKey].successCount += 1;
-        this.metricsMap[providerKey].estimatedTokens += (selectedResponse.tokensUsed || 0);
-        this.metricsMap[providerKey].totalLatencyMs += selectedResponse.latencyMs;
+          // Update metrics
+          this.metricsMap[providerKey].successCount += 1;
+          this.metricsMap[providerKey].estimatedTokens += (selectedResponse.tokensUsed || 0);
+          this.metricsMap[providerKey].totalLatencyMs += selectedResponse.latencyMs;
 
-        break; // Successfully generated!
+          break; // Successfully generated!
+        }
       } catch (err) {
         const errorType = err.isCircuitOpen ? 'Circuit Open' : err.isRateLimit ? 'Rate Limited' : 'Error';
         console.warn(`[AIOrchestrator] Provider [${providerKey}] failed (${errorType}): ${err.message}. Switching to fallback...`);
@@ -477,40 +484,50 @@ class AIOrchestrator {
       }
     }
 
-    // 5. If all Cloud providers fail, ensure fallback to Local AI (or safe offline reply)
+    // 5. If all Cloud providers fail, try Local AI or Smart RAG Knowledge Fallback
     if (!selectedResponse) {
-      const localProvider = this.providers.LOCAL;
-      try {
-        let localSystemPrompt = systemPrompt;
+      if (this.providers.LOCAL.isConfigured()) {
+        try {
+          const response = await this.providers.LOCAL.generateResponse({
+            systemPrompt,
+            userText,
+            media,
+            conversationHistory: sanitizedHistory,
+          });
 
-        const response = await localProvider.generateResponse({
-          systemPrompt: localSystemPrompt,
-          userText,
-          media,
-          conversationHistory: sanitizedHistory,
-        });
-
-        selectedResponse = {
-          text: response.text,
-          providerUsed: 'LOCAL',
-          modelName: response.modelName || 'local-qwen',
-          confidenceScore: 88,
-          tokensUsed: response.tokensUsed || 0,
-          latencyMs: Date.now() - startTime,
-        };
-      } catch (localErr) {
-        // Safe graceful fallback reply without exposing internal state
-        const fallbackReplyText = `🙏 Mohon maaf, sistem Asisten Virtual PURI saat ini sedang dalam pemeliharaan jaringan. Pesan Anda telah tercatat di sistem GPS-CC dan akan direspon oleh operator kami segera.\n\nSilakan hubungi operator melalui WhatsApp atau tinggalkan pesan laporan Anda.`;
-
-        selectedResponse = {
-          text: fallbackReplyText,
-          providerUsed: 'LOCAL',
-          modelName: 'offline-safe-reply',
-          confidenceScore: 70,
-          tokensUsed: 0,
-          latencyMs: Date.now() - startTime,
-        };
+          if (response && response.text) {
+            selectedResponse = {
+              text: response.text,
+              providerUsed: 'LOCAL',
+              modelName: response.modelName || 'local-qwen',
+              confidenceScore: 88,
+              tokensUsed: response.tokensUsed || 0,
+              latencyMs: Date.now() - startTime,
+            };
+          }
+        } catch (localErr) {
+          console.warn('[AIOrchestrator] Local AI provider error:', localErr.message);
+        }
       }
+    }
+
+    // 5b. Smart Knowledge Fallback (Guarantees response is NEVER silent)
+    if (!selectedResponse) {
+      let fallbackReplyText = '';
+      if (ragResult && ragResult.found && ragResult.snippets && ragResult.snippets.length > 0) {
+        fallbackReplyText = `🏛️ *INFORMASI PELAYANAN PUPR GARUT*\n\n${ragResult.snippets[0]}\n\nUntuk bantuan lebih lanjut atau terhubung dengan petugas, ketik *OPERATOR* atau ketik *MENU* untuk daftar layanan.`;
+      } else {
+        fallbackReplyText = `🙏 Terima kasih telah menghubungi *PURI PUPR Garut*.\n\nPesan Anda: "${userText.slice(0, 75)}${userText.length > 75 ? '...' : ''}" telah kami terima dan dicatat dalam sistem GPS-CC.\n\nKetik *MENU* atau *0* untuk melihat daftar perizinan & informasi publik, atau ketik *OPERATOR* untuk bantuan langsung dari staf kami pada jam kerja (08:00 - 15:30 WIB).`;
+      }
+
+      selectedResponse = {
+        text: fallbackReplyText,
+        providerUsed: 'LOCAL',
+        modelName: 'puri-smart-knowledge-fallback',
+        confidenceScore: 85,
+        tokensUsed: 0,
+        latencyMs: Date.now() - startTime,
+      };
     }
 
     // 6. AI Confidence Check (< 95% -> flag for supervisor review)

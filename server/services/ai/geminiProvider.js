@@ -17,16 +17,15 @@
 const { GoogleGenAI } = require('@google/genai');
 const AIProviderInterface = require('./aiProviderInterface');
 
-// Map of deprecated/discontinued models to their current replacements
+// Map of deprecated/discontinued models to their current official GA replacements
 const MODEL_MIGRATION_MAP = {
   'gemini-2.0-flash': 'gemini-3.6-flash',
   'gemini-2.0-flash-lite-preview-02-05': 'gemini-3.5-flash-lite',
-  'gemini-2.5-flash': 'gemini-3.6-flash',
-  'gemini-2.5-flash-lite': 'gemini-3.5-flash-lite',
-  'gemini-pro': 'gemini-3.6-flash',
   'gemini-1.5-flash': 'gemini-3.5-flash',
-  'gemini-1.5-pro': 'gemini-3.1-pro-preview',
-  'gemini-2.5-flash-preview': 'gemini-3.6-flash',
+  'gemini-1.5-pro': 'gemini-3.6-flash',
+  'gemini-pro': 'gemini-3.6-flash',
+  'gemini-1.0-pro': 'gemini-3.6-flash',
+  'gemini-flash': 'gemini-flash-latest',
 };
 
 class GeminiProvider extends AIProviderInterface {
@@ -34,7 +33,11 @@ class GeminiProvider extends AIProviderInterface {
     super('GEMINI', 'gemini-3.6-flash');
     this.name = 'Google Gemini (3.6 Flash)';
     this.client = null;
-    this.fallbackModels = ['gemini-3.5-flash-lite', 'gemini-3.1-pro-preview'];
+    this.fallbackModels = ['gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-flash-latest'];
+  }
+
+  isConfigured() {
+    return Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim().length > 0);
   }
 
   getClient() {
@@ -50,6 +53,7 @@ class GeminiProvider extends AIProviderInterface {
    * @returns {string}
    */
   migrateModelName(modelName) {
+    if (!modelName) return this.defaultModel;
     const migrated = MODEL_MIGRATION_MAP[modelName];
     if (migrated) {
       console.info(`[GEMINI] Auto-migrated deprecated model "${modelName}" → "${migrated}"`);
@@ -109,8 +113,8 @@ class GeminiProvider extends AIProviderInterface {
       });
     }
 
-    // Fallback chain: primary model → gemini-3.6-flash → gemini-3.5-flash-lite
-    const modelsToTry = [...new Set([primaryModel, 'gemini-3.6-flash', 'gemini-3.5-flash-lite'])];
+    // Fallback chain: primary model → gemini-3.6-flash → gemini-3.7-flash → gemini-3.5-flash → gemini-flash-latest
+    const modelsToTry = [...new Set([primaryModel, 'gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-flash-latest'])];
     let lastError = null;
 
     for (const modelName of modelsToTry) {
@@ -145,7 +149,7 @@ class GeminiProvider extends AIProviderInterface {
         if (err.isCircuitOpen) {
           throw err;
         }
-        console.warn(`[GEMINI] Model ${modelName} failed after retries: ${err.message}. Trying next fallback model...`);
+        console.warn(`[GEMINI] Model ${modelName} failed: ${err.message}. Trying next fallback model...`);
       }
     }
 

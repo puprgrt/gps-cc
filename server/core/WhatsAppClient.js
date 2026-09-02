@@ -84,29 +84,25 @@ class WhatsAppClient {
       this.reconnectTimer = null;
     }
 
-    this.reconnectAttempts++;
+    const isRestart = reasonCode === DisconnectReason.restartRequired || reasonCode === 515 || reasonCode === 428;
+    if (!isRestart) {
+      this.reconnectAttempts++;
+    }
     this.isReconnecting = true;
 
-    const baseDelay = customDelayMs || Math.min(2000 * Math.pow(1.4, this.reconnectAttempts - 1), 30000);
+    const baseDelay = customDelayMs || (isRestart ? 1000 : Math.min(2000 * Math.pow(1.3, Math.max(0, this.reconnectAttempts - 1)), 20000));
     const delayMs = Math.round(baseDelay);
 
-    console.log(`[PUPR Baileys Reconnect] Menjadwalkan penyambungan kembali (Percobaan #${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS}) dalam ${delayMs}ms...`);
-    this.addLog('RECONNECT_SCHEDULED', `Penyambungan kembali otomatis #${this.reconnectAttempts} dijadwalkan dalam ${(delayMs / 1000).toFixed(1)} detik.`, 'info');
+    console.log(`[PUPR Baileys Reconnect] Menjadwalkan penyambungan kembali (${isRestart ? 'Stream Restart' : `Percobaan #${this.reconnectAttempts}`}) dalam ${delayMs}ms...`);
+    this.addLog('RECONNECT_SCHEDULED', `Penyambungan kembali otomatis dijadwalkan dalam ${(delayMs / 1000).toFixed(1)} detik.`, 'info');
 
     this.reconnectTimer = setTimeout(async () => {
       this.reconnectTimer = null;
-      if (this.reconnectAttempts > this.MAX_RECONNECT_ATTEMPTS) {
-        console.warn(`[PUPR Baileys] Mencapai batas maksimum percobaan reconnect.`);
-        this.addLog('RECONNECT_FAILED_MAX', `Gagal menghubungkan kembali setelah ${this.MAX_RECONNECT_ATTEMPTS} percobaan.`, 'error');
-        this.connectionState = 'disconnected';
-        this.isReconnecting = false;
-        return;
-      }
       try {
         await this.init(null);
       } catch (err) {
         console.error('[PUPR Baileys] Reconnect attempt error:', err);
-        this.scheduleAutoReconnect(null);
+        this.scheduleAutoReconnect(null, 3000);
       }
     }, delayMs);
   }

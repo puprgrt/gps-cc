@@ -24,7 +24,7 @@ export async function GET() {
       is_active: true,
       is_menu_active: true,
       is_keyword_active: true,
-      model: 'gemini-3.6-flash',
+      model: 'gemini-2.0-flash',
       system_prompt: `[IDENTITAS & PERAN SISTEM]
 Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut. Tugas Anda adalah memberikan informasi pelayanan publik yang sopan, cepat, akurat, solutif, dan mudah dipahami oleh warga masyarakat Kabupaten Garut.
 

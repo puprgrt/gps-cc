@@ -19,19 +19,22 @@ const AIProviderInterface = require('./aiProviderInterface');
 
 // Map deprecated Claude model IDs to current equivalents
 const MODEL_MIGRATION_MAP = {
-  'claude-3-5-sonnet-20241022': 'claude-sonnet-5',
-  'claude-3.5-sonnet': 'claude-sonnet-5',
-  'claude-3-sonnet-20240229': 'claude-sonnet-5',
-  'claude-3-haiku-20240307': 'claude-haiku-3.5',
-  'claude-3-opus-20240229': 'claude-opus-5',
-  'claude-3.5-haiku': 'claude-haiku-3.5',
+  'claude-sonnet-5': 'claude-3-5-sonnet-20241022',
+  'claude-3.5-sonnet': 'claude-3-5-sonnet-20241022',
+  'claude-3-sonnet-20240229': 'claude-3-5-sonnet-20241022',
+  'claude-haiku-3.5': 'claude-3-haiku-20240307',
+  'claude-opus-5': 'claude-3-opus-20240229',
 };
 
 class ClaudeProvider extends AIProviderInterface {
   constructor() {
-    super('CLAUDE', 'claude-sonnet-5');
+    super('CLAUDE', 'claude-3-5-sonnet-20241022');
     this.name = 'Anthropic Claude AI';
     this.apiUrl = 'https://api.anthropic.com/v1/messages';
+  }
+
+  isConfigured() {
+    return Boolean(process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_API_KEY.trim().length > 0);
   }
 
   /**

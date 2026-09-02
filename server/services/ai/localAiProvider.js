@@ -22,10 +22,15 @@ class LocalAIProvider extends AIProviderInterface {
     super('LOCAL', 'qwen2.5:7b');
     this.name = 'Local AI Cluster (Ollama)';
     this.baseUrl = process.env.LOCAL_AI_URL || 'http://localhost:11434';
-    // Local AI has no rate limits, but needs longer timeout for inference
-    this.requestTimeoutMs = 60000; // 60 seconds for local inference
+    // Local AI has no rate limits, but keep reasonable timeout to avoid blocking
+    this.requestTimeoutMs = 8000; // 8 seconds max for local ping/inference to fail-fast if Ollama is not running
     // Disable circuit breaker for local (it should always be attempted as last resort)
     this._circuitBreakerThreshold = 999;
+  }
+
+  isConfigured() {
+    // Only attempt if explicit LOCAL_AI_ENABLED is true or LOCAL_AI_URL is explicitly set
+    return Boolean(process.env.LOCAL_AI_ENABLED === 'true' || process.env.ENABLE_LOCAL_AI === 'true');
   }
 
   async generateResponse(payload, options = {}) {

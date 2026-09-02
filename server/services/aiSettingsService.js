@@ -20,12 +20,12 @@ const supabaseService = require('./supabaseService');
 
 const LOCAL_FILE_PATH = path.join(__dirname, '../data/puri_ai_settings.json');
 
-// Default Models Updated for Juli 2026
+// Default Models Updated for Production Stability
 const DEFAULT_AI_SETTINGS = {
   GEMINI: {
     provider: 'GEMINI',
     name: 'Google Gemini AI',
-    model: 'gemini-3.6-flash',
+    model: 'gemini-2.0-flash',
     isActive: true,
     temperature: 0.7,
     maxTokens: 2048,
@@ -43,7 +43,7 @@ const DEFAULT_AI_SETTINGS = {
   CLAUDE: {
     provider: 'CLAUDE',
     name: 'Anthropic Claude',
-    model: 'claude-sonnet-5',
+    model: 'claude-3-5-sonnet-20241022',
     isActive: true,
     temperature: 0.5,
     maxTokens: 2048,

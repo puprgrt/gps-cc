@@ -23,6 +23,10 @@ class OpenAIProvider extends AIProviderInterface {
     this.apiUrl = 'https://api.openai.com/v1/chat/completions';
   }
 
+  isConfigured() {
+    return Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim().length > 0);
+  }
+
   async generateResponse(payload, options = {}) {
     const start = Date.now();
     const apiKey = process.env.OPENAI_API_KEY;

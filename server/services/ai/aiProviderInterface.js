@@ -44,6 +44,14 @@ class AIProviderInterface {
     this._circuitOpenedAt = 0; // Timestamp when circuit was opened
   }
 
+  /**
+   * Check if this provider has necessary API keys or configuration
+   * @returns {boolean}
+   */
+  isConfigured() {
+    return true;
+  }
+
   // =========================================================================
   // ANTI-LIMIT: Circuit Breaker
   // =========================================================================
