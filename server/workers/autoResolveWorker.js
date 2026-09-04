@@ -1,14 +1,5 @@
-const { createClient } = require('@supabase/supabase-js');
+const { supabase } = require('../services/supabaseService');
 const whatsappClient = require('../core/WhatsAppClient');
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl) {
-  console.warn('⚠️  NEXT_PUBLIC_SUPABASE_URL is missing. Auto-resolve worker may fail.');
-}
-
-// Gunakan Service Role Key jika ada, agar bisa bypass RLS jika diperlukan
-const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseKey || 'placeholder');
 
 // 6 Jam dalam milidetik
 const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
@@ -31,6 +22,10 @@ async function checkAndAutoResolve() {
       .lt('updated_at', sixHoursAgo);
 
     if (fetchErr) {
+      if (fetchErr.message?.includes('fetch failed') || fetchErr.code === '42P01') {
+        console.warn(`[AutoResolveWorker] Gagal mengambil percakapan (${fetchErr.message}). Akan dicoba lagi nanti.`);
+        return;
+      }
       console.error('[AutoResolveWorker] Error fetching conversations:', fetchErr.message);
       return;
     }
@@ -62,7 +57,7 @@ async function checkAndAutoResolve() {
         .eq('id', conv.contact_id)
         .single();
 
-      if (contactErr || !contact) {
+      if (contactErr || !contact || !contact.phone_number) {
         console.error(`[AutoResolveWorker] Error fetching contact for conv ${conv.id}`);
         continue;
       }
@@ -73,18 +68,20 @@ async function checkAndAutoResolve() {
 
       // Try sending the message using WhatsAppClient (bot)
       try {
-        const targetJid = contact.phone_number.includes('@s.whatsapp.net') 
-          ? contact.phone_number 
-          : `${contact.phone_number}@s.whatsapp.net`;
+        let cleanPhone = contact.phone_number.replace(/\D/g, '');
+        if (cleanPhone.startsWith('0')) {
+          cleanPhone = '62' + cleanPhone.substring(1);
+        }
+        const targetJid = `${cleanPhone}@s.whatsapp.net`;
           
         await whatsappClient.sendMessage(targetJid, messageText);
-        console.log(`[AutoResolveWorker] Sent auto-resolve SKM link to ${contact.phone_number}`);
+        console.log(`[AutoResolveWorker] Sent auto-resolve SKM link to ${cleanPhone}`);
       } catch (sendErr) {
         console.error(`[AutoResolveWorker] Failed sending message to ${contact.phone_number}:`, sendErr.message);
       }
     }
   } catch (error) {
-    console.error('[AutoResolveWorker] Unexpected error:', error);
+    console.error('[AutoResolveWorker] Unexpected error:', error.message || error);
   }
 }
 

@@ -389,6 +389,37 @@ class WhatsAppClient {
     }
   }
 
+  /**
+   * Helper method to send a message to a WhatsApp recipient.
+   * Supports target as phone number ('62812...' or '+62812...') or full JID ('...s.whatsapp.net').
+   * Supports content as plain string (auto-converted to { text: content }) or Baileys content object.
+   */
+  async sendMessage(target, content, options = {}) {
+    let targetJid = String(target || '').trim();
+    if (!targetJid) {
+      throw new Error('Target phone number or JID is required.');
+    }
+    if (!targetJid.includes('@')) {
+      let cleanPhone = targetJid.replace(/\D/g, '');
+      if (cleanPhone.startsWith('0')) {
+        cleanPhone = '62' + cleanPhone.substring(1);
+      }
+      targetJid = `${cleanPhone}@s.whatsapp.net`;
+    } else if (targetJid.includes('+')) {
+      targetJid = targetJid.replace(/^\+/, '').replace(/\+/g, '');
+    }
+
+    const payload = typeof content === 'string' ? { text: content } : content;
+    return await this.sendMessageReliable(targetJid, payload, options);
+  }
+
+  /**
+   * Helper method specifically for text messages.
+   */
+  async sendTextMessage(target, text, options = {}) {
+    return await this.sendMessage(target, { text }, options);
+  }
+
   getSocketStatus() {
     return {
       status: this.connectionState,

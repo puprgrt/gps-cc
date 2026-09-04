@@ -1,13 +1,5 @@
-const { createClient } = require('@supabase/supabase-js');
+const { supabase } = require('../services/supabaseService');
 const whatsappClient = require('../core/WhatsAppClient');
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-
-if (!supabaseUrl) {
-  console.warn('⚠️  NEXT_PUBLIC_SUPABASE_URL is missing. Reminders may fail.');
-}
-
-const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder');
 
 /**
  * Check for meetings starting in exactly 30 minutes
@@ -29,6 +21,10 @@ async function checkAndSendReminders() {
       .lt('scheduled_at', thirtyFiveMinLater);
 
     if (meetingErr) {
+      if (meetingErr.message?.includes('fetch failed') || meetingErr.code === '42P01') {
+        // Table not ready or temporary network/fetch disconnect
+        return;
+      }
       console.error('[PuriMeetReminder] Error fetching meetings:', meetingErr.message);
       return;
     }
