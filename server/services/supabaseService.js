@@ -61,21 +61,37 @@ async function uploadWhatsAppMedia({ buffer, conversationId, messageId, mimetype
 
 async function saveMessage(conversationId, messageData, contactData = null) {
   try {
+    // Ignore status broadcast conversations
+    if (conversationId && (conversationId.includes('@broadcast') || conversationId === 'conv-status@broadcast')) {
+      return false;
+    }
+
     // 1. Simpan atau Update Kontak
     let contactId = null;
-    if (contactData) {
-      const { data: contact, error: contactError } = await supabase
-        .from('wa_contacts')
-        .upsert({ 
-          phone_number: contactData.phoneNumber,
-          name: contactData.name || contactData.phoneNumber,
-          last_active_at: new Date().toISOString()
-        }, { onConflict: 'phone_number', returning: 'representation' })
-        .select()
-        .single();
-      
-      if (contactError) throw contactError;
-      contactId = contact.id;
+    if (contactData && contactData.phoneNumber) {
+      let rawDigits = String(contactData.phoneNumber).split('@')[0].replace(/\D/g, '');
+      if (rawDigits.startsWith('0')) {
+        rawDigits = '62' + rawDigits.substring(1);
+      } else if (rawDigits.startsWith('8')) {
+        rawDigits = '62' + rawDigits;
+      }
+      const canonicalPhone = rawDigits || String(contactData.phoneNumber).replace(/^\+/, '');
+
+      if (canonicalPhone && !canonicalPhone.toLowerCase().includes('broadcast')) {
+        const { data: contact, error: contactError } = await supabase
+          .from('wa_contacts')
+          .upsert({ 
+            phone_number: canonicalPhone,
+            name: contactData.name || canonicalPhone,
+            last_active_at: new Date().toISOString()
+          }, { onConflict: 'phone_number', returning: 'representation' })
+          .select()
+          .single();
+        
+        if (!contactError && contact) {
+          contactId = contact.id;
+        }
+      }
     }
 
     // 2. Simpan atau Update Percakapan (Sesi)
@@ -86,7 +102,7 @@ async function saveMessage(conversationId, messageData, contactData = null) {
         contact_id: contactId,
         last_message: messageData.text || '',
         status: messageData.sender === 'user' ? 'pending' : 'active',
-        unread_count: messageData.sender === 'user' ? 1 : 0, // Akan diperbaiki jika perlu increment
+        unread_count: messageData.sender === 'user' ? 1 : 0,
         updated_at: new Date().toISOString()
       }, { onConflict: 'id' })
       .select()
@@ -105,7 +121,6 @@ async function saveMessage(conversationId, messageData, contactData = null) {
     };
 
     if (messageData.metadata && (messageData.metadata.storagePath || messageData.metadata.fileUrl)) {
-      // Simpan path Storage privat, bukan data URL atau URL publik.
       payload.media_url = messageData.metadata.storagePath || messageData.metadata.fileUrl;
       payload.media_type = messageData.metadata.mimetype || messageData.type;
     } else if (messageData.type === 'image' || messageData.type === 'document' || messageData.type === 'video' || messageData.type === 'audio') {
@@ -168,12 +183,25 @@ async function getActiveConversations() {
 async function upsertContacts(contactsArray) {
   if (!contactsArray || contactsArray.length === 0) return;
   try {
-    const formatted = contactsArray.map(c => ({
-      phone_number: c.id.split('@')[0],
-      name: c.name,
-      last_active_at: new Date().toISOString()
-    }));
-    // Bulk upsert to wa_contacts
+    const formatted = [];
+    for (const c of contactsArray) {
+      if (!c.id || c.id.includes('@broadcast') || c.id.includes('@g.us')) continue;
+      let rawDigits = c.id.split('@')[0].replace(/\D/g, '');
+      if (!rawDigits) continue;
+      if (rawDigits.startsWith('0')) {
+        rawDigits = '62' + rawDigits.substring(1);
+      } else if (rawDigits.startsWith('8')) {
+        rawDigits = '62' + rawDigits;
+      }
+      formatted.push({
+        phone_number: rawDigits,
+        name: c.name || rawDigits,
+        last_active_at: new Date().toISOString()
+      });
+    }
+
+    if (formatted.length === 0) return;
+
     const { error } = await supabase
       .from('wa_contacts')
       .upsert(formatted, { onConflict: 'phone_number', ignoreDuplicates: false });

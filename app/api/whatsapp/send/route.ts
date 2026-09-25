@@ -120,9 +120,13 @@ export async function POST(req: NextRequest) {
 
     // 3. Forward Message to Baileys Server
     try {
+      const BAILEYS_API_KEY = process.env.BAILEYS_API_KEY || 'pupr-garut-baileys-key-2026';
       const response = await fetch(`${BAILEYS_URL}/api/send-message`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-baileys-api-key': BAILEYS_API_KEY,
+        },
         body: JSON.stringify({
           to: formattedPhone,
           text: message,

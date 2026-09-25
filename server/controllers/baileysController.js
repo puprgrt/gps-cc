@@ -51,7 +51,18 @@ exports.handleSendMessage = async (req, res) => {
       return res.status(400).json({ error: 'Parameter "to" (nomor tujuan) dan "text" harus diisi.' });
     }
 
-    let targetJid = to.includes('@s.whatsapp.net') || to.includes('@g.us') ? to : `${to}@s.whatsapp.net`;
+    let targetJid = String(to || '').trim();
+    if (targetJid.includes('@g.us')) {
+      // Group JID, keep as is
+    } else {
+      let cleanDigits = targetJid.split('@')[0].replace(/\D/g, '');
+      if (cleanDigits.startsWith('0')) {
+        cleanDigits = '62' + cleanDigits.substring(1);
+      } else if (cleanDigits.startsWith('8')) {
+        cleanDigits = '62' + cleanDigits;
+      }
+      targetJid = `${cleanDigits}@s.whatsapp.net`;
+    }
     const cleanPhone = '+' + targetJid.split('@')[0];
 
     const result = await whatsappClient.sendMessageReliable(targetJid, { text });
@@ -74,9 +85,10 @@ exports.handleSendMessage = async (req, res) => {
   } catch (error) {
     console.error('Error Send Message:', error);
     const errMsg = error.message || String(error);
+    const isForbidden = error.data === 403 || errMsg.includes('bukan anggota') || errMsg.includes('dikunci') || errMsg.includes('forbidden');
     const isConnectionError = errMsg.includes('connection closed') || errMsg.includes('closed') || errMsg.includes('timeout') || errMsg.includes('not connected');
-    const statusCode = isConnectionError ? 503 : 500;
-    res.status(statusCode).json({ error: errMsg, connectionError: isConnectionError });
+    const statusCode = isForbidden ? 403 : isConnectionError ? 503 : 500;
+    res.status(statusCode).json({ error: errMsg, isForbidden, connectionError: isConnectionError });
   }
 };
 
@@ -90,7 +102,18 @@ exports.handleSendMedia = async (req, res) => {
       return res.status(400).json({ error: 'WhatsApp belum terhubung atau sesi terputus.' });
     }
 
-    let targetJid = to.includes('@s.whatsapp.net') || to.includes('@g.us') ? to : `${to}@s.whatsapp.net`;
+    let targetJid = String(to || '').trim();
+    if (targetJid.includes('@g.us')) {
+      // Group JID
+    } else {
+      let cleanDigits = targetJid.split('@')[0].replace(/\D/g, '');
+      if (cleanDigits.startsWith('0')) {
+        cleanDigits = '62' + cleanDigits.substring(1);
+      } else if (cleanDigits.startsWith('8')) {
+        cleanDigits = '62' + cleanDigits;
+      }
+      targetJid = `${cleanDigits}@s.whatsapp.net`;
+    }
     const cleanPhone = '+' + targetJid.split('@')[0];
     const buffer = Buffer.from(base64Data, 'base64');
     
@@ -167,3 +190,46 @@ exports.handleUpdateBotSettings = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// ============================================================================
+// COMPLAINT TICKET CONTROLLER
+// ============================================================================
+const complaintService = require('../services/complaintService');
+
+exports.handleGetComplaints = (req, res) => {
+  try {
+    const filters = {
+      status: req.query.status,
+      bidang: req.query.bidang,
+      prioritas: req.query.prioritas,
+      search: req.query.search
+    };
+    const list = complaintService.getAllComplaints(filters);
+    const stats = complaintService.getStats();
+    res.json({ success: true, total: list.length, stats, data: list });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+exports.handleGetComplaintDetail = (req, res) => {
+  try {
+    const item = complaintService.getComplaintById(req.params.id);
+    if (!item) return res.status(404).json({ success: false, error: 'Pengaduan tidak ditemukan.' });
+    res.json({ success: true, data: item });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+exports.handleUpdateComplaintStatus = (req, res) => {
+  try {
+    const { status, catatanPetugas, assignedOperator } = req.body;
+    const updated = complaintService.updateComplaintStatus(req.params.id, status, catatanPetugas, assignedOperator);
+    if (!updated) return res.status(404).json({ success: false, error: 'Pengaduan tidak ditemukan.' });
+    res.json({ success: true, data: updated });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+

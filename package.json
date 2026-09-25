@@ -6,7 +6,7 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "dev": "node --require ./patch.js node_modules/next/dist/bin/next dev",
+    "dev": "node --require ./patch.js node_modules/next/dist/bin/next dev -H 0.0.0.0",
     "build": "node --require ./patch.js node_modules/next/dist/bin/next build",
     "prestart": "node scripts/ensure-build.js",
     "start": "node scripts/ensure-build.js && node --require ./patch.js node_modules/next/dist/bin/next start -H 0.0.0.0",

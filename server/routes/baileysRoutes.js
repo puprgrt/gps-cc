@@ -18,4 +18,9 @@ router.get('/logs', baileysController.handleGetLogs);
 router.get('/bot-settings', baileysController.handleGetBotSettings);
 router.post('/bot-settings', baileysController.handleUpdateBotSettings);
 
+// Tiket Pengaduan Warga & Monitoring
+router.get('/complaints', baileysController.handleGetComplaints);
+router.get('/complaints/:id', baileysController.handleGetComplaintDetail);
+router.patch('/complaints/:id', baileysController.handleUpdateComplaintStatus);
+
 module.exports = router;

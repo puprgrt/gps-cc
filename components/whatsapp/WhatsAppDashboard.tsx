@@ -140,9 +140,13 @@ export function WhatsAppDashboard() {
     regenerateBaileysQr,
     confirmAuthentication,
     disconnect,
-    updateConversationStatus
+    updateConversationStatus,
+    startNewConversation
   } = useWhatsApp();
 
+  const [showNewChatModal, setShowNewChatModal] = useState(false);
+  const [newChatPhone, setNewChatPhone] = useState('');
+  const [newChatName, setNewChatName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<'all' | 'pending' | 'ai' | 'operator' | 'resolved'>('all');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -481,7 +485,16 @@ export function WhatsAppDashboard() {
                 <MessageSquare className="w-4 h-4 text-emerald-400" />
                 DAFTAR PERCAKAPAN
               </h2>
-              <div className="flex items-center gap-1 text-slate-400">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowNewChatModal(true)}
+                  className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-emerald-950/40 border border-emerald-400/30 active:scale-95"
+                  title="Mulai Kirim Pesan ke Nomor Baru"
+                >
+                  <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                  <span>+ Chat Baru</span>
+                </button>
                 <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 font-mono font-bold">
                   {conversations.length}
                 </span>
@@ -1116,6 +1129,12 @@ export function WhatsAppDashboard() {
                     <textarea
                       value={messageText}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessageText(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendMessage(e);
+                        }
+                      }}
                       placeholder="Ketik balasan untuk pemohon... (Draf AI otomatis tersedia)"
                       rows={2}
                       className="w-full bg-[#0B0F19]/90 border border-white/15 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/60 transition-all resize-none shadow-inner leading-relaxed"
@@ -1318,8 +1337,8 @@ export function WhatsAppDashboard() {
                 {/* Donut Stats */}
                 <div className="glass-card p-3.5 rounded-xl border border-white/10 shadow-card flex flex-col justify-between">
                   <h4 className="text-[11px] font-bold text-white uppercase tracking-wider mb-2">STATISTIK HARI INI</h4>
-                  <div className="h-28 w-full relative flex items-center justify-center">
-                    <ResponsiveContainer width="100%" height="100%">
+                  <div className="h-28 w-full relative flex items-center justify-center min-w-0 min-h-0">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                       <PieChart>
                         <Pie data={donutData} innerRadius={28} outerRadius={42} paddingAngle={3} dataKey="value">
                           {donutData.map((entry, index) => (
@@ -1497,6 +1516,83 @@ export function WhatsAppDashboard() {
       </div>
       )}
 
+      {/* MODAL MULAI CHAT BARU */}
+      {showNewChatModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="glass-panel p-6 rounded-2xl border border-white/20 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-emerald-400" />
+                Mulai Kirim Pesan ke Nomor Baru
+              </h3>
+              <button
+                onClick={() => setShowNewChatModal(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg bg-white/5 hover:bg-white/10"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              if (!newChatPhone.trim()) return;
+              startNewConversation(newChatPhone, newChatName);
+              setShowNewChatModal(false);
+              setNewChatPhone('');
+              setNewChatName('');
+              setMobileTab('chat');
+            }} className="space-y-3.5">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-300 mb-1">
+                  Nomor WhatsApp Tujuan *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={newChatPhone}
+                  onChange={(e) => setNewChatPhone(e.target.value)}
+                  placeholder="Contoh: 081234567890 atau 6281234567890"
+                  className="w-full bg-slate-950 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                />
+                <span className="text-[10px] text-slate-400 mt-1 block">
+                  Bisa dimulai dari 08... atau 628... (otomatis dinormalisasi).
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-300 mb-1">
+                  Nama Kontak (Opsional)
+                </label>
+                <input
+                  type="text"
+                  value={newChatName}
+                  onChange={(e) => setNewChatName(e.target.value)}
+                  placeholder="Contoh: Bapak Irvan / Pemohon PBG"
+                  className="w-full bg-slate-950 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowNewChatModal(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-white/5 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Mulai Percakapan</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* QR CODE POPUP MODAL */}
       <WhatsAppQrModal />
     </div>
@@ -1535,8 +1631,8 @@ function KpiCard({
         <span className="text-[9px] text-slate-500">dari kemarin</span>
       </div>
 
-      <div className="h-8 mt-2 -mx-2 -mb-2">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="h-8 mt-2 -mx-2 -mb-2 min-w-0 min-h-0">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <AreaChart data={chartData}>
             <defs>
               <linearGradient id={`kpi-grad-${sanitizedId}`} x1="0" y1="0" x2="0" y2="1">

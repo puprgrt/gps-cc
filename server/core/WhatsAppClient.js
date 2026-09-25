@@ -361,6 +361,16 @@ class WhatsAppClient {
         return result;
       } catch (err) {
         const errMsg = err.message || String(err);
+        const isForbidden = err.data === 403 || errMsg.includes('forbidden') || errMsg.includes('not-authorized');
+        if (isForbidden) {
+          const groupMsg = targetJid.includes('@g.us') 
+            ? 'Akun WhatsApp Anda bukan anggota grup ini atau grup tersebut dikunci (Hanya Admin yang dapat mengirim pesan).' 
+            : 'Akses ditolak oleh WhatsApp (403 Forbidden).';
+          console.warn(`[PUPR Baileys] Gagal mengirim pesan ke ${targetJid}: ${groupMsg}`);
+          this.addLog('SEND_FORBIDDEN', `Pesan ke ${targetJid} ditolak: ${groupMsg}`, 'error');
+          throw new Error(groupMsg);
+        }
+
         const isConnectionError = 
           errMsg.includes('connection closed') ||
           errMsg.includes('closed') ||
@@ -403,6 +413,8 @@ class WhatsAppClient {
       let cleanPhone = targetJid.replace(/\D/g, '');
       if (cleanPhone.startsWith('0')) {
         cleanPhone = '62' + cleanPhone.substring(1);
+      } else if (cleanPhone.startsWith('8')) {
+        cleanPhone = '62' + cleanPhone;
       }
       targetJid = `${cleanPhone}@s.whatsapp.net`;
     } else if (targetJid.includes('+')) {

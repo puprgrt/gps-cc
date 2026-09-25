@@ -1,4 +1,4 @@
-import { DashboardMetrics, LayananKinerja, ComplaintData } from '../domain/models';
+import { DashboardMetrics, LayananKinerja, ComplaintData, ComplaintTicket, ComplaintStats } from '../domain/models';
 import { supabase } from '../lib/supabase';
 
 export class ApiService {
@@ -15,6 +15,18 @@ export class ApiService {
       const liveConversations = convCount ?? 0;
       const liveMessages = msgCount ?? 0;
 
+      // Ambil jumlah pengaduan riil dari API pengaduan
+      let totalPengaduanCount = liveConversations;
+      try {
+        const res = await fetch('/api/pengaduan?limit=1');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.stats && typeof json.stats.total === 'number') {
+            totalPengaduanCount = json.stats.total;
+          }
+        }
+      } catch {}
+
       return {
         totalPermohonan: liveConversations,
         slaKepatuhan: liveConversations > 0 ? 94.5 : 0,
@@ -23,7 +35,7 @@ export class ApiService {
         tahunIni: liveConversations,
         persentasePenyelesaian: liveConversations > 0 ? 88.2 : 0,
         ikm: liveConversations > 0 ? 86.4 : 0,
-        totalPengaduan: liveConversations,
+        totalPengaduan: totalPengaduanCount,
         aiActivity: liveMessages,
       };
     } catch {
@@ -131,6 +143,86 @@ export class ApiService {
       { kategori: 'SLF', jumlah: 0 },
     ];
   }
+
+  static async getRecentComplaints(limit = 4): Promise<ComplaintTicket[]> {
+    try {
+      const res = await fetch(`/api/pengaduan?limit=${limit}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          return json.data;
+        }
+      }
+    } catch {
+      // Fallback
+    }
+    return [];
+  }
+
+  static async getAllComplaints(filters: {
+    status?: string;
+    bidang?: string;
+    prioritas?: string;
+    search?: string;
+  } = {}): Promise<{ complaints: ComplaintTicket[]; stats: ComplaintStats }> {
+    try {
+      const params = new URLSearchParams();
+      if (filters.status) params.set('status', filters.status);
+      if (filters.bidang) params.set('bidang', filters.bidang);
+      if (filters.prioritas) params.set('prioritas', filters.prioritas);
+      if (filters.search) params.set('search', filters.search);
+
+      const res = await fetch(`/api/pengaduan?${params.toString()}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success) {
+          return { complaints: json.data || [], stats: json.stats };
+        }
+      }
+    } catch {
+      // Fallback
+    }
+    return {
+      complaints: [],
+      stats: { total: 0, kritis: 0, tinggi: 0, normal: 0, pending: 0, diproses: 0, selesai: 0, byBidang: {} }
+    };
+  }
+
+  static async updateComplaintStatus(
+    id: string,
+    status: string,
+    catatanPetugas?: string,
+    notifyCitizen = false
+  ): Promise<boolean> {
+    try {
+      const res = await fetch(`/api/pengaduan/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, catatanPetugas, notifyCitizen })
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  static async createComplaint(
+    payload: Partial<ComplaintTicket>
+  ): Promise<{ success: boolean; data?: ComplaintTicket; error?: string }> {
+    try {
+      const res = await fetch('/api/pengaduan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      return json;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Gagal membuat tiket pengaduan.';
+      return { success: false, error: msg };
+    }
+  }
 }
+
 
 

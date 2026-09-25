@@ -43,4 +43,5 @@ export interface User {
 export * from './aiRouting';
 export * from './aiOrchestrator';
 export * from './whatsappIntegration';
+export * from './complaint';
 

@@ -141,7 +141,9 @@ export default function SPMSSettingsPage() {
 
   const handleCopyLink = () => {
     // Determine the base URL
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://gps-cc.garutkab.go.id';
+    const baseUrl = typeof window !== 'undefined' && !window.location.origin.includes('localhost')
+      ? window.location.origin 
+      : 'https://gps-cc.vercel.app';
     const surveyUrl = `${baseUrl}/spms/survei`;
     
     navigator.clipboard.writeText(surveyUrl);

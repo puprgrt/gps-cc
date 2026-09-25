@@ -6,6 +6,7 @@ const PUBLIC_API_ROUTES = [
   '/api/psic/webhook',
   '/api/psic/chatwoot',
   '/api/whatsapp/baileys',
+  '/api/pengaduan',
 ];
 
 function isPublicApiRoute(pathname: string): boolean {

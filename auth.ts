@@ -71,6 +71,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         ;(session as any).accessToken = token.accessToken
       }
       return session
+    },
+    async redirect({ url, baseUrl }) {
+      // Izinkan relative URL (contoh: "/" atau "/whatsapp") agar tetap berada di Host / IP yang sedang diakses di LAN
+      if (url.startsWith("/")) return url
+
+      // Jika URL memiliki origin atau hostname yang sama dengan baseUrl
+      try {
+        const urlObj = new URL(url)
+        const baseUrlObj = new URL(baseUrl)
+        if (urlObj.origin === baseUrlObj.origin || urlObj.host === baseUrlObj.host) {
+          return url
+        }
+      } catch {}
+
+      return baseUrl
     }
   },
   session: {

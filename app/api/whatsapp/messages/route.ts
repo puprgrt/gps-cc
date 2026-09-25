@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const BAILEYS_URL = process.env.BAILEYS_API_URL || 'http://localhost:3001';
+function getBaileysUrl(): string {
+  return (process.env.BAILEYS_API_URL || 'http://localhost:3001').replace(/\/$/, '');
+}
+
+function getBaileysApiKey(): string {
+  return String(process.env.BAILEYS_API_KEY || 'pupr-garut-baileys-key-2026').replace(/^["']|["']$/g, '').trim();
+}
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder_key';
 
@@ -9,9 +16,17 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function GET() {
   try {
+    const baileysUrl = getBaileysUrl();
+    const apiKey = getBaileysApiKey();
+
     // 1. Try fetching from Baileys Standalone Server
     try {
-      const res = await fetch(`${BAILEYS_URL}/api/conversations`, { cache: 'no-store' });
+      const res = await fetch(`${baileysUrl}/api/conversations`, {
+        headers: {
+          'x-baileys-api-key': apiKey,
+        },
+        cache: 'no-store'
+      });
       if (res.ok) {
         const data = await res.json();
         return NextResponse.json(data);
@@ -57,11 +72,17 @@ export async function GET() {
 }
 
 async function postToBaileysWithRetry(endpoint: string, payload: any, maxRetries = 2): Promise<{ ok: boolean; status: number; data: any; error?: string }> {
+  const baileysUrl = getBaileysUrl();
+  const apiKey = getBaileysApiKey();
+
   for (let i = 1; i <= maxRetries; i++) {
     try {
-      const res = await fetch(`${BAILEYS_URL}${endpoint}`, {
+      const res = await fetch(`${baileysUrl}${endpoint}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-baileys-api-key': apiKey,
+        },
         body: JSON.stringify(payload),
       });
 
@@ -95,9 +116,11 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { action, conversationId, text, sender, note, tag } = body;
+    const baileysUrl = getBaileysUrl();
+    const apiKey = getBaileysApiKey();
 
     if (action === 'send_message') {
-      const jid = conversationId.replace('conv-', '');
+      const jid = conversationId.replace(/^conv-/, '');
       const result = await postToBaileysWithRetry('/api/send-message', { to: jid, text, sender });
       if (!result.ok) {
         console.warn('[API send_message] Baileys returned error:', result.error);
@@ -108,7 +131,7 @@ export async function POST(req: NextRequest) {
 
     if (action === 'send_media') {
       const { base64Data, caption, mimetype, fileName, type } = body;
-      const jid = conversationId.replace('conv-', '');
+      const jid = conversationId.replace(/^conv-/, '');
       const result = await postToBaileysWithRetry('/api/send-media', { to: jid, base64Data, caption, mimetype, fileName, type });
       if (!result.ok) {
         console.warn('[API send_media] Baileys returned error:', result.error);
@@ -119,9 +142,12 @@ export async function POST(req: NextRequest) {
 
     if (action === 'add_note') {
       if (conversationId && note) {
-        await fetch(`${BAILEYS_URL}/api/add-note`, {
+        await fetch(`${baileysUrl}/api/add-note`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-baileys-api-key': apiKey,
+          },
           body: JSON.stringify({ conversationId, note }),
         }).catch(() => null);
         return NextResponse.json({ success: true });
@@ -130,9 +156,12 @@ export async function POST(req: NextRequest) {
 
     if (action === 'add_tag') {
       if (conversationId && tag) {
-        await fetch(`${BAILEYS_URL}/api/add-tag`, {
+        await fetch(`${baileysUrl}/api/add-tag`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-baileys-api-key': apiKey,
+          },
           body: JSON.stringify({ conversationId, tag }),
         }).catch(() => null);
         return NextResponse.json({ success: true });

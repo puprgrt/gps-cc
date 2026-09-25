@@ -5,6 +5,7 @@ const { downloadMediaMessage, normalizeMessageContent, getContentType } = requir
 const supabaseService = require('../services/supabaseService');
 const localDb = require('../services/localDbService'); // Keep for logs if needed
 const aiOrchestrator = require('./AIOrchestrator');
+const complaintService = require('../services/complaintService');
 
 class MessageHandler {
   constructor(client) {
@@ -61,8 +62,19 @@ class MessageHandler {
 
       try {
         const senderJid = msg.key.remoteJid;
+        // Ignore WhatsApp Status / Broadcast / Newsletter / Channel updates
+        if (!senderJid || senderJid === 'status@broadcast' || senderJid.includes('@broadcast') || senderJid.includes('@newsletter') || senderJid.includes('@g.us')) {
+          continue;
+        }
+
         const pushName = msg.pushName || 'Warga PUPR';
-        const cleanPhone = '+' + senderJid.split('@')[0];
+        let rawDigits = senderJid.split('@')[0].replace(/\D/g, '');
+        if (rawDigits.startsWith('0')) {
+          rawDigits = '62' + rawDigits.substring(1);
+        } else if (rawDigits.startsWith('8')) {
+          rawDigits = '62' + rawDigits;
+        }
+        const cleanPhone = rawDigits || senderJid.split('@')[0];
         
         const { text, type, metadata } = this.extractMessageContent(msg);
 
@@ -382,8 +394,24 @@ class MessageHandler {
         await this.sendPuriReply(senderJid, replyText, false);
         await supabaseService.saveMessage(convId, botMsgObj, { name: pushName, phoneNumber: cleanPhone });
 
+        // --- Otomatis Tangkap Ringkasan Laporan Pengaduan & Catat Tiket Pengaduan ---
+        const complaintTicket = await complaintService.handleAutoIngest(
+          replyText,
+          messageText,
+          { name: pushName, phoneNumber: cleanPhone, senderJid, conversationId: convId },
+          orchestratorResult.routingDecision
+        );
+
+        if (complaintTicket) {
+          this.client.addLog(
+            'COMPLAINT_REGISTERED',
+            `Pengaduan resmi [${complaintTicket.nomorTiket}] (${complaintTicket.prioritas}) tercatat untuk ${pushName}: ${complaintTicket.judul.slice(0, 60)}`
+          );
+        }
+
         // Update conversation status & 6-Tier PURI Routing metadata
         const shouldEscalate = 
+          complaintTicket !== null ||
           orchestratorResult.routingDecision?.isEmergency === true ||
           (orchestratorResult.confidenceScore && orchestratorResult.confidenceScore < 85) ||
           orchestratorResult.routingDecision?.intent === 'PENGADUAN';
@@ -392,10 +420,14 @@ class MessageHandler {
           convId,
           shouldEscalate ? 'pending' : 'bot_handling',
           {
-            bidang: orchestratorResult.routingDecision?.primaryBidang || 'SEKRETARIAT',
-            prioritas: orchestratorResult.routingDecision?.prioritas || 'NORMAL',
+            category: complaintTicket ? 'PENGADUAN' : 'UMUM',
+            bidang: complaintTicket ? complaintTicket.bidang : (orchestratorResult.routingDecision?.primaryBidang || 'SEKRETARIAT'),
+            prioritas: complaintTicket ? complaintTicket.prioritas : (orchestratorResult.routingDecision?.prioritas || 'NORMAL'),
+            layanan: complaintTicket ? 'Pengaduan Masyarakat' : 'Informasi Umum',
             assigned_operator: orchestratorResult.routingDecision?.assignedOperatorId || 'OP-SEKRETARIAT-01',
-            smart_labels: orchestratorResult.routingDecision?.smartLabels || ['Informasi']
+            smart_labels: complaintTicket 
+              ? ['Pengaduan', complaintTicket.kategori, complaintTicket.bidang] 
+              : (orchestratorResult.routingDecision?.smartLabels || ['Informasi'])
           }
         );
 

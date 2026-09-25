@@ -19,6 +19,7 @@ interface WhatsAppState {
   
   setActiveTab: (tab: string) => void;
   setActiveConversationId: (id: string | null) => void;
+  startNewConversation: (phone: string, name?: string) => string;
   setShowQrModal: (show: boolean) => void;
   setPairingMode: (mode: 'qr' | 'pairing') => void;
   fetchData: (silent?: boolean) => Promise<void>;
@@ -49,6 +50,39 @@ export const useWhatsAppStore = create<WhatsAppState>((set, get) => ({
   
   setActiveTab: (tab) => set({ activeTab: tab }),
   setActiveConversationId: (id) => set({ activeConversationId: id }),
+  
+  startNewConversation: (phone, name) => {
+    let clean = phone.replace(/\D/g, '');
+    if (clean.startsWith('0')) clean = '62' + clean.substring(1);
+    else if (clean.startsWith('8')) clean = '62' + clean;
+
+    const convId = `conv-${clean}@s.whatsapp.net`;
+    const contactName = name?.trim() || `+${clean}`;
+
+    const existing = get().conversations.find((c) => c.id === convId);
+    if (!existing) {
+      const newConv: WhatsAppConversation = {
+        id: convId,
+        contactName: contactName,
+        contactNumber: `+${clean}`,
+        lastMessage: 'Memulai obrolan baru...',
+        timestamp: new Date(),
+        unreadCount: 0,
+        status: 'active',
+        tags: ['Baru'],
+        category: 'Umum',
+        messages: [],
+      };
+      set((state) => ({
+        conversations: [newConv, ...state.conversations],
+        activeConversationId: convId,
+      }));
+    } else {
+      set({ activeConversationId: convId });
+    }
+    return convId;
+  },
+
   setShowQrModal: (show) => set({ showQrModal: show }),
   setPairingMode: (mode) => set({ pairingMode: mode }),
 
@@ -208,8 +242,10 @@ export const useWhatsAppStore = create<WhatsAppState>((set, get) => ({
   updateConversationStatus: async (conversationId, status) => {
     // Otomatis kirim survei SKM jika status diubah menjadi 'resolved' (selesai)
     if (status === 'resolved') {
-      const origin = typeof window !== 'undefined' ? window.location.origin : 'https://gps-cc.garutkab.go.id';
-      const surveyLink = `${origin}/spms/survei?cid=${conversationId}`;
+      const origin = typeof window !== 'undefined' && !window.location.origin.includes('localhost') 
+        ? window.location.origin 
+        : 'https://gps-cc.vercel.app';
+      const surveyLink = `${origin}/spms/survei`;
       const messageText = `Halo! Laporan/layanan Anda telah kami selesaikan. Sebagai upaya perbaikan layanan DPUPR Kabupaten Garut, mohon kesediaan Bapak/Ibu untuk mengisi Survei Kepuasan Masyarakat (SKM) melalui tautan berikut:\n\n${surveyLink}\n\nTerima kasih atas partisipasi Anda!`;
       
       // Kirim pesan dari bot tanpa memblokir pembaruan status

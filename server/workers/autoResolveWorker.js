@@ -63,7 +63,7 @@ async function checkAndAutoResolve() {
       }
 
       // 3. Send automated WhatsApp message with SKM link
-      const surveyLink = `${publicUrl}/spms/survei?cid=${conv.id}`;
+      const surveyLink = process.env.SURVEY_URL || 'https://gps-cc.vercel.app/spms/survei';
       const messageText = `Halo! Laporan/layanan Anda telah kami tutup secara otomatis karena tidak ada aktivitas selama 6 jam terakhir.\n\nSebagai upaya perbaikan layanan DPUPR Kabupaten Garut, mohon kesediaan Bapak/Ibu untuk mengisi Survei Kepuasan Masyarakat (SKM) melalui tautan berikut:\n\n${surveyLink}\n\nTerima kasih atas partisipasi Anda!`;
 
       // Try sending the message using WhatsAppClient (bot)

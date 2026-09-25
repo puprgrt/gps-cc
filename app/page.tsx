@@ -1,13 +1,15 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { MetricCard } from '@/components/dashboard/MetricCard';
 import { AIAssistantWidget } from '@/components/dashboard/AIAssistantWidget';
 import { 
   Map as MapIcon, FileCheck, Droplet, Waves, 
   MapPin, FileSignature, Building, FileBadge,
   Calendar, CheckCircle, Clock, AlertCircle,
-  MessageSquare, UserCheck, Search, Zap, Check, ChevronDown, Sparkles, X, Focus, MessageCircle, Bot
+  MessageSquare, UserCheck, Search, Zap, Check, ChevronDown, Sparkles, X, Focus, MessageCircle, Bot,
+  ExternalLink, Phone, ShieldAlert
 } from 'lucide-react';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -15,6 +17,7 @@ import {
 } from 'recharts';
 
 import { useDashboard } from '@/hooks/useDashboard';
+import type { ComplaintTicket } from '@/domain/models';
 
 const trendData = [
   { name: 'Des 2023', Masuk: 2000, Selesai: 1500 },
@@ -45,7 +48,7 @@ const slaData = [
 ];
 
 export default function Dashboard() {
-  const { metrics, layanan, isLiveSyncing, lastUpdated, refetch } = useDashboard();
+  const { metrics, layanan, recentComplaints, isLiveSyncing, lastUpdated, refetch } = useDashboard();
 
   // Helper untuk mendapatkan data per layanan
   const getLayananData = (nama: string) => {
@@ -409,31 +412,38 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Pengaduan Terkini */}
+        {/* Pengaduan Terkini (Data Realtime dari WA BOT) */}
         <div className="lg:col-span-3 glass-card p-5 flex flex-col relative overflow-hidden">
           <h2 className="text-xs font-bold text-slate-300 mb-4 tracking-wider uppercase">PENGADUAN TERKINI</h2>
           <div className="flex-1 flex flex-col gap-4 overflow-hidden relative z-10">
-             {[
-               { title: 'Drainase Tersumbat di Jl. Ahmad Yani', loc: 'Tarogong Kidul', time: '10:21', color: 'bg-orange-500' },
-               { title: 'Jalan Rusak di Kp. Sukaluyu', loc: 'Samarang', time: '10:15', color: 'bg-orange-500' },
-               { title: 'Lampu Jalan Mati di Jl. Raya Leles', loc: 'Leles', time: '10:08', color: 'bg-red-500' },
-               { title: 'Sampah Menumpuk di Pasar Ciawitali', loc: 'Garut Kota', time: '10:02', color: 'bg-red-500' },
-             ].map((item, i) => (
-                <div key={i} className="flex gap-3 items-start">
-                   <div className={`w-6 h-6 rounded-full ${item.color} flex items-center justify-center shrink-0 mt-0.5`}>
+             {recentComplaints.length > 0 ? recentComplaints.slice(0, 4).map((item, i) => {
+               const priorityColor = item.prioritas === 'KRITIS' ? 'bg-red-500' : item.prioritas === 'TINGGI' ? 'bg-orange-500' : 'bg-blue-500';
+               const timeStr = new Date(item.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+               return (
+                <div key={item.id || i} className="flex gap-3 items-start">
+                   <div className={`w-6 h-6 rounded-full ${priorityColor} flex items-center justify-center shrink-0 mt-0.5`}>
                       <AlertCircle className="w-3 h-3 text-white" />
                    </div>
                    <div className="flex flex-col flex-1">
-                      <span className="text-[11px] text-white font-medium leading-tight">{item.title}</span>
-                      <span className="text-[9px] text-slate-400">{item.loc}</span>
+                      <span className="text-[11px] text-white font-medium leading-tight">{item.judul.slice(0, 60)}</span>
+                      <span className="text-[9px] text-slate-400">{item.kecamatan || item.lokasi?.slice(0, 30)}</span>
                    </div>
-                   <span className="text-[10px] text-slate-500 shrink-0">{item.time}</span>
+                   <div className="flex flex-col items-end shrink-0">
+                      <span className="text-[10px] text-slate-500">{timeStr}</span>
+                      <span className={`text-[8px] font-bold uppercase mt-0.5 px-1 rounded ${item.prioritas === 'KRITIS' ? 'bg-red-500/20 text-red-400' : item.prioritas === 'TINGGI' ? 'bg-orange-500/20 text-orange-400' : 'bg-blue-500/20 text-blue-400'}`}>{item.prioritas}</span>
+                   </div>
                 </div>
-             ))}
+               );
+             }) : (
+               <div className="flex flex-col items-center justify-center gap-2 py-6 text-center">
+                 <AlertCircle className="w-8 h-8 text-slate-600" />
+                 <span className="text-[11px] text-slate-500">Belum ada pengaduan masuk.</span>
+               </div>
+             )}
           </div>
-          <button className="w-full py-2 bg-white/5 hover:bg-white/10 text-xs text-slate-300 font-medium rounded-lg mt-3 transition-colors">
-            Lihat Semua Pengaduan
-          </button>
+          <Link href="/pengaduan" className="w-full py-2 bg-white/5 hover:bg-white/10 text-xs text-slate-300 font-medium rounded-lg mt-3 transition-colors text-center block">
+            Lihat Semua Pengaduan →
+          </Link>
           
           {/* AI Insight Floating Box inside Pengaduan (as per design) */}
           <div className="absolute top-12 -left-32 w-64 bg-blue-900/90 backdrop-blur-md border border-blue-400/30 rounded-xl p-3 shadow-2xl z-20 transform translate-x-12 opacity-90 hidden 2xl:block">
