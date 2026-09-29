@@ -75,6 +75,21 @@ export async function PATCH(
     if (body.assignedOperator !== undefined) {
       item.assignedOperator = body.assignedOperator;
     }
+    if (body.tindakLanjut) {
+      item.tindakLanjut = {
+        jawabanPetugas: body.tindakLanjut.jawabanPetugas || body.catatanPetugas || 'Laporan telah ditindaklanjuti dan diselesaikan.',
+        namaPetugas: body.tindakLanjut.namaPetugas || body.assignedOperator || 'Staf Dinas PUPR',
+        nomorKontakPetugas: body.tindakLanjut.nomorKontakPetugas || '',
+        waktuSelesai: body.tindakLanjut.waktuSelesai || new Date().toISOString(),
+        buktiLampiran: body.tindakLanjut.buktiLampiran || body.buktiLampiran || [],
+        channel: body.tindakLanjut.channel || 'COMMAND_CENTER'
+      };
+      if (body.tindakLanjut.buktiLampiran && Array.isArray(body.tindakLanjut.buktiLampiran)) {
+        item.buktiLampiran = [...(item.buktiLampiran || []), ...body.tindakLanjut.buktiLampiran];
+      }
+    } else if (body.buktiLampiran && Array.isArray(body.buktiLampiran)) {
+      item.buktiLampiran = [...(item.buktiLampiran || []), ...body.buktiLampiran];
+    }
     item.updatedAt = new Date().toISOString();
 
     complaints[index] = item;

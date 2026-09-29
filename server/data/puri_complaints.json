@@ -1,5 +1,76 @@
 [
   {
+    "id": "tkt-1790645446756-685",
+    "nomorTiket": "TKT-20260929-007",
+    "conversationId": "conv-25907259568183@lid",
+    "pelapor": "Lie",
+    "nomorKontak": "+25907259568183",
+    "lokasi": "Kabupaten Garut",
+    "kecamatan": "Garut Kota",
+    "judul": "Desa: cihikeu\nKec: Bungbulang\nNama jalan: Kp, tegal panjang\nPatokan: ruas gang jalan rancapari",
+    "deskripsi": "Desa: cihikeu\nKec: Bungbulang\nNama jalan: Kp, tegal panjang\nPatokan: ruas gang jalan rancapari",
+    "bidang": "SEKRETARIAT",
+    "bidangLabel": "Sekretariat",
+    "kategori": "Kerusakan Jalan",
+    "prioritas": "TINGGI",
+    "status": "SELESAI",
+    "langkahPenanganan": "Laporan diprioritaskan dan diteruskan kepada Tim Teknis terkait untuk peninjauan lokasi.",
+    "ringkasanBot": "🏛️ *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\nTerima kasih banyak atas kelengkapan datanya, Bapak Lie! 🙏😊\n\nInformasi detail lokasi telah PURI gabungkan ke dalam berkas pengaduan resmi. Berikut adalah ringkasan akhir dari laporan pengaduan yang telah difinalisasi:\n\n────────────────────────\n*REKAPITULASI LAPORAN PENGADUAN RESMI*\n────────────────────────\n- *Nomor Tiket Laporan:* #PURI-BM-20260929-001\n- *Nama Pelapor:* Bapak Lie\n- *Bidang Terkait:* Bidang Bina Marga\n- *Kategori:* Pengawasan Pelaksanaan Infrastruktur Jalan\n- *Tingkat Prioritas:* *Tinggi* (Verifikasi Dokumen & Pengecekan Lapangan)\n\n*Detail Lokasi:*\n- *Kecamatan:* Bungbulang\n- *Desa:* Cihikeu\n- *Nama Jalan / Kampung:* Kp. Tegal Panjang\n- *Patokan:* Ruas gang jalan Rancapari\n\n*Substansi Pengaduan:*\n1. Dugaan pergeseran / ketidaksesuaian titik fisik pengerjaan pengaspalan dengan titik koordinat perencanaan/RAB (perbedaan lokasi pengerjaan aktual vs dokumen pelaksanaan anggaran).\n2. Permohonan klarifikasi mengenai asal-usul pengajuan/usulan kegiatan pengaspalan tersebut (Musrenbang, Pokir DPRD, atau Program Prioritas Dinas).\n3. Terlampir foto kondisi fisik jalan, titik koordinat, dan perbandingan lokasi di lapangan.\n────────────────────────\n\n*Tindak Lanjut:*\nLaporan ini telah PURI teruskan secara resmi kepada Tim Pengawas Teknis dan Pejabat Pembuat Komitmen (PPK) *Bidang Bina Marga Dinas PUPR Kabupaten Garut* untuk diteliti dokumen kontraknya serta dilakukan verifikasi ke lapangan.\n\nTerima kasih banyak atas keaktifan Bapak Lie dalam mengawasi transparansi dan ketepatan pembangunan infrastruktur di Kabupaten Garut. Apabila ada informasi lanjutan dari tim teknis di lapangan, PURI akan segera mengabarkannya. \n\nAda hal lain yang dapat PURI bantu lagi hari ini, Pak? 🙏😊",
+    "assignedOperator": "OP-BINA_MARGA-01",
+    "catatanPetugas": "Pekerjaan penutupan lubang aspal telah selesai dilakukan oleh TRC Bina Marga.",
+    "createdAt": "2026-09-29T01:30:46.756Z",
+    "updatedAt": "2026-09-29T02:39:58.807Z",
+    "source": "WHATSAPP_BOT",
+    "tindakLanjut": {
+      "jawabanPetugas": "Pekerjaan penutupan lubang aspal telah selesai dilakukan oleh TRC Bina Marga.",
+      "namaPetugas": "Ir. Asep Rustandi (TRC)",
+      "nomorKontakPetugas": "6281223456701",
+      "waktuSelesai": "2026-09-29T02:39:58.808Z",
+      "buktiLampiran": [
+        {
+          "type": "image",
+          "url": "/uploads/complaints/test-bukti.jpg",
+          "fileName": "Foto_Pekerjaan_Selesai.jpg",
+          "mimetype": "image/jpeg",
+          "uploadedAt": "2026-09-29T02:39:58.807Z"
+        }
+      ],
+      "channel": "WHATSAPP_BOT"
+    },
+    "buktiLampiran": [
+      {
+        "type": "image",
+        "url": "/uploads/complaints/test-bukti.jpg",
+        "fileName": "Foto_Pekerjaan_Selesai.jpg",
+        "mimetype": "image/jpeg",
+        "uploadedAt": "2026-09-29T02:39:58.807Z"
+      }
+    ]
+  },
+  {
+    "id": "tkt-1790644963616-663",
+    "nomorTiket": "TKT-20260929-006",
+    "conversationId": "conv-25907259568183@lid",
+    "pelapor": "Lie",
+    "nomorKontak": "+25907259568183",
+    "lokasi": "Kabupaten Garut",
+    "kecamatan": "Garut Kota",
+    "judul": "[Gambar]",
+    "deskripsi": "[Gambar]",
+    "bidang": "SEKRETARIAT",
+    "bidangLabel": "Sekretariat",
+    "kategori": "Infrastruktur Publik",
+    "prioritas": "TINGGI",
+    "status": "PENDING",
+    "langkahPenanganan": "Laporan diprioritaskan dan diteruskan kepada Tim Teknis terkait untuk peninjauan lokasi.",
+    "ringkasanBot": "🏛️ *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\nHatur nuhun pisan, Bapak Lie! 🙏😊\n\nData lokasi serta foto Papan Informasi Proyek (SPK) yang Bapak kirimkan sudah PURI terima dengan sangat jelas dan lengkap. Foto papan proyek tersebut sangat membantu PURI dalam mengidentifikasi detail paket pekerjaan dan Pejabat Pembuat Komitmen (PPK) yang bertanggung jawab.\n\nBerdasarkan seluruh data yang telah Bapak sampaikan, PURI telah menyusun *Rekapitulasi Laporan Pengaduan Resmi* berikut ini:\n\n────────────────────────\n*REKAPITULASI LAPORAN PENGADUAN MASYARAKAT*\n*Nomor Registrasi Internal:* _PURI/BM/2026/09/0042_\n────────────────────────\n\n*1. Data Pelapor:*\n- *Nama Pelapor:* Bapak Lie\n- *Kategori:* Pengawasan Infrastruktur Jalan (Bidang Bina Marga)\n- *Tingkat Prioritas:* Tinggi (Memerlukan Verifikasi Kesesuaian Fisik & RAB)\n\n*2. Detail Kegiatan Pekerjaan (Sesuai Papan SPK):*\n- *Nomor SPK:* 602.2/68/PPK-2/RKN/DAU/PUPR/2026\n- *Tanggal SPK:* 1 September 2026\n- *Nama Pekerjaan:* Rekonstruksi Jalan Desa Kp. Tegal Panjang RT. 004 RW. 007 Ds. Cihikeu Kec. Bungbulang\n- *Nilai Pekerjaan:* Rp 191.717.900,-\n- *Sumber Dana:* APBD Kab. Garut (DAU 2026)\n- *Penyedia Jasa (Kontraktor):* CV. RAJAWALI\n\n*3. Detail Lokasi Lapangan:*\n- *Kecamatan:* Bungbulang\n- *Desa:* Cihikeu\n- *Kampung/Jalan:* Kp. Tegal Panjang (RT 004 / RW 007)\n- *Patokan Lapangan:* Ruas gang jalan Rancapari\n\n*4. Poin Utama Pengaduan & Klarifikasi:*\n- *Dugaan Pergeseran Titik Lokasi:* Pelaksanaan pengerjaan fisik pengaspalan di lapangan disinyalir bergeser/tidak sesuai dengan titik koordinat perencanaan (RAB) yang disepakati.\n- *Permohonan Evaluasi Lapangan:* Memohon Pejabat Pembuat Komitmen (PPK-2) dan Tim Pengawas Bidang Bina Marga untuk melakukan pengecekan ulang ke lokasi guna mencocokkan kondisi aktual dengan gambar kerja/DED.\n- *Klarifikasi Usulan:* Permohonan penjelasan mengenai dasar pengusulan dan alokasi prioritas pengerjaan ruas jalan tersebut.\n────────────────────────\n\n*Tindak Lanjut & Langkah Selanjutnya:*\nLaporan ini telah PURI input ke dalam sistem inventarisasi pengaduan publik Dinas PUPR Kabupaten Garut dan diteruskan kepada:\n1. *Pejabat Pembuat Komitmen (PPK-2)* Bidang Bina Marga\n2. *Tim Pengawas Wilayah/Kecamatan Bungbulang*\n\nTim teknis akan mempelajari bukti foto lokasi dan papan proyek yang Bapak kirimkan untuk ditindaklanjuti sesuai prosedur pengawasan konstruksi.\n\nPURI mengucapkan terima kasih yang sebesar-besarnya atas kepedulian dan peran aktif Bapak Lie dalam mengawasi pembangunan infrastruktur di Kabupaten Garut agar tepat sasaran, berkualitas, dan transparan. 🙏😊\n\nSemoga informasi ini bermanfaat. Apabila ada hal lain yang ingin ditanyakan atau ditambahkan, silakan sampaikan kapan saja. PURI siap membantu dengan senang hati! ✨",
+    "assignedOperator": "OP-SEKRETARIAT-01",
+    "catatanPetugas": "Diteruskan otomatis dari Ringkasan Laporan AI PURI ke TRC Bidang.",
+    "createdAt": "2026-09-29T01:22:43.616Z",
+    "updatedAt": "2026-09-29T01:30:52.599Z",
+    "source": "WHATSAPP_BOT"
+  },
+  {
     "id": "tkt-1790157421200-315",
     "nomorTiket": "TKT-20260923-001",
     "conversationId": "conv-225911119020165@lid",

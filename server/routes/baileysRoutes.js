@@ -22,5 +22,12 @@ router.post('/bot-settings', baileysController.handleUpdateBotSettings);
 router.get('/complaints', baileysController.handleGetComplaints);
 router.get('/complaints/:id', baileysController.handleGetComplaintDetail);
 router.patch('/complaints/:id', baileysController.handleUpdateComplaintStatus);
+router.post('/complaints/:id/resolve', baileysController.handleRecordComplaintResolution);
+
+// Pengaturan Nomor WA Bidang & Forwarding Disposisi
+router.get('/bidang-contacts', baileysController.handleGetBidangContacts);
+router.post('/bidang-contacts', baileysController.handleUpdateBidangContacts);
+router.post('/forward-bidang', baileysController.handleForwardBidang);
 
 module.exports = router;
+

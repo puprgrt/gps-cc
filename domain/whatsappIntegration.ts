@@ -164,3 +164,87 @@ export interface IntegrationSummaryOverview {
   isChatwootConnected: boolean;
   isTelegramBridgeActive: boolean;
 }
+
+/**
+ * ============================================================================
+ * BIDANG WHATSAPP CONTACT & FORWARDING DISPATCH DOMAIN MODELS
+ * 7 Bidang Resmi Dinas PUPR Kabupaten Garut
+ * ============================================================================
+ */
+
+import type { BidangPUPR } from './aiRouting';
+
+export interface BidangWhatsAppContact {
+  bidang: BidangPUPR;
+  namaBidang: string;
+  nomorWa: string;              // e.g. "6281223456701"
+  namaPejabat: string;          // e.g. "Koordinator TRC Bina Marga"
+  jabatan: string;              // e.g. "Penata Kelola Jalan & Jembatan"
+  email?: string;
+  isActive: boolean;
+  autoForwardPengaduan: boolean;
+  autoForwardPermohonan: boolean;
+  forwardEmergencyOnly: boolean; // Jika true, hanya forward prioritas KRITIS
+  customTemplate?: string;
+  lastForwardedAt?: string;
+  totalForwardedCount: number;
+}
+
+export interface BidangForwardingSettings {
+  isEnabled: boolean;
+  contacts: Record<BidangPUPR, BidangWhatsAppContact>;
+  defaultTemplatePengaduan: string;
+  defaultTemplatePermohonan: string;
+  notifyCitizenOnForward: boolean; // Notifikasi konfirmasi otomatis ke nomor warga
+  history?: ForwardHistoryItem[];
+  updatedAt: string;
+  updatedBy?: string;
+}
+
+export interface ForwardDispatchInput {
+  type: 'PENGADUAN' | 'PERMOHONAN' | 'DARURAT' | 'KONSULTASI';
+  bidang: BidangPUPR;
+  targetNomorWa?: string; // Jika ingin override nomor tujuan secara manual
+  ticketNumber?: string;
+  pelaporName: string;
+  pelaporPhone?: string;
+  lokasi?: string;
+  kecamatan?: string;
+  layanan?: string;
+  judul: string;
+  deskripsi: string;
+  prioritas: 'RENDAH' | 'NORMAL' | 'TINGGI' | 'KRITIS' | string;
+  langkahPenanganan?: string;
+  catatanDisposisi?: string;
+  conversationId?: string;
+  sendCitizenConfirmation?: boolean;
+}
+
+export interface ForwardDispatchResult {
+  success: boolean;
+  messageId?: string;
+  bidang: BidangPUPR;
+  targetWa: string;
+  targetName: string;
+  formattedMessage: string;
+  dispatchedAt: string;
+  citizenNotified?: boolean;
+  error?: string;
+}
+
+export interface ForwardHistoryItem {
+  id: string;
+  ticketNumber?: string;
+  type: 'PENGADUAN' | 'PERMOHONAN' | 'DARURAT' | 'KONSULTASI';
+  bidang: BidangPUPR;
+  targetNomorWa: string;
+  targetName: string;
+  pelaporName: string;
+  judul: string;
+  prioritas: string;
+  dispatchedBy: string;
+  status: 'SUCCESS' | 'FAILED';
+  errorMessage?: string;
+  createdAt: string;
+}
+

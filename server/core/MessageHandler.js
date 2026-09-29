@@ -79,10 +79,10 @@ class MessageHandler {
         const { text, type, metadata } = this.extractMessageContent(msg);
 
         let mediaBase64 = null;
+        let mediaBuffer = null;
         let enrichedMetadata = { ...(metadata || {}) };
         if (type === 'document' || type === 'image') {
           try {
-            let mediaBuffer = null;
             try {
               mediaBuffer = await downloadMediaMessage(
                 msg,
@@ -167,6 +167,23 @@ class MessageHandler {
 
         let handledByBot = false;
         const cleanInput = text.trim().toLowerCase();
+
+        // Priority -1: Jawaban & Bukti Penanganan Pengaduan oleh Staf PUPR (via Chat / Foto WhatsApp)
+        if (!handledByBot) {
+          const isStaffResolutionHandled = await this.tryHandleStaffComplaintResolution(
+            senderJid,
+            text,
+            pushName,
+            cleanPhone,
+            type,
+            mediaBase64,
+            enrichedMetadata,
+            mediaBuffer
+          );
+          if (isStaffResolutionHandled) {
+            handledByBot = true;
+          }
+        }
 
         // Priority 0: Cek Status Permohonan / Tiket
         if (!handledByBot && type === 'text') {
@@ -476,6 +493,36 @@ class MessageHandler {
             ticketId: orchestratorResult.routingDecision.ticketId
           });
         }
+
+        // --- Auto-Forward Permohonan Baru / Konsultasi ke WhatsApp Bidang Terkait ---
+        if (!complaintTicket && (orchestratorResult.routingDecision?.intent === 'PERMOHONAN_BARU' || orchestratorResult.routingDecision?.intent === 'KONSULTASI')) {
+          try {
+            const bidangForwardingService = require('../services/bidangForwardingService');
+            const targetBidang = orchestratorResult.routingDecision.primaryBidang || 'SEKRETARIAT';
+            const forwardSettings = await bidangForwardingService.getSettings();
+            const contact = forwardSettings.contacts ? forwardSettings.contacts[targetBidang] : null;
+
+            if (forwardSettings.isEnabled && contact && contact.isActive && contact.autoForwardPermohonan) {
+              console.log(`[MessageHandler] 🚀 Mem-forward otomatis permohonan ke WA ${contact.namaBidang} (${contact.nomorWa})`);
+              bidangForwardingService.dispatchForward({
+                type: 'PERMOHONAN',
+                bidang: targetBidang,
+                ticketNumber: orchestratorResult.routingDecision.ticketId || `REQ-${Date.now().toString().slice(-6)}`,
+                pelaporName: pushName,
+                pelaporPhone: cleanPhone,
+                lokasi: 'Kabupaten Garut',
+                layanan: orchestratorResult.routingDecision.layanan || 'Layanan Publik PUPR',
+                judul: `Permohonan ${orchestratorResult.routingDecision.layanan || 'Teknis PUPR'}`,
+                deskripsi: messageText,
+                prioritas: orchestratorResult.routingDecision.prioritas || 'NORMAL',
+                catatanDisposisi: `Diteruskan otomatis oleh AI PURI (Intent: ${orchestratorResult.routingDecision.intent}).`,
+                dispatchedBy: 'AI PURI Auto-Forward Engine'
+              }, this.client).catch(e => console.error('[MessageHandler] Gagal auto-forward permohonan:', e.message));
+            }
+          } catch (fwdErr) {
+            console.warn('[MessageHandler] Warning auto-forward permohonan:', fwdErr.message);
+          }
+        }
         
         return true;
       }
@@ -520,6 +567,148 @@ class MessageHandler {
       this.client.addLog('ESCALATION_TRIGGERED', `Warga ${pushName} meminta terhubung dengan Operator Manusia`);
       return true;
     }
+    return false;
+  }
+
+  /**
+   * Flow Staf / TRC PUPR Menjawab Laporan Pengaduan & Melampirkan Bukti Penanganan via WA Bot
+   * Format: JAWAB #TKT-xxxx [penjelasan], RESPON #TKT-xxxx, atau kirim FOTO bukti dengan caption nomor tiket
+   */
+  async tryHandleStaffComplaintResolution(senderJid, text, pushName, cleanPhone, type, mediaBase64, enrichedMetadata, mediaBuffer) {
+    if (!text && type !== 'image' && type !== 'document') return false;
+
+    const rawText = String(text || '').trim();
+    
+    // Pola nomor tiket pengaduan Garut: TKT-..., REG-..., PURI-...
+    // Contoh: #TKT-PUPR-2026-0001, TKT-2026-0001, TKT-PUPR-0001, PURI-2024-0514
+    const ticketRegex = /#?\b((?:TKT|REG|PURI)[-_A-Za-z0-9]+)\b/i;
+    const match = rawText.match(ticketRegex);
+    if (!match) return false;
+
+    const candidateTicket = match[1];
+    const ticket = complaintService.findComplaintByAnyNumber(candidateTicket);
+    if (!ticket) return false;
+
+    // Cek apakah pesan ini adalah jawaban / tindak lanjut atau sekadar tanya status
+    const isExplicitCommand = /^(?:JAWAB|RESPON|SELESAI|SELESAIKAN|TINDAK\s*LANJUT|BUKTI|UPDATE|LAPORAN\s*LAPANGAN|HASIL|PENANGANAN)\b/i.test(rawText);
+    const hasMediaProof = (type === 'image' || type === 'document') && mediaBuffer;
+    const hasActionWords = /(?:telah|sudah|selesai|rampung|ditangani|diperbaiki|dibersihkan|pengaspalan|penambalan|normal kembali|alat berat|hotmix|drainase)/i.test(rawText);
+    
+    // Jangan tangkap jika hanya bertanya "cek status", "status tiket", "lacak", dsb.
+    const isJustAskingStatus = /^(?:cek|lacak|status|info|tanya|bagaimana)\b/i.test(rawText) && !isExplicitCommand && !hasMediaProof;
+    if (isJustAskingStatus) return false;
+
+    // Jika memenuhi salah satu kriteria tindak lanjut:
+    if (isExplicitCommand || hasMediaProof || hasActionWords || rawText.length > 25) {
+      // Bersihkan teks jawaban dari prefix perintah dan nomor tiket
+      let cleanJawaban = rawText
+        .replace(/^(?:JAWAB|RESPON|SELESAI|SELESAIKAN|TINDAK\s*LANJUT|BUKTI|UPDATE|LAPORAN\s*LAPANGAN|PENANGANAN)\s*[:#-]?\s*/i, '')
+        .replace(new RegExp(`#?` + candidateTicket.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + `\\s*[:#-]?\\s*`, 'i'), '')
+        .trim();
+
+      if (!cleanJawaban) {
+        cleanJawaban = hasMediaProof 
+          ? 'Telah dilakukan penanganan dan perbaikan di lokasi pengaduan (bukti foto terlampir).'
+          : 'Laporan pengaduan telah ditindaklanjuti dan diselesaikan oleh tim lapangan.';
+      }
+
+      // Simpan file bukti fisik ke direktori public Next.js agar bisa diakses langsung di dashboard
+      let mediaUrl = '';
+      if (mediaBuffer) {
+        try {
+          const uploadDir = path.resolve(process.cwd(), 'public/uploads/complaints');
+          if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+          }
+          const ext = type === 'image' 
+            ? (enrichedMetadata?.mimetype === 'image/png' ? 'png' : 'jpg') 
+            : 'pdf';
+          const fileName = `bukti-${ticket.nomorTiket.replace(/[^a-zA-Z0-9]/g, '_')}-${Date.now()}.${ext}`;
+          const filePath = path.join(uploadDir, fileName);
+          fs.writeFileSync(filePath, mediaBuffer);
+          mediaUrl = `/uploads/complaints/${fileName}`;
+        } catch (fsErr) {
+          console.warn('[MessageHandler] Gagal menyimpan file bukti lokal:', fsErr.message);
+        }
+      }
+
+      // 1. Simpan tindak lanjut ke Complaint Service
+      complaintService.recordStaffResolution(ticket.nomorTiket, {
+        jawaban: cleanJawaban,
+        staffName: pushName || 'Staf / TRC Lapangan PUPR',
+        staffPhone: cleanPhone,
+        media: mediaBuffer ? {
+          type,
+          url: mediaUrl,
+          fileName: enrichedMetadata?.fileName || `Bukti_Penanganan_${ticket.nomorTiket}.${type === 'image' ? 'jpg' : 'pdf'}`,
+          mimetype: enrichedMetadata?.mimetype || (type === 'image' ? 'image/jpeg' : 'application/pdf'),
+          size: mediaBuffer.length,
+          base64: mediaBase64
+        } : null,
+        status: 'SELESAI',
+        channel: 'WHATSAPP_BOT'
+      });
+
+      // 2. Kirim Notifikasi Resmi & Bukti ke WhatsApp Warga Pelapor
+      if (ticket.nomorKontak) {
+        let cleanCitizenPhone = ticket.nomorKontak.replace(/\D/g, '');
+        if (cleanCitizenPhone.startsWith('0')) cleanCitizenPhone = '62' + cleanCitizenPhone.substring(1);
+        else if (cleanCitizenPhone.startsWith('8')) cleanCitizenPhone = '62' + cleanCitizenPhone;
+        const citizenJid = cleanCitizenPhone + '@s.whatsapp.net';
+
+        const citizenMsg = 
+          `🏛️ *DINAS PEKERJAAN UMUM & PENATAAN RUANG KAB. GARUT*\n` +
+          `────────────────────────\n` +
+          `Yth. Bapak/Ibu *${ticket.pelapor}*,\n\n` +
+          `Laporan Pengaduan Anda dengan No. Tiket *${ticket.nomorTiket}* perihal:\n` +
+          `"_${ticket.judul}_" (Lokasi: ${ticket.lokasi})\n\n` +
+          `Telah resmi dinyatakan *SELESAI DITINDAKLANJUTI* oleh tim teknis lapangan Dinas PUPR Kabupaten Garut.\n\n` +
+          `📋 *Keterangan Hasil Penanganan:*\n` +
+          `"${cleanJawaban}"\n\n` +
+          `👷 *Petugas / Satgas Lapangan:* ${pushName} (${ticket.bidangLabel || ticket.bidang})\n` +
+          `⏱️ *Waktu Selesai:* ${new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB\n` +
+          `────────────────────────\n` +
+          `${mediaBuffer ? '📸 _Foto bukti fisik penyelesaian pekerjaan terlampir berikut ini._\n\n' : ''}` +
+          `Terima kasih atas partisipasi aktif Bapak/Ibu dalam mengawal infrastruktur Kabupaten Garut. 🙏`;
+
+        try {
+          await this.client.sendMessageReliable(citizenJid, { text: citizenMsg });
+          if (type === 'image' && mediaBuffer) {
+            await this.client.sendMessageReliable(citizenJid, {
+              image: mediaBuffer,
+              caption: `📸 *Bukti Penyelesaian Lapangan Tiket #${ticket.nomorTiket}*`
+            });
+          }
+        } catch (citizenSendErr) {
+          console.warn('[MessageHandler] Gagal mengirim notifikasi ke warga:', citizenSendErr.message);
+        }
+      }
+
+      // 3. Kirim Konfirmasi Balik ke Staf PUPR yang Menjawab
+      const staffReply = 
+        `✅ *TINDAK LANJUT PENGADUAN BERHASIL DICATAT*\n` +
+        `────────────────────────\n` +
+        `📋 *Nomor Tiket:* ${ticket.nomorTiket}\n` +
+        `📍 *Lokasi:* ${ticket.lokasi} (${ticket.kecamatan || 'Garut'})\n` +
+        `👤 *Warga Pelapor:* ${ticket.pelapor} (${ticket.nomorKontak})\n` +
+        `⚡ *Status Tiket:* *SELESAI (RESOLVED)*\n\n` +
+        `📝 *Keterangan Jawaban:*\n"${cleanJawaban}"\n\n` +
+        `📸 *Lampiran Bukti:* ${mediaBuffer ? 'Foto/Dokumen Berhasil Disimpan & Diteruskan ke Warga' : 'Tanpa Lampiran'}\n` +
+        `────────────────────────\n` +
+        `🔔 Notifikasi penyelesaian & foto bukti telah otomatis terkirim ke WhatsApp warga pelapor.\n` +
+        `📊 Dashboard Command Center GPS-CC telah diperbarui secara real-time.\n\n` +
+        `_Terima kasih atas dedikasi dan kerja cepat rekan-rekan tim teknis Dinas PUPR Garut!_ 👷‍♂️✨`;
+
+      await this.sendPuriReply(senderJid, staffReply, false);
+
+      this.client.addLog(
+        'STAFF_RESOLUTION_PROCESSED',
+        `Tiket ${ticket.nomorTiket} dijawab & diselesaikan oleh staf ${pushName} (${cleanPhone})${mediaBuffer ? ' dengan lampiran foto bukti' : ''}`
+      );
+
+      return true;
+    }
+
     return false;
   }
 }

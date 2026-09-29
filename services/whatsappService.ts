@@ -1,4 +1,9 @@
 import { WhatsAppConnectionStatus, WhatsAppConversation, WhatsAppBotLog, OperatorStatus } from '../domain/whatsapp';
+import type { 
+  BidangForwardingSettings, 
+  ForwardDispatchInput, 
+  ForwardDispatchResult 
+} from '../domain/whatsappIntegration';
 import { supabase } from '../lib/supabase';
 
 export class WhatsAppService {
@@ -789,6 +794,65 @@ export class WhatsAppService {
     });
     return await res.json();
   }
+
+  // ==========================================
+  // BIDANG WHATSAPP CONTACTS & FORWARDING
+  // ==========================================
+
+  static async getBidangContacts(): Promise<{ success: boolean; data?: BidangForwardingSettings; error?: string }> {
+    try {
+      const res = await fetch('/api/whatsapp/bidang-contacts', { cache: 'no-store' });
+      if (res.ok) {
+        return await res.json();
+      }
+      const errData = await res.json().catch(() => ({}));
+      return { success: false, error: errData.error || 'Gagal memuat kontak WhatsApp bidang' };
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : 'Koneksi gagal';
+      return { success: false, error: message };
+    }
+  }
+
+  static async saveBidangContacts(settings: BidangForwardingSettings, updatedBy?: string): Promise<{ success: boolean; data?: BidangForwardingSettings; error?: string }> {
+    try {
+      const res = await fetch('/api/whatsapp/bidang-contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ settings, updatedBy })
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+      const errData = await res.json().catch(() => ({}));
+      return { success: false, error: errData.error || 'Gagal menyimpan kontak bidang' };
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : 'Koneksi gagal';
+      return { success: false, error: message };
+    }
+  }
+
+  static async forwardToBidang(payload: ForwardDispatchInput): Promise<ForwardDispatchResult> {
+    try {
+      const res = await fetch('/api/whatsapp/forward', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : 'Koneksi gagal';
+      return {
+        success: false,
+        bidang: payload.bidang,
+        targetWa: payload.targetNomorWa || '',
+        targetName: payload.bidang,
+        formattedMessage: '',
+        dispatchedAt: new Date().toISOString(),
+        error: message
+      };
+    }
+  }
 }
+
 
 

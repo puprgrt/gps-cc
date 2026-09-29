@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Bot, Sparkles, Save, CheckCircle, ToggleLeft, ToggleRight, RefreshCw, ArrowLeft, Settings2, ListTree, Plus, Trash2, Edit3, Key, Hash, FileText } from 'lucide-react';
+import { Bot, Sparkles, Save, CheckCircle, ToggleLeft, ToggleRight, RefreshCw, ArrowLeft, Settings2, ListTree, Plus, Trash2, Edit3, Key, Hash, FileText, Building2 } from 'lucide-react';
 import { WhatsAppService } from '@/services/whatsappService';
+import { BidangForwardingTab } from './integrasi/BidangForwardingTab';
 
 interface WhatsAppBotSettingsViewProps {
   onBack?: () => void;
@@ -51,7 +52,8 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
 2. DILARANG meminta/menerima transfer ke rekening pribadi staf. Seluruh Retribusi Resmi PBG dibayar via Kode Billing Kas Daerah resmi.
 3. Apabila pertanyaan memerlukan pemeriksaan berkas fisik mendalam, arahkan warga berkonsultasi langsung ke Kantor Dinas PUPR Garut pada jam kerja.`;
 
-  const [activeSubTab, setActiveSubTab] = useState<'ai' | 'menu' | 'keyword' | 'spreadsheet'>('ai');
+  const [activeSubTab, setActiveSubTab] = useState<'ai' | 'menu' | 'keyword' | 'spreadsheet' | 'forwarding'>('ai');
+
   const [isAiActive, setIsAiActive] = useState(true);
   const [isMenuActive, setIsMenuActive] = useState(true);
   const [isKeywordActive, setIsKeywordActive] = useState(true);
@@ -457,6 +459,21 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
             {spreadsheetItems.length} Layanan
           </span>
         </button>
+
+        <button
+          onClick={() => setActiveSubTab('forwarding')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            activeSubTab === 'forwarding'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          <Building2 className="w-4 h-4" />
+          <span>Disposisi 7 Bidang</span>
+          <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-200 text-[10px] font-mono border border-blue-400/30">
+            WA Resmi
+          </span>
+        </button>
       </div>
 
       {showSuccessAlert && (
@@ -469,6 +486,12 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
           <span>Pengaturan berhasil disimpan ke database Supabase dan langsung aktif!</span>
         </motion.div>
       )}
+
+      {/* TAB 0: FORWARDING KE 7 BIDANG */}
+      {activeSubTab === 'forwarding' && (
+        <BidangForwardingTab />
+      )}
+
 
       {/* TAB 1: BOT AI GEMINI */}
       {activeSubTab === 'ai' && (
@@ -1079,6 +1102,13 @@ Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI R
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* 5. TAB DISPOSISI & FORWARDING KE 7 BIDANG PUPR */}
+      {activeSubTab === 'forwarding' && (
+        <div className="space-y-4">
+          <BidangForwardingTab />
         </div>
       )}
 

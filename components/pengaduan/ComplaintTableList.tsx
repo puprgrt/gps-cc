@@ -93,6 +93,11 @@ export function ComplaintTableList({
                     <span className={`text-[8px] font-bold uppercase px-1.5 py-0.5 rounded flex items-center gap-0.5 ${sts.badgeBg} ${sts.badgeText}`}>
                       {sts.icon} {sts.label}
                     </span>
+                    {ticket.tindakLanjut && (
+                      <span className="text-[8px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.5 rounded flex items-center gap-1">
+                        📸 {ticket.tindakLanjut.buktiLampiran && ticket.tindakLanjut.buktiLampiran.length > 0 ? 'Bukti Foto' : 'Terjawab'}
+                      </span>
+                    )}
                     <span className="text-[8px] font-medium text-slate-400 bg-white/5 px-1.5 py-0.5 rounded ml-auto">
                       {ticket.bidangLabel || ticket.bidang}
                     </span>

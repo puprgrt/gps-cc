@@ -87,13 +87,15 @@ class ComplaintService {
   extractComplaintFromBotReply(replyText, userMessageText = '', senderInfo = {}, routingDecision = {}) {
     if (!replyText) return null;
 
-    const hasRingkasan = 
+    // HANYA ekstrak jika jawaban bot AI secara eksplisit memuat rekapitulasi/ringkasan laporan resmi
+    // Chat biasa atau tanya-jawab klarifikasi TIDAK boleh masuk ke dashboard pengaduan
+    const hasRecapTitle = 
       /Ringkasan Laporan Pengaduan/i.test(replyText) ||
+      /Rekapitulasi (?:Laporan )?Pengaduan/i.test(replyText) ||
       /Laporan Pengaduan Resmi/i.test(replyText) ||
-      routingDecision?.intent === 'PENGADUAN' ||
-      /ringkasan laporan/i.test(replyText);
+      /Ringkasan Laporan/i.test(replyText);
 
-    if (!hasRingkasan && routingDecision?.intent !== 'PENGADUAN') {
+    if (!hasRecapTitle) {
       return null;
     }
 
@@ -257,6 +259,38 @@ class ComplaintService {
         );
       }
 
+      // Auto-Forward ke WhatsApp Resmi Bidang Terkait jika diaktifkan
+      try {
+        const bidangForwardingService = require('./bidangForwardingService');
+        const forwardSettings = await bidangForwardingService.getSettings();
+        const contact = forwardSettings.contacts ? forwardSettings.contacts[newTicket.bidang] : null;
+
+        if (forwardSettings.isEnabled && contact && contact.isActive && contact.autoForwardPengaduan) {
+          const isEmergency = newTicket.prioritas === 'KRITIS' || routingDecision?.isEmergency === true;
+          const shouldForward = !contact.forwardEmergencyOnly || isEmergency;
+          if (shouldForward) {
+            console.log(`[ComplaintService] 🚀 Mem-forward otomatis pengaduan [${newTicket.nomorTiket}] ke WA ${contact.namaBidang} (${contact.nomorWa})`);
+            bidangForwardingService.dispatchForward({
+              type: isEmergency ? 'DARURAT' : 'PENGADUAN',
+              bidang: newTicket.bidang,
+              ticketNumber: newTicket.nomorTiket,
+              pelaporName: newTicket.pelapor,
+              pelaporPhone: newTicket.nomorKontak,
+              lokasi: newTicket.lokasi,
+              kecamatan: newTicket.kecamatan,
+              judul: newTicket.judul,
+              deskripsi: newTicket.deskripsi,
+              prioritas: newTicket.prioritas,
+              langkahPenanganan: newTicket.langkahPenanganan,
+              catatanDisposisi: 'Disposisi otomatis oleh AI PURI dari chat WhatsApp warga.',
+              dispatchedBy: 'AI PURI Auto-Forward Engine'
+            }).catch(e => console.error('[ComplaintService] Gagal auto-forward ke bidang:', e.message));
+          }
+        }
+      } catch (fwdErr) {
+        console.warn('[ComplaintService] Warning auto-forward:', fwdErr.message);
+      }
+
       return newTicket;
     } catch (err) {
       console.error('[ComplaintService] Error auto-ingesting complaint:', err);
@@ -292,12 +326,88 @@ class ComplaintService {
 
   getComplaintById(id) {
     const list = this.readComplaints();
-    return list.find(c => c.id === id || c.nomorTiket === id) || null;
+    return this.findComplaintByAnyNumber(id, list);
+  }
+
+  /**
+   * Cari tiket berdasarkan nomor registrasi tiket fleksibel
+   * Mendukung: TKT-PUPR-2026-0001, #TKT-0001, TKT-0001, PURI-xxxx
+   */
+  findComplaintByAnyNumber(rawQuery, existingList = null) {
+    if (!rawQuery) return null;
+    const list = existingList || this.readComplaints();
+    const clean = String(rawQuery).trim().replace(/^[#\s]+/, '').toUpperCase();
+
+    // 1. Exact match ID atau nomorTiket
+    const exact = list.find(c => 
+      c.id.toUpperCase() === clean || 
+      c.nomorTiket.toUpperCase() === clean ||
+      c.nomorTiket.toUpperCase().replace(/^[#\s]+/, '') === clean
+    );
+    if (exact) return exact;
+
+    // 2. Partial suffix match (contoh input '0001' atau '2026-0001')
+    return list.find(c => {
+      const tkt = c.nomorTiket.toUpperCase();
+      return tkt.endsWith(clean) || clean.endsWith(tkt);
+    }) || null;
+  }
+
+  /**
+   * Catat jawaban / tindak lanjut dari staf / tim teknis lapangan PUPR
+   */
+  recordStaffResolution(ticketQuery, {
+    jawaban,
+    staffName = 'Staf Teknis Dinas PUPR',
+    staffPhone = '',
+    media = null,
+    status = 'SELESAI',
+    channel = 'WHATSAPP_BOT'
+  }) {
+    const list = this.readComplaints();
+    const item = this.findComplaintByAnyNumber(ticketQuery, list);
+    if (!item) return null;
+
+    item.status = (status || 'SELESAI').toUpperCase();
+    if (jawaban) {
+      item.catatanPetugas = jawaban;
+    }
+    item.updatedAt = new Date().toISOString();
+
+    const buktiList = [];
+    if (media && (media.url || media.base64)) {
+      buktiList.push({
+        type: media.type || 'image',
+        url: media.url || '',
+        fileName: media.fileName || 'Bukti_Penanganan_Lapangan.jpg',
+        mimetype: media.mimetype || 'image/jpeg',
+        size: media.size,
+        base64: media.base64,
+        uploadedAt: new Date().toISOString()
+      });
+    }
+
+    item.tindakLanjut = {
+      jawabanPetugas: jawaban || item.catatanPetugas || 'Laporan telah ditindaklanjuti dan diselesaikan oleh tim teknis lapangan Dinas PUPR Garut.',
+      namaPetugas: staffName,
+      nomorKontakPetugas: staffPhone,
+      waktuSelesai: new Date().toISOString(),
+      buktiLampiran: buktiList.length > 0 ? buktiList : (item.tindakLanjut?.buktiLampiran || []),
+      channel
+    };
+
+    if (buktiList.length > 0) {
+      item.buktiLampiran = [...(item.buktiLampiran || []), ...buktiList];
+    }
+
+    this.writeComplaints(list);
+    console.log(`[ComplaintService] ✅ Tindak lanjut staf berhasil dicatat: [${item.nomorTiket}] (${item.status}) oleh ${staffName}`);
+    return item;
   }
 
   updateComplaintStatus(id, newStatus, catatanPetugas, assignedOperator) {
     const list = this.readComplaints();
-    const item = list.find(c => c.id === id || c.nomorTiket === id);
+    const item = this.findComplaintByAnyNumber(id, list);
     if (!item) return null;
 
     if (newStatus) item.status = newStatus.toUpperCase();

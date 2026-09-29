@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { WhatsAppService } from '@/services/whatsappService';
+import { BidangForwardingTab } from './BidangForwardingTab';
 import type {
   WhatsAppIntegrationSettings,
   OutboundWebhookConfig,
@@ -35,7 +36,8 @@ const EVENT_OPTIONS: { id: WebhookEventTrigger; label: string; desc: string; ico
 ];
 
 export function WhatsAppIntegrationsHub() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'chatwoot' | 'webhooks' | 'apikeys' | 'telegram' | 'simbg' | 'custom_ai' | 'simulator' | 'logs' | 'docs'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'bidang_forwarding' | 'chatwoot' | 'webhooks' | 'apikeys' | 'telegram' | 'simbg' | 'custom_ai' | 'simulator' | 'logs' | 'docs'>('overview');
+
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -362,6 +364,7 @@ export function WhatsAppIntegrationsHub() {
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-white/10 custom-scrollbar text-xs font-semibold">
         {[
           { id: 'overview', label: '📊 Ikhtisar Konektor', badge: '' },
+          { id: 'bidang_forwarding', label: '🏛️ Nomor WA 7 Bidang & Disposisi', badge: '7 Bidang' },
           { id: 'chatwoot', label: '💬 Chatwoot Inbox', badge: settings.chatwoot.isActive ? 'Aktif' : '' },
           { id: 'webhooks', label: '🪝 Outbound Webhooks', badge: `${settings.webhooks.length}` },
           { id: 'apikeys', label: '🔑 REST API Keys', badge: `${settings.apiKeys.length}` },
@@ -397,9 +400,38 @@ export function WhatsAppIntegrationsHub() {
       {/* 4. TAB CONTENTS                                               */}
       {/* ------------------------------------------------------------- */}
 
+      {/* TAB 0: BIDANG FORWARDING */}
+      {activeTab === 'bidang_forwarding' && (
+        <BidangForwardingTab />
+      )}
+
       {/* TAB 1: OVERVIEW */}
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Bidang Forwarding Card in Overview */}
+          <div className="glass-card p-5 rounded-2xl border border-blue-500/40 bg-blue-950/20 flex flex-col justify-between space-y-4 hover:border-blue-400 transition-all shadow-md">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center font-bold">
+                  🏛️
+                </div>
+                <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40">
+                  7 Bidang PUPR Siap
+                </Badge>
+              </div>
+              <h3 className="text-base font-bold text-white">Nomor WA 7 Bidang & Disposisi</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Kelola nomor WhatsApp resmi masing-masing bidang (Bina Marga, SDA, PBG, Tata Ruang, AMPL, Jakon, Sekretariat) untuk disposisi otomatis pengaduan & permohonan.
+              </p>
+            </div>
+            <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+              <span className="text-[11px] text-emerald-400 font-mono">PURI 6-Tier Smart Routing</span>
+              <Button onClick={() => setActiveTab('bidang_forwarding')} variant="outline" size="sm" className="text-xs h-7 gap-1 border-blue-500/30 bg-blue-600/20 hover:bg-blue-600/30 text-white cursor-pointer">
+                Atur Nomor Bidang <ArrowUpRight className="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
+
           {/* Chatwoot Card */}
           <div className="glass-card p-5 rounded-2xl border border-white/10 flex flex-col justify-between space-y-4 hover:border-blue-500/40 transition-all">
             <div className="space-y-2">

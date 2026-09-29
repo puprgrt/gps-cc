@@ -233,3 +233,59 @@ exports.handleUpdateComplaintStatus = (req, res) => {
   }
 };
 
+exports.handleRecordComplaintResolution = (req, res) => {
+  try {
+    const { jawaban, staffName, staffPhone, media, status } = req.body;
+    const updated = complaintService.recordStaffResolution(req.params.id, {
+      jawaban,
+      staffName,
+      staffPhone,
+      media,
+      status: status || 'SELESAI',
+      channel: 'COMMAND_CENTER'
+    });
+    if (!updated) return res.status(404).json({ success: false, error: 'Pengaduan tidak ditemukan.' });
+    res.json({ success: true, data: updated });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// ============================================================================
+// BIDANG WHATSAPP CONTACTS & FORWARDING CONTROLLER
+// ============================================================================
+const bidangForwardingService = require('../services/bidangForwardingService');
+
+exports.handleGetBidangContacts = async (req, res) => {
+  try {
+    const settings = await bidangForwardingService.getSettings();
+    res.json({ success: true, data: settings });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+exports.handleUpdateBidangContacts = async (req, res) => {
+  try {
+    const { settings, updatedBy } = req.body;
+    const updated = await bidangForwardingService.saveSettings(settings, updatedBy || 'Operator CC');
+    res.json({ success: true, message: 'Pengaturan kontak WhatsApp bidang berhasil disimpan.', data: updated });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+exports.handleForwardBidang = async (req, res) => {
+  try {
+    const dispatchInput = req.body;
+    if (!dispatchInput.bidang) {
+      return res.status(400).json({ success: false, error: 'Parameter "bidang" wajib diisi.' });
+    }
+    const result = await bidangForwardingService.dispatchForward(dispatchInput, whatsappClient);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+

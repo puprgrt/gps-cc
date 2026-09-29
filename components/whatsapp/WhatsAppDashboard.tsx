@@ -9,6 +9,10 @@ import { WhatsAppFrontLogin } from './WhatsAppFrontLogin';
 import { WhatsAppRightQrPanel } from './WhatsAppRightQrPanel';
 import { WhatsAppLogViewer } from './WhatsAppLogViewer';
 import { PrivateMediaUrl } from './PrivateMediaUrl';
+import { ForwardToBidangModal } from './ForwardToBidangModal';
+import { BidangForwardingTab } from './integrasi/BidangForwardingTab';
+import { WhatsAppBotSettingsModal } from './WhatsAppBotSettingsModal';
+import type { BidangPUPR } from '@/domain/aiRouting';
 import { Badge } from '@/components/ui/badge';
 import { 
   QrCode, MessageSquare, Terminal, RefreshCw, Phone, CheckCircle, 
@@ -16,7 +20,7 @@ import {
   FileText, User, MapPin, Star, Bot, Sparkles, UserCheck, 
   ArrowUpRight, ArrowDownRight, MoreVertical, Bookmark, Share2, 
   Tag, Plus, ShieldCheck, X, Activity, Layers, CornerDownRight, Check, ChevronLeft,
-  Download, Eye, ExternalLink, Film, Mic
+  Download, Eye, ExternalLink, Film, Mic, Building2
 } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
@@ -157,10 +161,12 @@ export function WhatsAppDashboard() {
   const [dateFilter, setDateFilter] = useState('Hari Ini');
   const [mobileTab, setMobileTab] = useState<'list' | 'chat' | 'info'>('chat');
   const [rightPanelTab, setRightPanelTab] = useState<'info' | 'qr' | 'logs'>('info');
-  const [dashboardView, setDashboardView] = useState<'chats' | 'logs'>('chats');
+  const [dashboardView, setDashboardView] = useState<'chats' | 'bidang_forwarding' | 'bot_settings' | 'logs'>('chats');
   const [showQuickTemplates, setShowQuickTemplates] = useState(false);
+  const [showForwardModal, setShowForwardModal] = useState(false);
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId) || conversations[0];
+
 
   // Filtering conversations using PURI 6-Tier rules (Bidang, Smart Labels, Status)
   const filteredConversations = conversations.filter((conv) => {
@@ -260,16 +266,16 @@ export function WhatsAppDashboard() {
   return (
     <div className="space-y-4 pb-8">
       {/* ------------------------------------------------------------- */}
-      {/* 1. SLEEK SMART FRONT OFFICE HEADER BAR (1 BARIS BERKELAS)      */}
+      {/* 1. SLEEK SMART FRONT OFFICE HEADER BAR                         */}
       {/* ------------------------------------------------------------- */}
-      <div className="glass-card rounded-2xl border border-white/10 px-5 py-4 shadow-xl bg-gradient-to-r from-[#0F4C81]/40 via-[#161B22] to-[#0D1117] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="glass-card rounded-2xl border border-white/10 p-4 shadow-xl bg-gradient-to-r from-[#0F4C81]/40 via-[#161B22] to-[#0D1117] flex flex-col xl:flex-row items-start xl:items-center justify-between gap-3.5">
+        <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0 shadow-inner p-1.5 overflow-hidden">
             <img src="/favicon.ico" alt="PURI" className="w-full h-full object-contain" />
           </div>
-          <div className="min-w-0">
+          <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-base font-extrabold text-white tracking-tight truncate">
+              <h1 className="text-base font-extrabold text-white tracking-tight">
                 Smart Front Office — WhatsApp Center PUPR Garut
               </h1>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
@@ -280,13 +286,13 @@ export function WhatsAppDashboard() {
                 ⚡ 6-Tier AI Routing
               </span>
             </div>
-            <p className="text-xs text-slate-400 truncate mt-0.5">
+            <p className="text-xs text-slate-400 mt-0.5">
               Pusat pelayanan obrolan publik & aduan infrastruktur terintegrasi PURI Multi-Model AI Orchestrator.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
+        <div className="flex items-center gap-2 flex-wrap shrink-0">
           {/* Server Connection Pill */}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
@@ -315,15 +321,29 @@ export function WhatsAppDashboard() {
             <RefreshCw className="w-4 h-4" />
           </button>
 
+          {/* Direct Nomor WA 7 Bidang Button */}
+          <button
+            onClick={() => setDashboardView('bidang_forwarding')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-lg border ${
+              dashboardView === 'bidang_forwarding'
+                ? 'bg-blue-600 text-white border-blue-400'
+                : 'bg-white/5 hover:bg-white/10 text-slate-200 border-white/10'
+            }`}
+            title="Kelola Nomor WhatsApp Resmi 7 Bidang Dinas PUPR Garut"
+          >
+            <Building2 className="w-3.5 h-3.5 text-blue-300" />
+            <span>Nomor WA 7 Bidang</span>
+            <span className="px-1.5 py-0.2 bg-blue-500/30 text-blue-200 text-[10px] rounded font-mono font-bold">7</span>
+          </button>
+
           {/* Direct AI Center Config Button */}
           <button
-            onClick={() => router.push('/ai-dashboard')}
+            onClick={() => setDashboardView('bot_settings')}
             className="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg border border-emerald-400/30 transition-all flex items-center gap-1.5 group cursor-pointer"
-            title="Buka AI Center untuk mengelola pengaturan Bot, Model, dan Prompt"
+            title="Buka Pengaturan Bot PURI, Model, Prompt & Menu"
           >
             <img src="/favicon.ico" alt="PURI" className="w-4 h-4 object-contain group-hover:scale-110 transition-transform" />
-            <span>⚙️ Pengaturan di AI Center</span>
-            <ExternalLink className="w-3.5 h-3.5 text-emerald-200" />
+            <span>⚙️ Pengaturan Bot PURI</span>
           </button>
 
           {/* WhatsApp Integrations Settings Button */}
@@ -385,46 +405,83 @@ export function WhatsAppDashboard() {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* 3. SLEEK APPLE-STYLE SEGMENTED VIEW SWITCHER                   */}
+      {/* 3. SLEEK SEGMENTED VIEW SWITCHER                               */}
       {/* ------------------------------------------------------------- */}
-      <div className="flex items-center justify-between bg-slate-900/90 border border-white/10 p-1 rounded-xl text-xs shadow-sm">
+      <div className="flex items-center justify-between bg-slate-900/90 border border-white/10 p-1 rounded-xl text-xs shadow-sm overflow-x-auto">
         <div className="flex items-center gap-1">
           <button
             onClick={() => setDashboardView('chats')}
-            className={`py-1.5 px-3.5 rounded-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`py-1.5 px-3.5 rounded-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
               dashboardView === 'chats'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Ruang Percakapan & Operator</span>
+            <span>Ruang Percakapan</span>
             <span className="px-1.5 py-0.2 bg-emerald-500/20 text-emerald-300 text-[10px] rounded font-mono font-bold">
               {filteredConversations.length}
             </span>
           </button>
 
           <button
+            onClick={() => setDashboardView('bidang_forwarding')}
+            className={`py-1.5 px-3.5 rounded-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+              dashboardView === 'bidang_forwarding'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Building2 className="w-3.5 h-3.5 text-blue-400" />
+            <span>🏛️ Nomor WA 7 Bidang & Disposisi</span>
+            <span className="px-1.5 py-0.2 bg-blue-500/20 text-blue-300 text-[10px] rounded font-mono font-bold">
+              7 Bidang
+            </span>
+          </button>
+
+          <button
+            onClick={() => setDashboardView('bot_settings')}
+            className={`py-1.5 px-3.5 rounded-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+              dashboardView === 'bot_settings'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Bot className="w-3.5 h-3.5 text-emerald-400" />
+            <span>🤖 Pengaturan Bot PURI</span>
+          </button>
+
+          <button
             onClick={() => setDashboardView('logs')}
-            className={`py-1.5 px-3.5 rounded-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`py-1.5 px-3.5 rounded-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
               dashboardView === 'logs'
                 ? 'bg-purple-600 text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <Terminal className="w-3.5 h-3.5 text-purple-400" />
-            <span>Terminal Log Baileys Live</span>
+            <span>Terminal Log</span>
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           </button>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-400 px-3 font-mono">
+        <div className="hidden lg:flex items-center gap-2 text-[11px] text-slate-400 px-3 font-mono">
           <Activity className="w-3.5 h-3.5 text-emerald-400" />
           <span>Baileys MD: <strong>v6.7.8</strong></span>
         </div>
       </div>
 
-      {dashboardView === 'logs' ? (
+      {dashboardView === 'bidang_forwarding' ? (
+        /* Tab Nomor WA 7 Bidang */
+        <div className="animate-fade-in space-y-4">
+          <BidangForwardingTab />
+        </div>
+      ) : dashboardView === 'bot_settings' ? (
+        /* Tab Pengaturan Bot PURI */
+        <div className="animate-fade-in space-y-4">
+          <WhatsAppBotSettingsModal onBack={() => setDashboardView('chats')} />
+        </div>
+      ) : dashboardView === 'logs' ? (
         /* Full-width Log Viewer View */
         <div className="animate-fade-in">
           <WhatsAppLogViewer />
@@ -772,10 +829,13 @@ export function WhatsAppDashboard() {
                       Catatan
                     </button>
                     <button 
-                      className="px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[11px] font-semibold text-slate-300 hidden lg:flex items-center gap-1.5 transition-colors cursor-pointer"
-                      title="Transfer ke Bidang PUPR Lain"
+                      onClick={() => setShowForwardModal(true)}
+                      className="px-2.5 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 rounded-xl text-[11px] font-bold text-emerald-300 flex items-center gap-1.5 transition-colors cursor-pointer"
+                      title="Disposisi pengaduan / permohonan ke nomor WhatsApp resmi Bidang PUPR"
                     >
-                      Transfer
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Disposisi WA Bidang</span>
+                      <span className="sm:hidden">Forward</span>
                     </button>
                     <button 
                       className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-[11px] font-bold flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
@@ -1591,6 +1651,29 @@ export function WhatsAppDashboard() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* FORWARD KE BIDANG MODAL */}
+      {showForwardModal && activeConversation && (
+        <ForwardToBidangModal
+          isOpen={showForwardModal}
+          onClose={() => setShowForwardModal(false)}
+          onSuccess={() => {
+            // Berhasil forward
+          }}
+          initialData={{
+            type: activeConversation.category === 'PENGADUAN' ? 'PENGADUAN' : 'PERMOHONAN',
+            bidang: (activeConversation.bidang as BidangPUPR) || 'BINA_MARGA',
+            ticketNumber: `WA-${activeConversation.id.slice(-6).toUpperCase()}`,
+            pelaporName: activeConversation.contactName,
+            pelaporPhone: activeConversation.contactNumber,
+            lokasi: activeConversation.location || 'Kabupaten Garut',
+            layanan: activeConversation.layanan || 'Pelayanan PUPR',
+            judul: activeConversation.lastMessage ? activeConversation.lastMessage.slice(0, 80) : 'Laporan dari Chat WhatsApp Warga',
+            deskripsi: activeConversation.lastMessage || '-',
+            prioritas: activeConversation.prioritas || 'NORMAL'
+          }}
+        />
       )}
 
       {/* QR CODE POPUP MODAL */}

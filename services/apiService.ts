@@ -206,6 +206,38 @@ export class ApiService {
     }
   }
 
+  static async submitComplaintResolution(
+    id: string,
+    payload: {
+      status?: string;
+      catatanPetugas?: string;
+      tindakLanjut?: {
+        jawabanPetugas: string;
+        namaPetugas: string;
+        nomorKontakPetugas?: string;
+        buktiLampiran?: any[];
+      };
+      notifyCitizen?: boolean;
+    }
+  ): Promise<{ success: boolean; data?: ComplaintTicket; error?: string }> {
+    try {
+      const res = await fetch(`/api/pengaduan/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: payload.status || 'SELESAI',
+          catatanPetugas: payload.catatanPetugas || payload.tindakLanjut?.jawabanPetugas,
+          tindakLanjut: payload.tindakLanjut,
+          notifyCitizen: payload.notifyCitizen ?? true
+        })
+      });
+      return await res.json();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Gagal mengirim tindak lanjut pengaduan';
+      return { success: false, error: msg };
+    }
+  }
+
   static async createComplaint(
     payload: Partial<ComplaintTicket>
   ): Promise<{ success: boolean; data?: ComplaintTicket; error?: string }> {

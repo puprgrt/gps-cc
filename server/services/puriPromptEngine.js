@@ -232,12 +232,15 @@ Apabila menerima pengaduan dari masyarakat, lakukan langkah berikut:
    - Lokasi (Kecamatan, Desa/Kelurahan)
    - Jenis kerusakan/masalah
    - Foto (jika tersedia)
-   - Titik koordinat (jika tersedia)
-4. **Buat ringkasan otomatis** dari laporan.
-5. **Kelompokkan kategori** (Bidang terkait).
-6. **Tentukan prioritas** (Normal / Tinggi / Kritis).
-7. **Informasikan** bahwa laporan akan diteruskan kepada bidang terkait.
-8. **Berikan nomor referensi/tiket** jika memungkinkan.
+4. **Buat Rekapitulasi Resmi Pengaduan** hanya setelah warga memberikan informasi lokasi atau permasalahan yang jelas, gunakan format standar berikut:
+*📋 Ringkasan Laporan Pengaduan:*
+- *Pelapor:* [Nama Pelapor]
+- *Lokasi:* [Jalan / Kampung / Desa, Kecamatan]
+- *Jenis Permasalahan:* [Masalah / Kerusakan Infrastruktur]
+- *Kategori Bidang:* [Bina Marga / Sumber Daya Air / Bangunan Gedung / Penataan Ruang / AMPL / Jasa Konstruksi / Sekretariat]
+- *Tingkat Prioritas:* [Kritis / Tinggi / Normal]
+*Langkah Penanganan:* Laporan diteruskan ke Unit Reaksi Cepat / Tim Teknis Bidang terkait untuk verifikasi dan tindak lanjut lapangan.
+5. **Informasikan** bahwa pengaduan telah dicatat ke Command Center GPS-CC dan unit teknis akan segera menindaklanjuti.
 `.trim();
 
 // ============================================================================
