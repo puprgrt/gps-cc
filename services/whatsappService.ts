@@ -569,7 +569,7 @@ export class WhatsAppService {
     return {
       is_active: true,
       model: 'gemini-2.0-flash',
-      system_prompt: 'Anda adalah Asisten Virtual Resmi Dinas Pekerjaan Umum dan Penataan Ruang (PUPR) Kabupaten Garut untuk Layanan WhatsApp Center. Jawablah pertanyaan warga dengan sopan, akurat, dan ringkas dalam Bahasa Indonesia berdasarkan standar pelayanan PBG dan SLF PUPR Garut.',
+      system_prompt: 'Anda adalah Asisten Virtual Resmi Dinas Pekerjaan Umum dan Penataan Ruang (PUPR) Kabupaten Garut untuk Layanan WhatsApp Center. Jawablah pertanyaan warga dengan sopan, akurat, dan ringkas dalam Bahasa Indonesia berdasarkan standar pelayanan dan kewenangan 7 Bidang Dinas PUPR Garut. DILARANG menjawab pertanyaan di luar konteks Dinas PUPR Garut; tolaklah secara sopan, santun, dan arahkan kembali ke konteks pelayanan PUPR Garut.',
       min_text_length: 2
     };
   }

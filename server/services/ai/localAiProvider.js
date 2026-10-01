@@ -22,15 +22,40 @@ class LocalAIProvider extends AIProviderInterface {
     super('LOCAL', 'qwen2.5:7b');
     this.name = 'Local AI Cluster (Ollama)';
     this.baseUrl = process.env.LOCAL_AI_URL || 'http://localhost:11434';
-    // Local AI has no rate limits, but keep reasonable timeout to avoid blocking
-    this.requestTimeoutMs = 8000; // 8 seconds max for local ping/inference to fail-fast if Ollama is not running
+    // Local AI timeout: default 12s, configurable via LOCAL_AI_TIMEOUT_MS
+    this.requestTimeoutMs = parseInt(process.env.LOCAL_AI_TIMEOUT_MS, 10) || 12000;
     // Disable circuit breaker for local (it should always be attempted as last resort)
     this._circuitBreakerThreshold = 999;
   }
 
   isConfigured() {
-    // Only attempt if explicit LOCAL_AI_ENABLED is true or LOCAL_AI_URL is explicitly set
-    return Boolean(process.env.LOCAL_AI_ENABLED === 'true' || process.env.ENABLE_LOCAL_AI === 'true');
+    // If explicitly disabled via env, do not use
+    if (process.env.LOCAL_AI_ENABLED === 'false' || process.env.ENABLE_LOCAL_AI === 'false') {
+      return false;
+    }
+    // Enabled by default as safety fallback, or when LOCAL_AI_URL / LOCAL_AI_ENABLED is defined
+    return true;
+  }
+
+  /**
+   * Fast health check to determine if Ollama service is reachable
+   * @returns {Promise<{isOnline: boolean, models?: string[], error?: string}>}
+   */
+  async checkHealth() {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const res = await fetch(`${this.baseUrl}/api/tags`, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const data = await res.json();
+        const models = (data.models || []).map((m) => m.name);
+        return { isOnline: true, models };
+      }
+      return { isOnline: false, error: `HTTP ${res.status}` };
+    } catch (err) {
+      return { isOnline: false, error: err.message };
+    }
   }
 
   async generateResponse(payload, options = {}) {

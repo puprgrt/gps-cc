@@ -1,5 +1,1279 @@
 [
   {
+    "id": "log-1790824488407",
+    "timestamp": "2026-10-01T03:14:48.407Z",
+    "event": "AI_CACHE_HIT",
+    "details": "Respon [LOCAL - PURI-Cache-Engine] dikirim ke by.enjangwahyudin (1ms, Conf: 100%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790824486003",
+    "timestamp": "2026-10-01T03:14:46.003Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"Punya nomer hotline inspektorat garut gak ?...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790819117667",
+    "timestamp": "2026-10-01T01:45:17.667Z",
+    "event": "AI_CACHE_HIT",
+    "details": "Respon [LOCAL - PURI-Cache-Engine] dikirim ke by.enjangwahyudin (0ms, Conf: 100%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790819115756",
+    "timestamp": "2026-10-01T01:45:15.756Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"Punya nomer hotline dorektorat garut gak ?...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790818924961",
+    "timestamp": "2026-10-01T01:42:04.961Z",
+    "event": "AI_CACHE_HIT",
+    "details": "Respon [LOCAL - PURI-Cache-Engine] dikirim ke by.enjangwahyudin (0ms, Conf: 100%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790818923074",
+    "timestamp": "2026-10-01T01:42:03.074Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"Punya nomer hotline dorektorat garut gak ?...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790816889229",
+    "timestamp": "2026-10-01T01:08:09.229Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790816889227",
+    "timestamp": "2026-10-01T01:08:09.227Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790816887669",
+    "timestamp": "2026-10-01T01:08:07.669Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790816886568",
+    "timestamp": "2026-10-01T01:08:06.568Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790816886565",
+    "timestamp": "2026-10-01T01:08:06.565Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790814126293",
+    "timestamp": "2026-10-01T00:22:06.293Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790814126291",
+    "timestamp": "2026-10-01T00:22:06.291Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790814124652",
+    "timestamp": "2026-10-01T00:22:04.652Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790814123522",
+    "timestamp": "2026-10-01T00:22:03.522Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790814123520",
+    "timestamp": "2026-10-01T00:22:03.520Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790807591108",
+    "timestamp": "2026-09-30T22:33:11.108Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790807591106",
+    "timestamp": "2026-09-30T22:33:11.106Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790807588538",
+    "timestamp": "2026-09-30T22:33:08.538Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790807587443",
+    "timestamp": "2026-09-30T22:33:07.443Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790807587439",
+    "timestamp": "2026-09-30T22:33:07.439Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790805009906",
+    "timestamp": "2026-09-30T21:50:09.906Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790805009904",
+    "timestamp": "2026-09-30T21:50:09.904Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790805008171",
+    "timestamp": "2026-09-30T21:50:08.171Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790805007060",
+    "timestamp": "2026-09-30T21:50:07.060Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790805007058",
+    "timestamp": "2026-09-30T21:50:07.058Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790803458234",
+    "timestamp": "2026-09-30T21:24:18.234Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790803458232",
+    "timestamp": "2026-09-30T21:24:18.232Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790803455454",
+    "timestamp": "2026-09-30T21:24:15.454Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790803453327",
+    "timestamp": "2026-09-30T21:24:13.327Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 2.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790803453323",
+    "timestamp": "2026-09-30T21:24:13.323Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 503). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790798907121",
+    "timestamp": "2026-09-30T20:08:27.121Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790798907119",
+    "timestamp": "2026-09-30T20:08:27.119Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790798904987",
+    "timestamp": "2026-09-30T20:08:24.987Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790798903870",
+    "timestamp": "2026-09-30T20:08:23.870Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790798903866",
+    "timestamp": "2026-09-30T20:08:23.866Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790794100214",
+    "timestamp": "2026-09-30T18:48:20.214Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790794100212",
+    "timestamp": "2026-09-30T18:48:20.212Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790794098382",
+    "timestamp": "2026-09-30T18:48:18.382Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790794097262",
+    "timestamp": "2026-09-30T18:48:17.262Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790794097258",
+    "timestamp": "2026-09-30T18:48:17.258Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790784423186",
+    "timestamp": "2026-09-30T16:07:03.186Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Lie (19657ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790784401329",
+    "timestamp": "2026-09-30T16:06:41.329Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Lie [text]: \"Punya nomer hotline dorektorat garut gak ?...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790776868749",
+    "timestamp": "2026-09-30T14:01:08.749Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Lie (15046ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790776851483",
+    "timestamp": "2026-09-30T14:00:51.483Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Lie [text]: \"Ya, ada laporan bahwa mengenai kontruksi dari cv r...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790776520232",
+    "timestamp": "2026-09-30T13:55:20.232Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Lie (10852ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790776507280",
+    "timestamp": "2026-09-30T13:55:07.280Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Lie [text]: \"Mengenai laporan yang sudah saya laporkan, bagai m...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790776452751",
+    "timestamp": "2026-09-30T13:54:12.751Z",
+    "event": "KEYWORD_REPLY",
+    "details": "Respon Kata Kunci [halo] dikirim ke Lie",
+    "level": "info"
+  },
+  {
+    "id": "log-1790776451943",
+    "timestamp": "2026-09-30T13:54:11.943Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Lie [text]: \"Halo.. gimana laporanya, ada informasi tanggapanny...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790769244392",
+    "timestamp": "2026-09-30T11:54:04.392Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790769244390",
+    "timestamp": "2026-09-30T11:54:04.390Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790769242670",
+    "timestamp": "2026-09-30T11:54:02.670Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790769241569",
+    "timestamp": "2026-09-30T11:54:01.569Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790769241567",
+    "timestamp": "2026-09-30T11:54:01.567Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790763230892",
+    "timestamp": "2026-09-30T10:13:50.892Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke HM (11281ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790763218189",
+    "timestamp": "2026-09-30T10:13:38.189Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari HM [text]: \"Apa boleh di arahkan ke pak kabid bina marga?🙏...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790763181702",
+    "timestamp": "2026-09-30T10:13:01.702Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke HM (12782ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790763167562",
+    "timestamp": "2026-09-30T10:12:47.562Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari HM [text]: \"Boleh di arahkan ke siapa pak/bu izin saya dari pe...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790763113881",
+    "timestamp": "2026-09-30T10:11:53.881Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke HM (14259ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790763097792",
+    "timestamp": "2026-09-30T10:11:37.792Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari HM [text]: \"Mau buat rekom ultilitas...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790763075010",
+    "timestamp": "2026-09-30T10:11:15.010Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke HM (5720ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790763066582",
+    "timestamp": "2026-09-30T10:11:06.582Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari HM [text]: \"Selamat sore....\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753349852",
+    "timestamp": "2026-09-30T07:29:09.852Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke by.enjangwahyudin (13388ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753335370",
+    "timestamp": "2026-09-30T07:28:55.370Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"cara mengurusnya bagaimana?...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753320598",
+    "timestamp": "2026-09-30T07:28:40.598Z",
+    "event": "KEYWORD_REPLY",
+    "details": "Respon Kata Kunci [krk] dikirim ke by.enjangwahyudin",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753320143",
+    "timestamp": "2026-09-30T07:28:40.143Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"Cara mengurus KRK...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753309160",
+    "timestamp": "2026-09-30T07:28:29.160Z",
+    "event": "KEYWORD_REPLY",
+    "details": "Respon Kata Kunci [krk] dikirim ke by.enjangwahyudin",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753308917",
+    "timestamp": "2026-09-30T07:28:28.917Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"Keterangan Rencana Kota (KRK)...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753298777",
+    "timestamp": "2026-09-30T07:28:18.777Z",
+    "event": "MENU_REPLY",
+    "details": "Respon Menu Interaktif [menu] dikirim ke by.enjangwahyudin",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753296768",
+    "timestamp": "2026-09-30T07:28:16.768Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"0...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753259496",
+    "timestamp": "2026-09-30T07:27:39.496Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke by.enjangwahyudin (8566ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753249481",
+    "timestamp": "2026-09-30T07:27:29.481Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"cek...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753218488",
+    "timestamp": "2026-09-30T07:26:58.488Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790753218485",
+    "timestamp": "2026-09-30T07:26:58.485Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790753216708",
+    "timestamp": "2026-09-30T07:26:56.708Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752776818",
+    "timestamp": "2026-09-30T07:19:36.818Z",
+    "event": "AI_LOCAL_REPLY",
+    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke by.enjangwahyudin (3874ms, Conf: 85%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752771803",
+    "timestamp": "2026-09-30T07:19:31.803Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"cek...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752631547",
+    "timestamp": "2026-09-30T07:17:11.547Z",
+    "event": "AI_LOCAL_REPLY",
+    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke by.enjangwahyudin (4708ms, Conf: 85%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752625589",
+    "timestamp": "2026-09-30T07:17:05.589Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"1...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752618684",
+    "timestamp": "2026-09-30T07:16:58.684Z",
+    "event": "MENU_REPLY",
+    "details": "Respon Menu Interaktif [menu] dikirim ke by.enjangwahyudin",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752616865",
+    "timestamp": "2026-09-30T07:16:56.865Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"0...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752612139",
+    "timestamp": "2026-09-30T07:16:52.139Z",
+    "event": "AI_LOCAL_REPLY",
+    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke by.enjangwahyudin (4465ms, Conf: 85%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752606437",
+    "timestamp": "2026-09-30T07:16:46.437Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"8...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752578221",
+    "timestamp": "2026-09-30T07:16:18.221Z",
+    "event": "AI_LOCAL_REPLY",
+    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke by.enjangwahyudin (4612ms, Conf: 85%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752572239",
+    "timestamp": "2026-09-30T07:16:12.239Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"Persetujuan Kesesuaian Kegiatan Pemanfaatan Ruang ...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752560338",
+    "timestamp": "2026-09-30T07:16:00.338Z",
+    "event": "MENU_REPLY",
+    "details": "Respon Menu Interaktif [menu] dikirim ke by.enjangwahyudin",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752558026",
+    "timestamp": "2026-09-30T07:15:58.026Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"menu...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752538520",
+    "timestamp": "2026-09-30T07:15:38.520Z",
+    "event": "ESCALATION_TRIGGERED",
+    "details": "Warga by.enjangwahyudin meminta terhubung dengan Operator Manusia",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752537136",
+    "timestamp": "2026-09-30T07:15:37.136Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"operator...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752519560",
+    "timestamp": "2026-09-30T07:15:19.560Z",
+    "event": "AI_LOCAL_REPLY",
+    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke by.enjangwahyudin (5752ms, Conf: 85%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752512172",
+    "timestamp": "2026-09-30T07:15:12.172Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"Permohonan Persetujuan Bangunan Gedung (PBG)...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752495014",
+    "timestamp": "2026-09-30T07:14:55.014Z",
+    "event": "AI_CACHE_HIT",
+    "details": "Respon [LOCAL - PURI-Cache-Engine] dikirim ke by.enjangwahyudin (1ms, Conf: 100%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752492477",
+    "timestamp": "2026-09-30T07:14:52.477Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari by.enjangwahyudin [text]: \"pelayanan apa saja yang ada di PURI...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752311091",
+    "timestamp": "2026-09-30T07:11:51.091Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790752311088",
+    "timestamp": "2026-09-30T07:11:51.088Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790752309376",
+    "timestamp": "2026-09-30T07:11:49.376Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790742674063",
+    "timestamp": "2026-09-30T04:31:14.063Z",
+    "event": "AI_CACHE_HIT",
+    "details": "Respon [LOCAL - PURI-Cache-Engine] dikirim ke Rahmat Hidayat, S.H (0ms, Conf: 100%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790742672754",
+    "timestamp": "2026-09-30T04:31:12.754Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Rahmat Hidayat, S.H [text]: \"Tata cara dan alur pengajuan...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790742660362",
+    "timestamp": "2026-09-30T04:31:00.362Z",
+    "event": "KEYWORD_REPLY",
+    "details": "Respon Kata Kunci [krk] dikirim ke Rahmat Hidayat, S.H",
+    "level": "info"
+  },
+  {
+    "id": "log-1790742659778",
+    "timestamp": "2026-09-30T04:30:59.778Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Rahmat Hidayat, S.H [text]: \"Persyaratan permohonan KRK...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790742640662",
+    "timestamp": "2026-09-30T04:30:40.662Z",
+    "event": "KEYWORD_REPLY",
+    "details": "Respon Kata Kunci [krk] dikirim ke Rahmat Hidayat, S.H",
+    "level": "info"
+  },
+  {
+    "id": "log-1790742639797",
+    "timestamp": "2026-09-30T04:30:39.797Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Rahmat Hidayat, S.H [text]: \"Persyaratan KRK...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790741744141",
+    "timestamp": "2026-09-30T04:15:44.141Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790741744139",
+    "timestamp": "2026-09-30T04:15:44.139Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790741741940",
+    "timestamp": "2026-09-30T04:15:41.940Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790741740806",
+    "timestamp": "2026-09-30T04:15:40.806Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790741740800",
+    "timestamp": "2026-09-30T04:15:40.800Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790740959612",
+    "timestamp": "2026-09-30T04:02:39.612Z",
+    "event": "ESCALATION_TRIGGERED",
+    "details": "Warga Rahmat Hidayat, S.H meminta terhubung dengan Operator Manusia",
+    "level": "info"
+  },
+  {
+    "id": "log-1790740958216",
+    "timestamp": "2026-09-30T04:02:38.216Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Rahmat Hidayat, S.H [text]: \"Hubungi petugas...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790740914368",
+    "timestamp": "2026-09-30T04:01:54.368Z",
+    "event": "KEYWORD_REPLY",
+    "details": "Respon Kata Kunci [krk] dikirim ke Rahmat Hidayat, S.H",
+    "level": "info"
+  },
+  {
+    "id": "log-1790740913957",
+    "timestamp": "2026-09-30T04:01:53.957Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Rahmat Hidayat, S.H [text]: \"Saya ingin membuat KRK...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790740895625",
+    "timestamp": "2026-09-30T04:01:35.625Z",
+    "event": "AI_CACHE_HIT",
+    "details": "Respon [LOCAL - PURI-Cache-Engine] dikirim ke Rahmat Hidayat, S.H (0ms, Conf: 100%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790740892361",
+    "timestamp": "2026-09-30T04:01:32.361Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Rahmat Hidayat, S.H [text]: \"Selamat pagi...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790739238337",
+    "timestamp": "2026-09-30T03:33:58.337Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790739238334",
+    "timestamp": "2026-09-30T03:33:58.334Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790739235931",
+    "timestamp": "2026-09-30T03:33:55.931Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790739234824",
+    "timestamp": "2026-09-30T03:33:54.824Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790739234819",
+    "timestamp": "2026-09-30T03:33:54.819Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790733708290",
+    "timestamp": "2026-09-30T02:01:48.290Z",
+    "event": "AI_LOCAL_REPLY",
+    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke kang.jay (15159ms, Conf: 85%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790733690974",
+    "timestamp": "2026-09-30T02:01:30.974Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari kang.jay [text]: \"Cek...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790731963258",
+    "timestamp": "2026-09-30T01:32:43.258Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790731963256",
+    "timestamp": "2026-09-30T01:32:43.256Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790731961158",
+    "timestamp": "2026-09-30T01:32:41.158Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790731959947",
+    "timestamp": "2026-09-30T01:32:39.947Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790731959940",
+    "timestamp": "2026-09-30T01:32:39.940Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790728785194",
+    "timestamp": "2026-09-30T00:39:45.194Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790728785187",
+    "timestamp": "2026-09-30T00:39:45.187Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790728782680",
+    "timestamp": "2026-09-30T00:39:42.680Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790728780558",
+    "timestamp": "2026-09-30T00:39:40.558Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 2.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790728780547",
+    "timestamp": "2026-09-30T00:39:40.547Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 503). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790726511185",
+    "timestamp": "2026-09-30T00:01:51.185Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790726511182",
+    "timestamp": "2026-09-30T00:01:51.182Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790726508777",
+    "timestamp": "2026-09-30T00:01:48.777Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790726507642",
+    "timestamp": "2026-09-30T00:01:47.642Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790726507640",
+    "timestamp": "2026-09-30T00:01:47.640Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790717393087",
+    "timestamp": "2026-09-29T21:29:53.087Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790717393085",
+    "timestamp": "2026-09-29T21:29:53.085Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790717391444",
+    "timestamp": "2026-09-29T21:29:51.444Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790717390324",
+    "timestamp": "2026-09-29T21:29:50.324Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790717390320",
+    "timestamp": "2026-09-29T21:29:50.320Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790711039544",
+    "timestamp": "2026-09-29T19:43:59.544Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790711039542",
+    "timestamp": "2026-09-29T19:43:59.542Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790711037848",
+    "timestamp": "2026-09-29T19:43:57.848Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790711036751",
+    "timestamp": "2026-09-29T19:43:56.751Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790711036747",
+    "timestamp": "2026-09-29T19:43:56.747Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790709511745",
+    "timestamp": "2026-09-29T19:18:31.745Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790709511743",
+    "timestamp": "2026-09-29T19:18:31.743Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790709510074",
+    "timestamp": "2026-09-29T19:18:30.074Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790709508935",
+    "timestamp": "2026-09-29T19:18:28.935Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790709508928",
+    "timestamp": "2026-09-29T19:18:28.928Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790703994185",
+    "timestamp": "2026-09-29T17:46:34.185Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790703994183",
+    "timestamp": "2026-09-29T17:46:34.183Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790703992061",
+    "timestamp": "2026-09-29T17:46:32.061Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790703990947",
+    "timestamp": "2026-09-29T17:46:30.947Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790703990943",
+    "timestamp": "2026-09-29T17:46:30.943Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790696912490",
+    "timestamp": "2026-09-29T15:48:32.490Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790696912488",
+    "timestamp": "2026-09-29T15:48:32.488Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790696910800",
+    "timestamp": "2026-09-29T15:48:30.800Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790696909680",
+    "timestamp": "2026-09-29T15:48:29.680Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790696909676",
+    "timestamp": "2026-09-29T15:48:29.676Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790694084402",
+    "timestamp": "2026-09-29T15:01:24.402Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790694084400",
+    "timestamp": "2026-09-29T15:01:24.400Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790694082642",
+    "timestamp": "2026-09-29T15:01:22.642Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790694080532",
+    "timestamp": "2026-09-29T15:01:20.532Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 2.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790694080528",
+    "timestamp": "2026-09-29T15:01:20.528Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 503). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1790684972592",
+    "timestamp": "2026-09-29T12:29:32.592Z",
+    "event": "MENU_REPLY",
+    "details": "Respon Menu Interaktif [menu] dikirim ke Erlin",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684969218",
+    "timestamp": "2026-09-29T12:29:29.218Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Erlin [text]: \"0...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684887882",
+    "timestamp": "2026-09-29T12:28:07.882Z",
+    "event": "AI_LOCAL_REPLY",
+    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke Warga PUPR (12643ms, Conf: 85%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684874302",
+    "timestamp": "2026-09-29T12:27:54.302Z",
+    "event": "KEYWORD_REPLY",
+    "details": "Respon Kata Kunci [halo] dikirim ke Warga PUPR",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684873566",
+    "timestamp": "2026-09-29T12:27:53.566Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Warga PUPR [text]: \"sore...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684873559",
+    "timestamp": "2026-09-29T12:27:53.559Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Warga PUPR [text]: \"Halo, PURI. Saya membutuhkan informasi mengenai me...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684819693",
+    "timestamp": "2026-09-29T12:26:59.693Z",
+    "event": "AI_LOCAL_REPLY",
+    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke kang.jay (13878ms, Conf: 85%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684804122",
+    "timestamp": "2026-09-29T12:26:44.122Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari kang.jay [text]: \"1...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684796440",
+    "timestamp": "2026-09-29T12:26:36.440Z",
+    "event": "MENU_REPLY",
+    "details": "Respon Menu Interaktif [menu] dikirim ke kang.jay",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684792612",
+    "timestamp": "2026-09-29T12:26:32.612Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari kang.jay [text]: \"Menu...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684756022",
+    "timestamp": "2026-09-29T12:25:56.022Z",
+    "event": "AI_LOCAL_REPLY",
+    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke kang.jay (15331ms, Conf: 85%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1790684738689",
+    "timestamp": "2026-09-29T12:25:38.689Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari kang.jay [text]: \"Cek...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1790679249986",
+    "timestamp": "2026-09-29T10:54:09.986Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1790679249984",
+    "timestamp": "2026-09-29T10:54:09.984Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1790679248204",
+    "timestamp": "2026-09-29T10:54:08.204Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1790679247094",
+    "timestamp": "2026-09-29T10:54:07.094Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 1.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1790679247089",
+    "timestamp": "2026-09-29T10:54:07.089Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 428). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
     "id": "log-1790674193078",
     "timestamp": "2026-09-29T09:29:53.078Z",
     "event": "USER_INFO",
@@ -2224,1279 +3498,5 @@
     "event": "DISCONNECTED",
     "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
     "level": "warn"
-  },
-  {
-    "id": "log-1790585910274",
-    "timestamp": "2026-09-28T08:58:30.274Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585890261",
-    "timestamp": "2026-09-28T08:58:10.261Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585890256",
-    "timestamp": "2026-09-28T08:58:10.256Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585890245",
-    "timestamp": "2026-09-28T08:58:10.245Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585870233",
-    "timestamp": "2026-09-28T08:57:50.233Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585870228",
-    "timestamp": "2026-09-28T08:57:50.228Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585870218",
-    "timestamp": "2026-09-28T08:57:50.218Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585850207",
-    "timestamp": "2026-09-28T08:57:30.207Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585850205",
-    "timestamp": "2026-09-28T08:57:30.205Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585850199",
-    "timestamp": "2026-09-28T08:57:30.199Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585830187",
-    "timestamp": "2026-09-28T08:57:10.187Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585830186",
-    "timestamp": "2026-09-28T08:57:10.186Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585830183",
-    "timestamp": "2026-09-28T08:57:10.183Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585810175",
-    "timestamp": "2026-09-28T08:56:50.175Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585810173",
-    "timestamp": "2026-09-28T08:56:50.173Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585810168",
-    "timestamp": "2026-09-28T08:56:50.168Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585790162",
-    "timestamp": "2026-09-28T08:56:30.162Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585790160",
-    "timestamp": "2026-09-28T08:56:30.160Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585790156",
-    "timestamp": "2026-09-28T08:56:30.156Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585770150",
-    "timestamp": "2026-09-28T08:56:10.150Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585770148",
-    "timestamp": "2026-09-28T08:56:10.148Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585770144",
-    "timestamp": "2026-09-28T08:56:10.144Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585750139",
-    "timestamp": "2026-09-28T08:55:50.139Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585750138",
-    "timestamp": "2026-09-28T08:55:50.138Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585750135",
-    "timestamp": "2026-09-28T08:55:50.135Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585719638",
-    "timestamp": "2026-09-28T08:55:19.638Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585719632",
-    "timestamp": "2026-09-28T08:55:19.632Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585719620",
-    "timestamp": "2026-09-28T08:55:19.620Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585699610",
-    "timestamp": "2026-09-28T08:54:59.610Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585699608",
-    "timestamp": "2026-09-28T08:54:59.608Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585699600",
-    "timestamp": "2026-09-28T08:54:59.600Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585679586",
-    "timestamp": "2026-09-28T08:54:39.586Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585679581",
-    "timestamp": "2026-09-28T08:54:39.581Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585679571",
-    "timestamp": "2026-09-28T08:54:39.571Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585649065",
-    "timestamp": "2026-09-28T08:54:09.065Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585649064",
-    "timestamp": "2026-09-28T08:54:09.064Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585649061",
-    "timestamp": "2026-09-28T08:54:09.061Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585629050",
-    "timestamp": "2026-09-28T08:53:49.050Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585629049",
-    "timestamp": "2026-09-28T08:53:49.049Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585629043",
-    "timestamp": "2026-09-28T08:53:49.043Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585609031",
-    "timestamp": "2026-09-28T08:53:29.031Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585609024",
-    "timestamp": "2026-09-28T08:53:29.024Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585609012",
-    "timestamp": "2026-09-28T08:53:29.012Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585589000",
-    "timestamp": "2026-09-28T08:53:09.000Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585588999",
-    "timestamp": "2026-09-28T08:53:08.999Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585588995",
-    "timestamp": "2026-09-28T08:53:08.995Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585568992",
-    "timestamp": "2026-09-28T08:52:48.992Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585568990",
-    "timestamp": "2026-09-28T08:52:48.990Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585568987",
-    "timestamp": "2026-09-28T08:52:48.987Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585548983",
-    "timestamp": "2026-09-28T08:52:28.983Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585548982",
-    "timestamp": "2026-09-28T08:52:28.982Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585548979",
-    "timestamp": "2026-09-28T08:52:28.979Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585528969",
-    "timestamp": "2026-09-28T08:52:08.969Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585528963",
-    "timestamp": "2026-09-28T08:52:08.963Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585528952",
-    "timestamp": "2026-09-28T08:52:08.952Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585508940",
-    "timestamp": "2026-09-28T08:51:48.940Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585508939",
-    "timestamp": "2026-09-28T08:51:48.939Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585508933",
-    "timestamp": "2026-09-28T08:51:48.933Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585478432",
-    "timestamp": "2026-09-28T08:51:18.432Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585478431",
-    "timestamp": "2026-09-28T08:51:18.431Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585478424",
-    "timestamp": "2026-09-28T08:51:18.424Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585448152",
-    "timestamp": "2026-09-28T08:50:48.152Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585448146",
-    "timestamp": "2026-09-28T08:50:48.146Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585448134",
-    "timestamp": "2026-09-28T08:50:48.134Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585428122",
-    "timestamp": "2026-09-28T08:50:28.122Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585428121",
-    "timestamp": "2026-09-28T08:50:28.121Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585428115",
-    "timestamp": "2026-09-28T08:50:28.115Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585408105",
-    "timestamp": "2026-09-28T08:50:08.105Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585408103",
-    "timestamp": "2026-09-28T08:50:08.103Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585408097",
-    "timestamp": "2026-09-28T08:50:08.097Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585388086",
-    "timestamp": "2026-09-28T08:49:48.086Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585388080",
-    "timestamp": "2026-09-28T08:49:48.080Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585383795",
-    "timestamp": "2026-09-28T08:49:43.795Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585353297",
-    "timestamp": "2026-09-28T08:49:13.297Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585353296",
-    "timestamp": "2026-09-28T08:49:13.296Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585353289",
-    "timestamp": "2026-09-28T08:49:13.289Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585333278",
-    "timestamp": "2026-09-28T08:48:53.278Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585333275",
-    "timestamp": "2026-09-28T08:48:53.275Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585333270",
-    "timestamp": "2026-09-28T08:48:53.270Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585313265",
-    "timestamp": "2026-09-28T08:48:33.265Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585313263",
-    "timestamp": "2026-09-28T08:48:33.263Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585313259",
-    "timestamp": "2026-09-28T08:48:33.259Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585293254",
-    "timestamp": "2026-09-28T08:48:13.254Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585293252",
-    "timestamp": "2026-09-28T08:48:13.252Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585293246",
-    "timestamp": "2026-09-28T08:48:13.246Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585273235",
-    "timestamp": "2026-09-28T08:47:53.235Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585273233",
-    "timestamp": "2026-09-28T08:47:53.233Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585273230",
-    "timestamp": "2026-09-28T08:47:53.230Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585253226",
-    "timestamp": "2026-09-28T08:47:33.226Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585253224",
-    "timestamp": "2026-09-28T08:47:33.224Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585253219",
-    "timestamp": "2026-09-28T08:47:33.219Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585222714",
-    "timestamp": "2026-09-28T08:47:02.714Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585222712",
-    "timestamp": "2026-09-28T08:47:02.712Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585222706",
-    "timestamp": "2026-09-28T08:47:02.706Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585202694",
-    "timestamp": "2026-09-28T08:46:42.694Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585202688",
-    "timestamp": "2026-09-28T08:46:42.688Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585202676",
-    "timestamp": "2026-09-28T08:46:42.676Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585172171",
-    "timestamp": "2026-09-28T08:46:12.171Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585172165",
-    "timestamp": "2026-09-28T08:46:12.166Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585171623",
-    "timestamp": "2026-09-28T08:46:11.623Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585141120",
-    "timestamp": "2026-09-28T08:45:41.120Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585141118",
-    "timestamp": "2026-09-28T08:45:41.118Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585141115",
-    "timestamp": "2026-09-28T08:45:41.115Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585110618",
-    "timestamp": "2026-09-28T08:45:10.618Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585110616",
-    "timestamp": "2026-09-28T08:45:10.616Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585110613",
-    "timestamp": "2026-09-28T08:45:10.613Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585090608",
-    "timestamp": "2026-09-28T08:44:50.608Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585090606",
-    "timestamp": "2026-09-28T08:44:50.606Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585090599",
-    "timestamp": "2026-09-28T08:44:50.599Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585060100",
-    "timestamp": "2026-09-28T08:44:20.100Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585060098",
-    "timestamp": "2026-09-28T08:44:20.098Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585060092",
-    "timestamp": "2026-09-28T08:44:20.092Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585040083",
-    "timestamp": "2026-09-28T08:44:00.083Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585040078",
-    "timestamp": "2026-09-28T08:44:00.078Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585040071",
-    "timestamp": "2026-09-28T08:44:00.071Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585020063",
-    "timestamp": "2026-09-28T08:43:40.063Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790585020062",
-    "timestamp": "2026-09-28T08:43:40.062Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790585020056",
-    "timestamp": "2026-09-28T08:43:40.056Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584989556",
-    "timestamp": "2026-09-28T08:43:09.556Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584989555",
-    "timestamp": "2026-09-28T08:43:09.555Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584989548",
-    "timestamp": "2026-09-28T08:43:09.548Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584959050",
-    "timestamp": "2026-09-28T08:42:39.050Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584959049",
-    "timestamp": "2026-09-28T08:42:39.049Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584959043",
-    "timestamp": "2026-09-28T08:42:39.043Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584939032",
-    "timestamp": "2026-09-28T08:42:19.032Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584939031",
-    "timestamp": "2026-09-28T08:42:19.031Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584939027",
-    "timestamp": "2026-09-28T08:42:19.027Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584919023",
-    "timestamp": "2026-09-28T08:41:59.023Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584919021",
-    "timestamp": "2026-09-28T08:41:59.021Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584919012",
-    "timestamp": "2026-09-28T08:41:59.012Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584899001",
-    "timestamp": "2026-09-28T08:41:39.001Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584898997",
-    "timestamp": "2026-09-28T08:41:38.998Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584898991",
-    "timestamp": "2026-09-28T08:41:38.991Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584878983",
-    "timestamp": "2026-09-28T08:41:18.983Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584878976",
-    "timestamp": "2026-09-28T08:41:18.976Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584878433",
-    "timestamp": "2026-09-28T08:41:18.433Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584848098",
-    "timestamp": "2026-09-28T08:40:48.098Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584848097",
-    "timestamp": "2026-09-28T08:40:48.097Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584848094",
-    "timestamp": "2026-09-28T08:40:48.094Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584828087",
-    "timestamp": "2026-09-28T08:40:28.087Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584828085",
-    "timestamp": "2026-09-28T08:40:28.085Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584828079",
-    "timestamp": "2026-09-28T08:40:28.079Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584808068",
-    "timestamp": "2026-09-28T08:40:08.068Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584808066",
-    "timestamp": "2026-09-28T08:40:08.066Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584808057",
-    "timestamp": "2026-09-28T08:40:08.057Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584788046",
-    "timestamp": "2026-09-28T08:39:48.046Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584788040",
-    "timestamp": "2026-09-28T08:39:48.040Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584788030",
-    "timestamp": "2026-09-28T08:39:48.030Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584768018",
-    "timestamp": "2026-09-28T08:39:28.018Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584768013",
-    "timestamp": "2026-09-28T08:39:28.013Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584768002",
-    "timestamp": "2026-09-28T08:39:28.002Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584747989",
-    "timestamp": "2026-09-28T08:39:07.989Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584747984",
-    "timestamp": "2026-09-28T08:39:07.984Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584736944",
-    "timestamp": "2026-09-28T08:38:56.944Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584706445",
-    "timestamp": "2026-09-28T08:38:26.445Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584706438",
-    "timestamp": "2026-09-28T08:38:26.438Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584706428",
-    "timestamp": "2026-09-28T08:38:26.428Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584676006",
-    "timestamp": "2026-09-28T08:37:56.006Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584676005",
-    "timestamp": "2026-09-28T08:37:56.005Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584676001",
-    "timestamp": "2026-09-28T08:37:56.001Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584655995",
-    "timestamp": "2026-09-28T08:37:35.995Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584655993",
-    "timestamp": "2026-09-28T08:37:35.993Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584655987",
-    "timestamp": "2026-09-28T08:37:35.987Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584635974",
-    "timestamp": "2026-09-28T08:37:15.974Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584635968",
-    "timestamp": "2026-09-28T08:37:15.968Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584635424",
-    "timestamp": "2026-09-28T08:37:15.424Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584604966",
-    "timestamp": "2026-09-28T08:36:44.966Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584604959",
-    "timestamp": "2026-09-28T08:36:44.959Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584604948",
-    "timestamp": "2026-09-28T08:36:44.948Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584584936",
-    "timestamp": "2026-09-28T08:36:24.936Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584584933",
-    "timestamp": "2026-09-28T08:36:24.933Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584584925",
-    "timestamp": "2026-09-28T08:36:24.925Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584564916",
-    "timestamp": "2026-09-28T08:36:04.916Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584564914",
-    "timestamp": "2026-09-28T08:36:04.914Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584564911",
-    "timestamp": "2026-09-28T08:36:04.911Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584534416",
-    "timestamp": "2026-09-28T08:35:34.416Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584534415",
-    "timestamp": "2026-09-28T08:35:34.415Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584534407",
-    "timestamp": "2026-09-28T08:35:34.407Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584514396",
-    "timestamp": "2026-09-28T08:35:14.396Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584514394",
-    "timestamp": "2026-09-28T08:35:14.394Z",
-    "event": "DISCONNECTED",
-    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
-    "level": "warn"
-  },
-  {
-    "id": "log-1790584514388",
-    "timestamp": "2026-09-28T08:35:14.388Z",
-    "event": "SOCKET_INITIALIZING",
-    "details": "Memulai engine Baileys MD v2.3000.1035194821 | Sesi tersimpan: Tidak",
-    "level": "info"
-  },
-  {
-    "id": "log-1790584494377",
-    "timestamp": "2026-09-28T08:34:54.377Z",
-    "event": "RECONNECT_SCHEDULED",
-    "details": "Penyambungan kembali otomatis dijadwalkan dalam 20.0 detik.",
-    "level": "info"
   }
 ]

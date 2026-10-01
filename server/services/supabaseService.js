@@ -228,7 +228,7 @@ async function getBotSettings() {
         is_menu_active: true,
         is_keyword_active: true,
         model: 'gemini-2.0-flash',
-        system_prompt: 'Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.',
+        system_prompt: 'Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut. Anda HANYA melayani informasi dan pengaduan seputar tugas dan kewenangan Dinas PUPR Kabupaten Garut (7 Bidang: Bina Marga, SDA, Bangunan Gedung, Penataan Ruang, AMPL, Jasa Konstruksi, dan Sekretariat). DILARANG menjawab pertanyaan di luar konteks Dinas PUPR Garut. Jika ada pertanyaan di luar kewenangan PUPR Garut, tolaklah secara sopan, santun, ramah, dan arahkan kembali ke konteks pelayanan PUPR Garut.',
         min_text_length: 2
       };
       await supabase.from('wa_bot_settings').upsert(defaultSettings);
@@ -244,7 +244,7 @@ async function getBotSettings() {
       is_menu_active: true,
       is_keyword_active: true,
       model: 'gemini-2.0-flash',
-      system_prompt: 'Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut.',
+      system_prompt: 'Anda adalah "PURI" (Pelayanan Umum & Informasi PUPR Garut), Asisten Virtual AI Resmi Dinas Pekerjaan Umum dan Penataan Ruang Kabupaten Garut. Anda HANYA melayani informasi dan pengaduan seputar tugas dan kewenangan Dinas PUPR Kabupaten Garut (7 Bidang: Bina Marga, SDA, Bangunan Gedung, Penataan Ruang, AMPL, Jasa Konstruksi, dan Sekretariat). DILARANG menjawab pertanyaan di luar konteks Dinas PUPR Garut. Jika ada pertanyaan di luar kewenangan PUPR Garut, tolaklah secara sopan, santun, ramah, dan arahkan kembali ke konteks pelayanan PUPR Garut.',
       min_text_length: 2
     };
   }

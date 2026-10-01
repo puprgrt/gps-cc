@@ -11,6 +11,12 @@ const puriMeetReminder = require('./workers/puriMeetReminder');
 
 const autoResolveWorker = require('./workers/autoResolveWorker');
 const supabaseKeepAliveWorker = require('./workers/supabaseKeepAliveWorker');
+const adminAlertService = require('./services/adminAlertService');
+
+// Inject WhatsApp sender into adminAlertService
+adminAlertService.setWhatsAppSender(async (jid, content) => {
+  return whatsappClient.sendMessage(jid, content);
+});
 
 const app = express();
 

@@ -145,8 +145,18 @@ class GeminiProvider extends AIProviderInterface {
         return result;
       } catch (err) {
         lastError = err;
-        // If circuit breaker is open, don't try other models in this provider
-        if (err.isCircuitOpen) {
+        // If circuit breaker is open or project-level non-retryable error, don't try other models
+        const isNonRetryableProjectError =
+          err.isCircuitOpen ||
+          err.isProjectBlocked ||
+          err.isAuthError ||
+          err.isBillingExhausted ||
+          this.isProjectBlockedError(err) ||
+          this.isAuthenticationError(err) ||
+          this.isBillingError(err);
+
+        if (isNonRetryableProjectError) {
+          console.warn(`[GEMINI] Non-retryable error on model ${modelName} (${err.errorType || 'PROJECT/AUTH'}): ${err.message}. Skipping remaining models in GEMINI.`);
           throw err;
         }
         console.warn(`[GEMINI] Model ${modelName} failed: ${err.message}. Trying next fallback model...`);

@@ -33,7 +33,8 @@ export type AIPuriIntent =
   | 'PERMOHONAN_DOKUMEN'
   | 'SARAN'
   | 'KRITIK'
-  | 'APRESIASI';
+  | 'APRESIASI'
+  | 'DILUAR_KEWENANGAN';
 
 /**
  * Tingkat Prioritas Penanganan Tiket
@@ -58,7 +59,8 @@ export type SmartLabelPUPR =
   | 'Jasa Konstruksi'
   | 'Administrasi'
   | 'Pengaduan'
-  | 'Informasi';
+  | 'Informasi'
+  | 'Luar Kewenangan';
 
 /**
  * Struktur Hasil Klasifikasi Pengaduan (Complaint Classification Schema)
