@@ -223,3 +223,63 @@ export interface GDriveFileMetadata {
   uploadedAt: string;
 }
 
+// 9. Data Model Daftar Simak Mandiri (Multi-Step Form Permohonan)
+export interface BuktiFotoDokumentasi {
+  id: string;
+  url: string;
+  name: string;
+  tag?: string;
+  timestamp: string;
+  gpsCoordinates?: string;
+}
+
+export interface KomponenSimakItem {
+  kode: string;
+  nama: string;
+  kategori: KategoriElemen;
+  satuan: 'Estimasi' | 'unit' | '%' | 'titik/m' | 'titik/panel' | 'm / %';
+  isChecked: boolean;
+  totalVolumeTerdampak: number;
+  rusakSangatRingan: number;
+  rusakRingan: number;
+  rusakSedang: number;
+  rusakBerat: number;
+  rusakSangatBerat: number;
+  komponenTidakSesuai: number;
+  fotoBukti: BuktiFotoDokumentasi[];
+}
+
+export interface DaftarSimakMandiriData {
+  // Langkah 1: Identitas Fisik
+  namaInstansi: string;
+  kodeOpd: string;
+  namaBangunan: string;
+  nupBarang: string;
+  tahunPembangunan: number;
+  jumlahLantai: number;
+  luasBangunanM2: number;
+
+  // Langkah 1B: Lokasi Geospasial
+  alamatLengkap: string;
+  kecamatan: string;
+  desaKelurahan: string;
+  titikKoordinatGps: string;
+
+  // Langkah 1C: Denah & Foto Tampak
+  denahUrl?: string;
+  fotoTampakDepan?: string;
+  fotoTampakBelakang?: string;
+  fotoTampakKanan?: string;
+  fotoTampakKiri?: string;
+
+  // Langkah 2, 3, 4: Evaluasi Komponen
+  komponenStruktur: Record<string, KomponenSimakItem>;
+  komponenArsitektur: Record<string, KomponenSimakItem>;
+  komponenUtilitas: Record<string, KomponenSimakItem>;
+
+  // Metadata
+  isHazardDeclared: boolean;
+  hazardDescription?: string;
+}
+
+

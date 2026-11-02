@@ -657,6 +657,40 @@ export default function PermohonanDetailPage() {
               </span>
             </div>
           </div>
+
+          {/* Card Bukti Dokumentasi Tampak Gedung */}
+          <div className="bg-[#111B2E] border border-white/10 rounded-2xl p-5 shadow-lg space-y-3">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-[#F2A900]" />
+                <h3 className="text-sm font-bold text-white">Dokumentasi 4 Tampak Gedung</h3>
+              </div>
+              <span className="text-[10px] text-slate-400 font-semibold">Lampiran Mandiri</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5">
+              {[
+                { title: 'Tampak Depan', id: 'depan' },
+                { title: 'Tampak Belakang', id: 'belakang' },
+                { title: 'Samping Kanan', id: 'kanan' },
+                { title: 'Samping Kiri', id: 'kiri' },
+              ].map((tampak) => (
+                <div key={tampak.id} className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5 text-center space-y-1">
+                  <span className="text-[10px] font-bold text-slate-300 block">{tampak.title}</span>
+                  <div className="w-full aspect-[4/3] rounded-lg bg-slate-800/80 border border-dashed border-white/10 flex items-center justify-center text-[10px] text-slate-500">
+                    <span>Dokumentasi #{tampak.id}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-400">
+              <span>Koordinat GPS Terverifikasi:</span>
+              <span className="font-mono text-[#F2A900] font-semibold">
+                {permohonan.bangunan?.latitude || -7.2144}, {permohonan.bangunan?.longitude || 107.8988}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
