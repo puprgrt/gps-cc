@@ -29,8 +29,8 @@
       "autoForwardPengaduan": true,
       "autoForwardPermohonan": true,
       "forwardEmergencyOnly": false,
-      "lastForwardedAt": null,
-      "totalForwardedCount": 0
+      "lastForwardedAt": "2026-11-02T03:12:12.850Z",
+      "totalForwardedCount": 1
     },
     "BANGUNAN_GEDUNG": {
       "bidang": "BANGUNAN_GEDUNG",
@@ -104,6 +104,20 @@
     }
   },
   "history": [
+    {
+      "id": "hist-1793589132850-949",
+      "ticketNumber": "TKT-20261102-010",
+      "type": "PENGADUAN",
+      "bidang": "SDA",
+      "targetNomorWa": "6281383981866",
+      "targetName": "Milka Fradesy, ST.",
+      "pelaporName": "Ibu Teti",
+      "judul": "Saluran air / irigasi persawahan terputus",
+      "prioritas": "NORMAL",
+      "dispatchedBy": "AI PURI Auto-Forward Engine",
+      "status": "SUCCESS",
+      "createdAt": "2026-11-02T03:12:12.850Z"
+    },
     {
       "id": "hist-1792544048219-912",
       "ticketNumber": "TKT-20261021-009",

@@ -1,5 +1,28 @@
 [
   {
+    "id": "tkt-1793589120643-502",
+    "nomorTiket": "TKT-20261102-010",
+    "conversationId": "conv-224708997984262@lid",
+    "pelapor": "Ibu Teti",
+    "nomorKontak": "+224708997984262",
+    "lokasi": "Kampung Hujung, Desa Sukamukti, Kecamatan Cilawu",
+    "kecamatan": "Cilawu",
+    "judul": "Saluran air / irigasi persawahan terputus",
+    "deskripsi": "makasih pak .maaf sudah mengganggu 🙏🙏.loker KDM bukan disini ya 🙏maaf sekali saya dapat nomor ini dari google 🙏",
+    "bidang": "SDA",
+    "bidangLabel": "Sumber Daya Air (SDA)",
+    "kategori": "Saluran Irigasi",
+    "prioritas": "NORMAL",
+    "status": "PENDING",
+    "langkahPenanganan": "Laporan diteruskan ke Unit Reaksi Cepat / Tim Teknis Bidang SDA Dinas PUPR Kabupaten Garut untuk dilakukan verifikasi dan peninjauan lapangan.",
+    "ringkasanBot": "🏛️ *PURI (Pelayanan Umum & Informasi PUPR Garut)*\n────────────────────────\nSama-sama, Ibu Teti Suryati! 🙏😊 \n\nIbu sama sekali tidak mengganggu, jadi tidak perlu meminta maaf ya, Ibu. PURI sangat memahami bahwa informasi di halaman pencarian internet kadang bisa kurang spesifik.\n\nBetul sekali Ibu, untuk informasi lowongan kerja program KDM/Provinsi memang bukan dikelola oleh Dinas PUPR Kabupaten Garut. \n\nNamun, mengenai keluhan persawahan di *Kampung Hujung, Desa Sukamukti, Kecamatan Cilawu* yang saluran airnya terputus, itu *SANGAT BETUL* merupakan wewenang Dinas PUPR Kabupaten Garut (Bidang Sumber Daya Air). \n\nLaporan dari Ibu Teti tersebut telah PURI buatkan rekapitulasi resminya sebagai berikut:\n\n📋 *Ringkasan Laporan Pengaduan:*\n- *Pelapor:* Ibu Teti\n- *Lokasi:* Kampung Hujung, Desa Sukamukti, Kecamatan Cilawu\n- *Jenis Permasalahan:* Saluran air / irigasi persawahan terputus\n- *Kategori Bidang:* Sumber Daya Air (SDA) Dinas PUPR Kab. Garut\n- *Tingkat Prioritas:* Normal\n*Langkah Penanganan:* Laporan diteruskan ke Unit Reaksi Cepat / Tim Teknis Bidang SDA Dinas PUPR Kabupaten Garut untuk dilakukan verifikasi dan peninjauan lapangan.\n\nSebagai bentuk evaluasi pelayanan kami, jika berkenan Ibu Teti dapat mengisi Survei Kepuasan Masyarakat (SKM) pada tautan berikut:\nhttps://gps-cc.vercel.app/spms/survei\n\nTerima kasih banyak telah menghubungi PURI dan peduli terhadap kondisi irigasi pertanian di wilayah Cilawu. Semoga sehat dan lancar selalu rezekinya ya, Ibu Teti! 🙏😊",
+    "assignedOperator": "OP-SEKRETARIAT-01",
+    "catatanPetugas": "Diteruskan otomatis dari Ringkasan Laporan AI PURI ke TRC Bidang.",
+    "createdAt": "2026-11-02T03:12:00.643Z",
+    "updatedAt": "2026-11-02T03:12:00.643Z",
+    "source": "WHATSAPP_BOT"
+  },
+  {
     "id": "tkt-1792544046264-853",
     "nomorTiket": "TKT-20261021-009",
     "conversationId": "conv-154481887080528@lid",

@@ -27,6 +27,8 @@ import {
   Target,
   Video,
   ClipboardCheck,
+  Building2,
+  Calculator,
   LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -60,6 +62,8 @@ export function Sidebar() {
     { icon: BookOpen, label: 'Knowledge Base', href: '/kb' },
     { icon: Map, label: 'GIS & Peta', href: '/gis' },
     { icon: PieChart, label: 'Analytics', href: '/analisis' },
+    { icon: Building2, label: 'SIPEKA BG', href: '/sipeka' },
+    { icon: Calculator, label: 'Kalkulator BG', href: '/sipeka/kalkulator' },
     { icon: AlertTriangle, label: 'Pengaduan', href: '/pengaduan' },
     { icon: Share2, label: 'Integrasi WhatsApp', href: '/whatsapp/integrasi' },
   ];

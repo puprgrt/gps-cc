@@ -1,5 +1,194 @@
 [
   {
+    "id": "log-1793590944389",
+    "timestamp": "2026-11-02T03:42:24.389Z",
+    "event": "USER_INFO",
+    "details": "Masuk sebagai: puri117",
+    "level": "info"
+  },
+  {
+    "id": "log-1793590944378",
+    "timestamp": "2026-11-02T03:42:24.378Z",
+    "event": "CONNECTED",
+    "details": "Terhubung ke jaringan Meta WhatsApp",
+    "level": "success"
+  },
+  {
+    "id": "log-1793590941613",
+    "timestamp": "2026-11-02T03:42:21.613Z",
+    "event": "SOCKET_INITIALIZING",
+    "details": "Memulai engine Baileys MD v2.3000.1043857760 | Sesi tersimpan: Tidak",
+    "level": "info"
+  },
+  {
+    "id": "log-1793590939409",
+    "timestamp": "2026-11-02T03:42:19.409Z",
+    "event": "RECONNECT_SCHEDULED",
+    "details": "Penyambungan kembali otomatis dijadwalkan dalam 2.0 detik.",
+    "level": "info"
+  },
+  {
+    "id": "log-1793590939402",
+    "timestamp": "2026-11-02T03:42:19.402Z",
+    "event": "DISCONNECTED",
+    "details": "Koneksi tertutup sementara (Kode: 408). Reconnect otomatis dengan sesi tersimpan...",
+    "level": "warn"
+  },
+  {
+    "id": "log-1793589632063",
+    "timestamp": "2026-11-02T03:20:32.063Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Teti (11014ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1793589618105",
+    "timestamp": "2026-11-02T03:20:18.105Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Teti [text]: \"terima kasih atas responnya apalagi kalo langsung ...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1793589278928",
+    "timestamp": "2026-11-02T03:14:38.928Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Teti (7609ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1793589269704",
+    "timestamp": "2026-11-02T03:14:29.704Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Teti [text]: \"aamiin terima kasih pak 🙏...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1793589132825",
+    "timestamp": "2026-11-02T03:12:12.825Z",
+    "event": "SEND_MESSAGE",
+    "details": "Pesan Teks ke 6281383981866@s.whatsapp.net: \"🏛️ *DISPOSISI PENGADUAN WARGA - DINAS PUPR KAB. G...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1793589124294",
+    "timestamp": "2026-11-02T03:12:04.294Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Teti (13959ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1793589123562",
+    "timestamp": "2026-11-02T03:12:03.562Z",
+    "event": "COMPLAINT_REGISTERED",
+    "details": "Pengaduan resmi [TKT-20261102-010] (NORMAL) tercatat untuk Teti: Saluran air / irigasi persawahan terputus",
+    "level": "info"
+  },
+  {
+    "id": "log-1793589098557",
+    "timestamp": "2026-11-02T03:11:38.557Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Teti [text]: \"makasih pak .maaf sudah mengganggu 🙏🙏.loker KDM ...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588817006",
+    "timestamp": "2026-11-02T03:06:57.006Z",
+    "event": "AI_LOCAL_REPLY",
+    "details": "Respon [LOCAL - PURI-Guardrail-Engine] dikirim ke Teti (0ms, Conf: 100%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588815490",
+    "timestamp": "2026-11-02T03:06:55.490Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Teti [text]: \"nama kampung hujung ,desa Sukamukti ,kecamatan Cil...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588782762",
+    "timestamp": "2026-11-02T03:06:22.762Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Teti (5387ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588775105",
+    "timestamp": "2026-11-02T03:06:15.105Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Teti [text]: \"baik pak 🙏...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588700770",
+    "timestamp": "2026-11-02T03:05:00.770Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Teti (9883ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588688488",
+    "timestamp": "2026-11-02T03:04:48.488Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Teti [text]: \"oh ya pak saya ada keluhan masalah di lingkungan p...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588530764",
+    "timestamp": "2026-11-02T03:02:10.764Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Teti (9039ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588518272",
+    "timestamp": "2026-11-02T03:01:58.272Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Teti [text]: \"oh begitu ya .makasih ya pak mohon maaf sekali sud...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588364038",
+    "timestamp": "2026-11-02T02:59:24.038Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Teti (7810ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588353591",
+    "timestamp": "2026-11-02T02:59:13.591Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Teti [text]: \"saya mau tanya apakah  lowongan kerja menyapu jala...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588229561",
+    "timestamp": "2026-11-02T02:57:09.561Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Teti (4949ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588222687",
+    "timestamp": "2026-11-02T02:57:02.687Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Teti [text]: \"perkenalkan nama saya ; Teti suryati...\"",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588214747",
+    "timestamp": "2026-11-02T02:56:54.747Z",
+    "event": "AI_GEMINI_REPLY",
+    "details": "Respon [GEMINI - gemini-3.6-flash] dikirim ke Teti (15025ms, Conf: 96%)",
+    "level": "info"
+  },
+  {
+    "id": "log-1793588197438",
+    "timestamp": "2026-11-02T02:56:37.438Z",
+    "event": "INBOUND_MESSAGE",
+    "details": "Pesan masuk dari Teti [text]: \"Selamat pagi pak  / ibu 🙏...\"",
+    "level": "info"
+  },
+  {
     "id": "log-1793579798731",
     "timestamp": "2026-11-02T00:36:38.731Z",
     "event": "AI_GEMINI_REPLY",
@@ -3308,195 +3497,6 @@
     "timestamp": "2026-10-23T04:17:56.962Z",
     "event": "AI_LOCAL_REPLY",
     "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke Hadiah Dari Tuhan (1663ms, Conf: 85%)",
-    "level": "info"
-  },
-  {
-    "id": "log-1792729073292",
-    "timestamp": "2026-10-23T04:17:53.292Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari Hadiah Dari Tuhan [text]: \"Email-nya yang ini yayasanyasmu.almusaaadah@gmail....\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792729044791",
-    "timestamp": "2026-10-23T04:17:24.791Z",
-    "event": "AI_LOCAL_REPLY",
-    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke Hadiah Dari Tuhan (1644ms, Conf: 85%)",
-    "level": "info"
-  },
-  {
-    "id": "log-1792729040600",
-    "timestamp": "2026-10-23T04:17:20.600Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari Hadiah Dari Tuhan [text]: \"Belum ada/belum masuk...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792728856360",
-    "timestamp": "2026-10-23T04:14:16.360Z",
-    "event": "AI_LOCAL_REPLY",
-    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke Angga (3161ms, Conf: 85%)",
-    "level": "info"
-  },
-  {
-    "id": "log-1792728851003",
-    "timestamp": "2026-10-23T04:14:11.003Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari Angga [text]: \"sudah dikirim Via Email tanggal 23 Oktober 2026 Pu...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792727214827",
-    "timestamp": "2026-10-23T03:46:54.827Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari Hadiah Dari Tuhan [text]: \"P...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792725911348",
-    "timestamp": "2026-10-23T03:25:11.348Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari Hadiah Dari Tuhan [text]: \"P...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792725901403",
-    "timestamp": "2026-10-23T03:25:01.403Z",
-    "event": "CALL_ERROR",
-    "details": "Error saat menolak panggilan: localDb.saveMessage is not a function",
-    "level": "error"
-  },
-  {
-    "id": "log-1792725901016",
-    "timestamp": "2026-10-23T03:25:01.016Z",
-    "event": "CALL_REJECTED",
-    "details": "Panggilan Suara dari 202005297541322@lid ditolak secara otomatis",
-    "level": "info"
-  },
-  {
-    "id": "log-1792725900791",
-    "timestamp": "2026-10-23T03:25:00.791Z",
-    "event": "CALL_INCOMING",
-    "details": "Panggilan Suara masuk dari 202005297541322@lid",
-    "level": "info"
-  },
-  {
-    "id": "log-1792725896608",
-    "timestamp": "2026-10-23T03:24:56.608Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari Hadiah Dari Tuhan [text]: \"P...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792725672961",
-    "timestamp": "2026-10-23T03:21:12.961Z",
-    "event": "AI_LOCAL_REPLY",
-    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke SUSANTI (5944ms, Conf: 85%)",
-    "level": "info"
-  },
-  {
-    "id": "log-1792725665811",
-    "timestamp": "2026-10-23T03:21:05.811Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari SUSANTI [document]: \"Surat Permohonan PUPR SDN 1 Sukawargi.pdf...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792725665808",
-    "timestamp": "2026-10-23T03:21:05.808Z",
-    "event": "MEDIA_DOWNLOAD",
-    "details": "Berhasil mengunduh lampiran document (319.1 KB) dari SUSANTI",
-    "level": "info"
-  },
-  {
-    "id": "log-1792725661543",
-    "timestamp": "2026-10-23T03:21:01.543Z",
-    "event": "AI_LOCAL_REPLY",
-    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke SUSANTI (5978ms, Conf: 85%)",
-    "level": "info"
-  },
-  {
-    "id": "log-1792725653168",
-    "timestamp": "2026-10-23T03:20:53.168Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari SUSANTI [text]: \"Baik, Bu. 🙏🏻 Surat permohonannya akan kami kirim...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792724176301",
-    "timestamp": "2026-10-23T02:56:16.301Z",
-    "event": "AI_LOCAL_REPLY",
-    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke Andiny Ramadhania (6406ms, Conf: 85%)",
-    "level": "info"
-  },
-  {
-    "id": "log-1792724168317",
-    "timestamp": "2026-10-23T02:56:08.317Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari Andiny Ramadhania [image]: \"saya sudah menerima tanda terima nya...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792724168313",
-    "timestamp": "2026-10-23T02:56:08.313Z",
-    "event": "MEDIA_DOWNLOAD",
-    "details": "Berhasil mengunduh lampiran image (124.5 KB) dari Andiny Ramadhania",
-    "level": "info"
-  },
-  {
-    "id": "log-1792724068969",
-    "timestamp": "2026-10-23T02:54:28.969Z",
-    "event": "ESCALATION_TRIGGERED",
-    "details": "Warga SUSANTI meminta terhubung dengan Operator Manusia",
-    "level": "info"
-  },
-  {
-    "id": "log-1792724067051",
-    "timestamp": "2026-10-23T02:54:27.051Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari SUSANTI [text]: \"Untuk surat permohonan, sebelumnya memang sudah ka...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792723969405",
-    "timestamp": "2026-10-23T02:52:49.405Z",
-    "event": "AI_LOCAL_REPLY",
-    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke Andiny Ramadhania (3220ms, Conf: 85%)",
-    "level": "info"
-  },
-  {
-    "id": "log-1792723965012",
-    "timestamp": "2026-10-23T02:52:45.012Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari Andiny Ramadhania [text]: \"Selamat pagi bapak/ibu saya dari sdn 1 cisero mau ...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792723924912",
-    "timestamp": "2026-10-23T02:52:04.912Z",
-    "event": "AI_LOCAL_REPLY",
-    "details": "Respon [LOCAL - puri-smart-knowledge-fallback] dikirim ke Andiny Ramadhania (6517ms, Conf: 85%)",
-    "level": "info"
-  },
-  {
-    "id": "log-1792723915452",
-    "timestamp": "2026-10-23T02:51:55.452Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari Andiny Ramadhania [text]: \"selamat pagi bapak/ibu bagaimaana apakah sudah ada...\"",
-    "level": "info"
-  },
-  {
-    "id": "log-1792722499541",
-    "timestamp": "2026-10-23T02:28:19.541Z",
-    "event": "ESCALATION_TRIGGERED",
-    "details": "Warga SUSANTI meminta terhubung dengan Operator Manusia",
-    "level": "info"
-  },
-  {
-    "id": "log-1792722496781",
-    "timestamp": "2026-10-23T02:28:16.781Z",
-    "event": "INBOUND_MESSAGE",
-    "details": "Pesan masuk dari SUSANTI [text]: \"Terima kasih atas respons dan bantuannya. Berikut ...\"",
     "level": "info"
   }
 ]
