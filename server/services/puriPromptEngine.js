@@ -121,22 +121,31 @@ Informasi jasa konstruksi, pembinaan penyedia/pengguna jasa, sertifikasi & pelat
 Irigasi, daerah irigasi, saluran primer/sekunder/tersier, bendung, embung, sungai, pengendalian banjir, pengamanan sungai, konservasi SDA, rekomendasi teknis irigasi/peil banjir.
 
 ### Bidang Penataan Ruang
-KRK (Keterangan Rencana Kota), PKKPR, RDTR, RTRW, kesesuaian pemanfaatan ruang, pengendalian/pengawasan pemanfaatan ruang, pengesahan siteplan, rekomendasi teknis tata ruang, RUMIJA, informasi zonasi.
+KRK (Keterangan Rencana Kabupaten), PKKPR (Persetujuan Kesesuaian Kegiatan Pemanfaatan Ruang), Pengesahan Siteplan Kawasan, RDTR, RTRW, kesesuaian pemanfaatan ruang, pengendalian/pengawasan pemanfaatan ruang, rekomendasi teknis tata ruang, RUMIJA, informasi zonasi.
 
 ### Bidang Bina Marga
-Pembangunan/pemeliharaan/rehabilitasi jalan, pembangunan/pemeliharaan jembatan, drainase jalan, trotoar, bahu jalan, perlengkapan jalan, kondisi jalan kabupaten, program pembangunan jalan.
+Pembangunan/pemeliharaan/rehabilitasi jalan, pembangunan/pemeliharaan jembatan, drainase jalan, trotoar, bahu jalan, Ijin Pemanfaatan Sempadan Jalan & Bukaan Akses Masuk persil, perlengkapan jalan, kondisi jalan kabupaten, program pembangunan jalan.
 
 ### Sekretariat
-Profil Dinas PUPR, struktur organisasi, tugas & fungsi, jam operasional, alamat & kontak resmi, PPID, surat masuk/keluar, kepegawaian, perencanaan & program kerja, informasi keuangan, pengadaan barang/jasa.
+Profil Dinas PUPR, struktur organisasi, tugas & fungsi, jam operasional, alamat kantor Jl. Raya Samarang No. 115, kontak resmi Hotline PURI 117, PPID, surat masuk/keluar, kepegawaian, perencanaan & program kerja, informasi keuangan, pengadaan barang/jasa.
+
+### 8 Pelayanan Publik Resmi Dinas PUPR Kabupaten Garut:
+1. **KRK (Keterangan Rencana Kabupaten)** — Bidang Penataan Ruang (syarat: KTP, sertifikat/alas hak, denah situasi, surat kuasa, PBB).
+2. **PKKPR (Persetujuan Kesesuaian Kegiatan Pemanfaatan Ruang)** — Bidang Penataan Ruang (berusaha via OSS RBA, non-berusaha via DPUPR/DPMPTSP).
+3. **Rekomendasi Peil Banjir** — Bidang Sumber Daya Air (SDA) (acuan elevasi lantai & drainase tapak kawasan).
+4. **Rekomendasi Teknis Irigasi** — Bidang Sumber Daya Air (SDA) (rekomtek izin pemanfaatan sempadan & pelintasan saluran irigasi).
+5. **Ijin Pemanfaatan Sempadan Jalan & Bukaan Akses Masuk** — Bidang Bina Marga (izin jembatan/plat penutup saluran tepi jalan).
+6. **Pengesahan Siteplan** — Bidang Penataan Ruang (rencana tapak perumahan/usaha, verifikasi PSU & RTH minimal).
+7. **PBG (Persetujuan Bangunan Gedung)** — Bidang Bangunan Gedung via portal SIMBG (4 bidang keahlian: Arsitektur, Struktur Atas, Struktur Bawah, MEP; tersedia jalur khusus MBR Prototipe).
+8. **SLF (Sertifikat Laik Fungsi)** — Bidang Bangunan Gedung via portal SIMBG (acuan Buku Saku SLF 2024, masa berlaku 20 tahun hunian / 5 tahun non-hunian).
 
 ### Layanan Terpadu (Lintas Bidang)
-- Menjelaskan persyaratan, alur pelayanan, biaya & waktu penyelesaian.
+- Menjelaskan persyaratan, alur pelayanan, biaya retribusi (Perda Garut No. 1 Tahun 2024) & waktu penyelesaian.
 - Membantu pelacakan permohonan PBG/SLF melalui SIMBG.
 - Menentukan layanan yang sesuai dengan kebutuhan masyarakat.
-- Memberikan informasi regulasi, SOP, dan standar pelayanan.
-- Menerima serta mengelola pengaduan masyarakat.
-- Menyusun ringkasan konsultasi.
-- Mengarahkan pengguna kepada bidang/petugas berwenang.
+- Memberikan informasi regulasi, SOP, dan standar pelayanan resmi.
+- Menerima serta mengelola pengaduan masyarakat via Hotline PURI 117.
+- Menyusun ringkasan konsultasi dan mengarahkan pengguna kepada bidang/petugas berwenang.
 `.trim();
 
 // ============================================================================
@@ -478,9 +487,9 @@ const SECTION_ATURAN_KEAMANAN_INTERNAL = `
 const MAX_HISTORY_CHARS = 3000;
 
 /**
- * Maximum characters for RAG context injection.
+ * Maximum characters for RAG context injection (expanded for detailed requirements checklists).
  */
-const MAX_RAG_CHARS = 2000;
+const MAX_RAG_CHARS = 8000;
 
 /**
  * Build complete PURI system prompt with all 18+ sections.
@@ -633,7 +642,7 @@ function injectRAGContext(snippets) {
   for (const snippet of snippets) {
     if (!snippet) continue;
 
-    const truncated = snippet.length > 800 ? snippet.substring(0, 797) + '...' : snippet;
+    const truncated = snippet.length > 2500 ? snippet.substring(0, 2497) + '...' : snippet;
     
     if (currentLength + truncated.length > MAX_RAG_CHARS) break;
 

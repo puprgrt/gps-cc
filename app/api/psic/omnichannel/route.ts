@@ -77,10 +77,12 @@ export async function POST(request: Request) {
       bidang = 'SDA';
     } else if (lower.includes('pbg') || lower.includes('slf') || lower.includes('izin') || lower.includes('rumah') || lower.includes('gedung')) {
       bidang = 'BANGUNAN_GEDUNG';
-    } else if (lower.includes('tata ruang') || lower.includes('kkpr') || lower.includes('rdtr') || lower.includes('zonasi')) {
+    } else if (lower.includes('tata ruang') || lower.includes('krk') || lower.includes('pkkpr') || lower.includes('rdtr') || lower.includes('zonasi') || lower.includes('siteplan')) {
       bidang = 'PENATAAN_RUANG';
-    } else if (lower.includes('air bersih') || lower.includes('sanitasi') || lower.includes('pipa') || lower.includes('ampl')) {
+    } else if (lower.includes('air bersih') || lower.includes('sanitasi') || lower.includes('pipa') || lower.includes('ampl') || lower.includes('air minum') || lower.includes('spam')) {
       bidang = 'AMPL';
+    } else if (lower.includes('kontraktor') || lower.includes('sertifikat bujk') || lower.includes('jasa konstruksi') || lower.includes('sbu') || lower.includes('ska') || lower.includes('skt')) {
+      bidang = 'JASA_KONSTRUKSI';
     }
 
     // Klasifikasi Prioritas & Sentimen

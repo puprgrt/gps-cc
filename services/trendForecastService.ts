@@ -69,7 +69,7 @@ export class TrendForecastService {
       },
       {
         bidang: 'BANGUNAN_GEDUNG',
-        bidangLabel: 'Bidang Bangunan Gedung (SIMBG)',
+        bidangLabel: 'Bidang Bangunan (SIMBG)',
         currentWeeklyVolume: 24,
         predictedWeeklyVolume: 25,
         changePercentage: 4.1,
@@ -89,7 +89,7 @@ export class TrendForecastService {
         trendDirection: 'DOWN',
         riskLevel: 'NORMAL',
         primaryDriver:
-          'Penurunan pengajuan pengecekan zona tata ruang (KKPR) pada akhir bulan.',
+          'Penurunan pengajuan pengecekan zona tata ruang (PKKPR) pada akhir bulan.',
         mitigationRecommendation:
           'Pertahankan akurasi verifikasi peta RDTR GIS Kabupaten Garut.',
       },

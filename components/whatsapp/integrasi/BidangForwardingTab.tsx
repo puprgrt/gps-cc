@@ -46,7 +46,7 @@ const SECTORS_META: {
   },
   {
     id: 'BANGUNAN_GEDUNG',
-    title: 'Bidang Bangunan Gedung',
+    title: 'Bidang Bangunan',
     badge: '🏢 PBG, SLF & BGN',
     colorBorder: 'border-emerald-500/40',
     colorBg: 'bg-emerald-950/20',

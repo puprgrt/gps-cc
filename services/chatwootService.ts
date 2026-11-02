@@ -156,7 +156,7 @@ export class ChatwootService {
       };
     }
 
-    // 3. Deteksi Bidang Bangunan Gedung (PBG, SLF, IMB, Ruko, Gedung)
+    // 3. Deteksi Bidang Bangunan (PBG, SLF, IMB, Ruko, Gedung)
     if (
       text.includes('pbg') ||
       text.includes('slf') ||
@@ -216,6 +216,51 @@ export class ChatwootService {
         confidenceScore: 93.5,
         slaHours: 24,
         suggestedReply: `Halo, informasi Keterangan Rencana Kabupaten (KRK) dan Tata Ruang Kabupaten Garut dapat dikonsultasikan langsung dengan **Bidang Penataan Ruang** Dinas PUPR Garut.`,
+      };
+    }
+
+    // 6. Deteksi Bidang AMPL (Air Minum, Sanitasi, SPAM)
+    if (
+      text.includes('air minum') ||
+      text.includes('air bersih') ||
+      text.includes('sanitasi') ||
+      text.includes('spam') ||
+      text.includes('ampl') ||
+      text.includes('pipa air')
+    ) {
+      return {
+        bidang: 'AMPL',
+        intent: 'PENGADUAN',
+        smartLabel: 'Air Minum & Sanitasi',
+        priority: 'TINGGI',
+        sentiment: 'NEGATIF',
+        emotion: 'MENDESAK',
+        confidenceScore: 93.0,
+        slaHours: 12,
+        suggestedReply: `Terima kasih atas laporannya. Pengaduan terkait air minum/sanitasi telah diteruskan ke **Bidang AMPL** Dinas PUPR Kabupaten Garut untuk ditindaklanjuti.`,
+      };
+    }
+
+    // 7. Deteksi Bidang Jasa Konstruksi (BUJK, SBU, SKA, SKT, Kontraktor)
+    if (
+      text.includes('kontraktor') ||
+      text.includes('jasa konstruksi') ||
+      text.includes('sertifikat bujk') ||
+      text.includes('bujk') ||
+      text.includes('sbu') ||
+      text.includes('ska') ||
+      text.includes('skt')
+    ) {
+      return {
+        bidang: 'JASA_KONSTRUKSI',
+        intent: 'PERSYARATAN',
+        smartLabel: 'Jasa Konstruksi',
+        priority: 'NORMAL',
+        sentiment: 'NETRAL',
+        emotion: 'NETRAL',
+        confidenceScore: 92.5,
+        slaHours: 24,
+        suggestedReply: `Halo, untuk informasi terkait sertifikasi Badan Usaha Jasa Konstruksi (BUJK), SKA, SKT, atau SBU, silakan hubungi **Bidang Jasa Konstruksi** Dinas PUPR Kabupaten Garut.`,
       };
     }
 

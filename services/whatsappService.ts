@@ -290,7 +290,7 @@ export class WhatsAppService {
         isEmergency: false,
         smartLabels: ['PBG', 'Jalan', 'Informasi'],
         aiSuggestedReply: {
-          text: 'Halo Pak Dedi. Sistem PURI telah membaca dokumen Surat Permohonan PBG terlampir dan membuat 1 Tiket Utama ke Bidang Bangunan Gedung serta sub-tugas penanganan jalan berlubang ke Bidang Bina Marga.',
+          text: 'Halo Pak Dedi. Sistem PURI telah membaca dokumen Surat Permohonan PBG terlampir dan membuat 1 Tiket Utama ke Bidang Bangunan serta sub-tugas penanganan jalan berlubang ke Bidang Bina Marga.',
           confidence: 96,
           source: 'PURI Multi-Domain Engine',
         },

@@ -1,1 +1,301 @@
-[]
+[
+  {
+    "id": "doc-krk-persyaratan",
+    "bidang": "PENATAAN_RUANG",
+    "layanan": "KRK",
+    "title": "Persyaratan Permohonan KRK (Keterangan Rencana Kota/Kabupaten)",
+    "keywords": [
+      "krk",
+      "keterangan rencana kota",
+      "keterangan rencana kabupaten",
+      "syarat krk",
+      "persyaratan krk",
+      "berkas krk",
+      "polygon shp",
+      "kml",
+      "kmz"
+    ],
+    "content": "Persyaratan Resmi Permohonan KRK (Keterangan Rencana Kota/Kabupaten) Dinas PUPR Kabupaten Garut: 1. Surat Permohonan; 2. KTP Pemohon; 3. Fotocopy Sertifikat Tanah; 4. Gambar Batas Lahan berupa polygon dengan format shp (beserta extensionnya) atau format KML/KMZ."
+  },
+  {
+    "id": "doc-peil-banjir-persyaratan",
+    "bidang": "SDA",
+    "layanan": "PEIL_BANJIR",
+    "title": "Persyaratan Rekomendasi Peil Banjir",
+    "keywords": [
+      "peil banjir",
+      "rekomendasi peil banjir",
+      "syarat peil banjir",
+      "persyaratan peil banjir",
+      "elevasi banjir",
+      "drainase peil banjir"
+    ],
+    "content": "Persyaratan Resmi Rekomendasi Peil Banjir Bidang SDA Dinas PUPR Kabupaten Garut: 1. Surat permohonan disertai fotocopy KTP/identitas pemohon; 2. Bukti Kepemilikan lahan yang dikuasi oleh pemohon; 3. Fotocopy Keterangan Rencana Kota (KRK) dan Fotocopy dokumen lingkungan UPL/UKL/AMDAL (atau dibuat bersamaan dengan peil banjir); Rencana site plan; 4. Denah dan peta lokasi yang diajukan; 5. Data ukur elevasi rencana pembangunan; Gambar rencana drainase disertai elevasi; 6. Kajian teknis sistem drainase; 7. Foto lokasi dan saluran sekitar; 8. Surat keterangan Kepala Desa bila limpasan air akan memakai saluran desa."
+  },
+  {
+    "id": "doc-irigasi-persyaratan",
+    "bidang": "SDA",
+    "layanan": "IRIGASI",
+    "title": "Persyaratan Rekomendasi Irigasi Teknis",
+    "keywords": [
+      "rekomendasi irigasi",
+      "irigasi teknis",
+      "syarat irigasi",
+      "persyaratan irigasi",
+      "rekomtek irigasi",
+      "saluran irigasi"
+    ],
+    "content": "Persyaratan Resmi Rekomendasi Irigasi Teknis Bidang SDA Dinas PUPR Kabupaten Garut: a. Surat permohonan disertai fotocopy KTP/identitas pemohon; b. Fotocopy Keterangan Rencana Kota (KRK); c. Rencana site plan; d. Sertifikat sesuai lahan yang dikuasi oleh pemohon; e. Denah dan peta lokasi yang diajukan."
+  },
+  {
+    "id": "doc-rumija-persyaratan",
+    "bidang": "BINA_MARGA",
+    "layanan": "SEMPADAN_JALAN",
+    "title": "Persyaratan Rumija / Akses Jalan Masuk / Rekomendasi Teknis Pemakaian Ruang Milik Jalan",
+    "keywords": [
+      "rumija",
+      "akses jalan masuk",
+      "bagian bagian jalan",
+      "sempadan jalan",
+      "rekomendasi teknis pemakaian ruang milik jalan",
+      "syarat rumija",
+      "syarat akses masuk"
+    ],
+    "content": "Persyaratan Resmi Rumija / Akses Jalan Masuk / Bagian-bagian Jalan / Rekomendasi Teknis Pemakaian Ruang Milik Jalan Bidang Bina Marga Dinas PUPR Kabupaten Garut: 1. Surat Permohonan; 2. Photo Copy KTP (Jika Pemohon Perorangan); 3. Gambar Pra Site Plan Dan Gambar-Gambar Lainnya; 4. Surat Pernyataan."
+  },
+  {
+    "id": "doc-siteplan-persyaratan",
+    "bidang": "PENATAAN_RUANG",
+    "layanan": "SITEPLAN",
+    "title": "Persyaratan Pengesahan Site Plan Kawasan",
+    "keywords": [
+      "site plan",
+      "siteplan",
+      "pengesahan site plan",
+      "syarat site plan",
+      "persyaratan siteplan",
+      "rencana tapak",
+      "psu",
+      "tpu"
+    ],
+    "content": "Persyaratan Resmi Pengesahan Site Plan Bidang Penataan Ruang Dinas PUPR Kabupaten Garut: 1. Fotocopy Keterangan Rencana Kota (KRK) dari Dinas PUPR Kab Garut; 2. Fotocopy dokumen KKPR atau pernyataan mandiri usaha mikro/kecil terkait tata ruang; 3. Fotocopy NIB yang telah terbit; 4. Fotocopy Dokumen Lingkungan seperti PKPLH/UKL-UPL/Amdal; 5. Fotocopy Dokumen kepemilikan lahan (sertifikat hak milik/SPH/AJB) total luas sesuai permohonan site plan; 6. Fotocopy Rekomendasi Peil Banjir dari Dinas PUPR Kab. Garut; 7. Fotocopy Rekomendasi Andalalin (Dishub dan Polres); 8. Fotocopy Rekomendasi Damkar dari Dinas Pemadam Kebakaran; 9. Fotocopy Rekomendasi/surat keterangan lahan tidak produktif dari Dinas Pertanian Kab Garut (jika masuk kawasan pertanian); 10. Fotocopy Rekomendasi Irigasi Teknis dari Dinas PUPR Kab. Garut (jika dekat irigasi); 11. Fotocopy surat keterangan penyediaan Tempat Pemakaman Umum (TPU sebesar 2% dari luas lahan) dari desa lokasi TPU disertai koordinat dan bukti kepemilikan lahan TPU; 12. Fotocopy Rekomendasi Pemanfaatan Bagian Jalan (Rumija) dari Dinas PUPR Kab Garut."
+  },
+  {
+    "id": "doc-pbg-hunian-tidak-sederhana",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "PBG",
+    "title": "Persyaratan PBG Fungsi Hunian Rumah Tinggal Tidak Sederhana (> 90 m² / 2 Lantai)",
+    "keywords": [
+      "pbg rumah 2 lantai",
+      "pbg hunian tidak sederhana",
+      "pbg lebih 90 m2",
+      "syarat pbg rumah mewah",
+      "simbg hunian tidak sederhana",
+      "2 lantai",
+      "90 m2",
+      "tidak sederhana",
+      "hunian tidak sederhana",
+      "rumah mewah",
+      "bertingkat"
+    ],
+    "content": "Persyaratan PBG Fungsi Hunian Rumah Tinggal Tidak Sederhana (> 90 m² / 2 Lantai) via SIMBG (simbg.pu.go.id - Fungsi: Hunian, Sub Fungsi: Rumah Tinggal Tunggal): 1. Data Tanah: Sertifikat/AJB/Bukti Kepemilikan (Surat Perjanjian Pemanfaatan Tanah jika nama pemohon beda), Gambar Sederhana Batas Tanah, Hasil Uji Tanah/Lab/Tes Sondir (wajib jika > 2 lantai). 2. Data Umum (Pemilik): Jasa Perencana SKA/SBU, Rekomendasi Damkar, Rekomendasi Jalan Masuk Bina Marga PUPR (jika perlu), KRK Dinas PUPR Garut, KTP/KITAS. 3. Ketentuan Teknis (Konsultan): Gambar Arsitektur lengkap (situasi, tapak, denah, potongan, tampak, tata ruang dalam/luar, spesifikasi material), Gambar Struktur (rencana & detail pondasi, kolom, balok, pelat, atap, spesifikasi & perhitungan struktur), Gambar MEP lengkap (sanitasi plumbing, listrik, pencahayaan, proteksi damkar, sampah, spesifikasi & perhitungan teknis MEP)."
+  },
+  {
+    "id": "doc-pbg-hunian-sederhana",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "PBG",
+    "title": "Persyaratan PBG Fungsi Hunian Rumah Tinggal Sederhana > 72 m² (1 Lantai)",
+    "keywords": [
+      "pbg rumah 1 lantai",
+      "pbg rumah sederhana",
+      "pbg lebih 72 m2",
+      "syarat pbg rumah tinggal sederhana",
+      "simbg rumah 1 lantai",
+      "1 lantai",
+      "72 m2",
+      "sederhana",
+      "hunian sederhana",
+      "rumah 1 lantai"
+    ],
+    "content": "Persyaratan PBG Fungsi Hunian Rumah Tinggal Sederhana > 72 m² (1 Lantai) via SIMBG (simbg.pu.go.id - Fungsi: Hunian, Sub Fungsi: Rumah Tinggal Tunggal): 1. Data Tanah: Sertifikat/AJB/Bukti Kepemilikan (Surat Perjanjian jika beda nama), Gambar Sederhana Batas Tanah. 2. Data Umum (Pemilik): Jasa Perencana SKA/SBU, KRK Bidang Penataan Ruang Dinas PUPR Garut, KTP/KITAS. 3. Ketentuan Teknis (Konsultan): Gambar Arsitektur (situasi, rencana tapak, denah, potongan, tampak, tata ruang dalam/luar, spesifikasi bahan), Gambar Struktur (rencana & detail pondasi, kolom, balok, pelat, atap, perhitungan struktur), Gambar MEP (sanitasi plumbing, instalasi listrik, spesifikasi & perhitungan teknis MEP)."
+  },
+  {
+    "id": "doc-pbg-campuran",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "PBG",
+    "title": "Persyaratan PBG Fungsi Campuran (Contoh: Hunian dan Usaha / Ruko)",
+    "keywords": [
+      "pbg ruko",
+      "pbg fungsi campuran",
+      "pbg rumah toko",
+      "syarat pbg ruko",
+      "simbg fungsi campuran",
+      "campuran",
+      "ruko",
+      "rumah toko",
+      "hunian dan usaha"
+    ],
+    "content": "Persyaratan PBG Fungsi Campuran (Hunian dan Usaha / Ruko) via SIMBG (simbg.pu.go.id - Fungsi: Campuran): 1. Data Tanah: Sertifikat/AJB (Surat Perjanjian jika beda nama), Gambar Batas Tanah, Hasil Uji Tanah/Lab/Sondir. 2. Data Umum (Pemilik): Jasa Perencana SKA/SBU, Rekomendasi DLH/OSS, Rekomendasi Damkar, Rekomendasi Jalan Masuk Bina Marga PUPR, Rekomendasi Izin Lalu Lintas Dishub & Polres Garut, Rekomendasi Peil Banjir SDA PUPR, Site Plan PUPR (permohonan tertentu), KRK Dinas PUPR Garut & KKPR OSS, KTP/KITAS. 3. Ketentuan Teknis (Konsultan): Perhitungan teknis bangunan, Gambar Arsitektur lengkap, Gambar Struktur lengkap (pondasi, kolom, balok, pelat, tangga, atap), Gambar MEP lengkap (sanitasi, listrik, pencahayaan, damkar, sampah, spesifikasi & perhitungan teknis MEP)."
+  },
+  {
+    "id": "doc-pbg-perumahan",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "PBG",
+    "title": "Persyaratan PBG Fungsi Hunian Perumahan (Rumah Tinggal Deret)",
+    "keywords": [
+      "pbg perumahan",
+      "pbg developer",
+      "pbg rumah deret",
+      "syarat pbg perumahan",
+      "simbg rumah deret"
+    ],
+    "content": "Persyaratan PBG Fungsi Hunian Perumahan (Rumah Tinggal Deret) via SIMBG (simbg.pu.go.id - Fungsi: Hunian, Sub Fungsi: Rumah Tinggal Deret): 1. Data Tanah: Sertifikat/AJB (Surat Perjanjian jika beda nama), Gambar Batas Tanah, Hasil Uji Tanah/Sondir (bila > 2 lantai). 2. Data Umum (Pemilik): Jasa Perencana SKA/SBU, Rekomendasi Lingkungan DLH/OSS, Rekomendasi Damkar, Rekomendasi Jalan Masuk Bina Marga PUPR, Rekomendasi Dishub & Polres Garut, Rekomendasi Peil Banjir SDA PUPR, Pengesahan Site Plan Dinas PUPR, KRK PUPR & KKPR OSS, KTP/KITAS. 3. Ketentuan Teknis (Konsultan): Gambar Arsitektur, Struktur (fondasi, kolom, balok, pelat, atap, perhitungan struktur), MEP (sanitasi plumbing, listrik, pencahayaan, proteksi damkar, sampah, perhitungan teknis MEP)."
+  },
+  {
+    "id": "doc-pbg-reklame",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "PBG",
+    "title": "Persyaratan PBG Reklame / Billboard (Bangunan Prasarana)",
+    "keywords": [
+      "pbg reklame",
+      "pbg billboard",
+      "pbg papan nama",
+      "syarat pbg reklame",
+      "simbg reklame"
+    ],
+    "content": "Persyaratan PBG Reklame / Billboard via SIMBG (simbg.pu.go.id - Fungsi: Bangunan Prasarana, Sub Fungsi: Reklame/Papan Nama): 1. Data Tanah: Sertifikat/AJB (Surat Perjanjian jika beda nama), Gambar Batas Tanah, Hasil Uji Tanah/Lab/Sondir. 2. Data Umum (Pemilik): Jasa Perencana SKA/SBU, Rekomendasi Lingkungan DLH/OSS, Rekomendasi Dishub (bila perlu), Rekomendasi Izin Rumija Bina Marga PUPR (bila perlu), KRK PUPR & KKPR OSS, KTP/KITAS. 3. Ketentuan Teknis (Konsultan): Gambar dan perhitungan teknis khusus untuk prasarana reklame/billboard."
+  },
+  {
+    "id": "doc-pbg-keagamaan",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "PBG",
+    "title": "Persyaratan PBG Fungsi Keagamaan (Mesjid / Gereja / Tempat Ibadah)",
+    "keywords": [
+      "pbg masjid",
+      "pbg mesjid",
+      "pbg gereja",
+      "pbg tempat ibadah",
+      "pbg fungsi keagamaan",
+      "skub kemenag"
+    ],
+    "content": "Persyaratan PBG Fungsi Keagamaan via SIMBG (simbg.pu.go.id - Fungsi: Keagamaan, Sub Fungsi: Mesjid/Gereja/Lainnya): 1. Data Tanah: Sertifikat/AJB/Ikrar Wakaf (Surat Perjanjian jika beda nama), Gambar Batas Tanah, Uji Tanah/Sondir (bila > 2 lantai). 2. Data Umum (Pemilik): Jasa Perencana SKA/SBU, Surat Kerukunan Umat Beragama (SKUB) dari Kemenag, Rekomendasi DLH/OSS, Rekom Damkar, Rekom Jalan Masuk Bina Marga PUPR, Rekom Dishub & Polres Garut, Rekom Peil Banjir SDA PUPR, Site Plan PUPR (jika perlu), KRK PUPR & KKPR OSS, KTP/KITAS. 3. Ketentuan Teknis (Konsultan): Gambar Arsitektur lengkap, Gambar Struktur (pondasi, kolom, balok, pelat, atap, perhitungan struktur), Gambar MEP lengkap (sanitasi, listrik, pencahayaan, damkar, sampah, perhitungan MEP)."
+  },
+  {
+    "id": "doc-pbg-usaha",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "PBG",
+    "title": "Persyaratan PBG Fungsi Usaha (Perdagangan, Toko, Mall, Kantor Usaha)",
+    "keywords": [
+      "pbg usaha",
+      "pbg gedung usaha",
+      "pbg toko",
+      "pbg pabrik",
+      "pbg kantor usaha",
+      "syarat pbg usaha",
+      "usaha",
+      "gedung usaha",
+      "perdagangan",
+      "kantor usaha",
+      "toko"
+    ],
+    "content": "Persyaratan PBG Fungsi Usaha via SIMBG (simbg.pu.go.id - Fungsi: Usaha, Sub Fungsi: Perdagangan/Jasa): 1. Data Tanah: Sertifikat/AJB (Surat Perjanjian jika beda nama), Gambar Batas Tanah, Hasil Uji Tanah/Lab/Sondir. 2. Data Umum (Pemilik): Jasa Perencana SKA/SBU, Rekomendasi Lingkungan DLH/OSS, Rekomendasi Damkar, Rekomendasi Jalan Masuk Bina Marga PUPR, Rekomendasi Dishub & Polres Garut, Rekomendasi Peil Banjir SDA PUPR, Site Plan PUPR (jika perlu), KRK PUPR & KKPR OSS, KTP/KITAS. 3. Ketentuan Teknis (Konsultan): Perhitungan teknis bangunan, Gambar Arsitektur lengkap, Gambar Struktur lengkap, Gambar MEP lengkap (sanitasi, listrik, pencahayaan, damkar, sampah, perhitungan teknis MEP)."
+  },
+  {
+    "id": "doc-slf-hunian",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "SLF",
+    "title": "Persyaratan SLF Fungsi Hunian (Rumah Tinggal Tunggal)",
+    "keywords": [
+      "slf rumah tinggal",
+      "slf hunian",
+      "syarat slf hunian",
+      "simbg slf hunian",
+      "pernyataan kelaikan fungsi"
+    ],
+    "content": "Persyaratan SLF Fungsi Hunian via SIMBG (simbg.pu.go.id - Fungsi: Hunian, Sub Fungsi: Rumah Tinggal Tunggal): 1. Data Tanah: Sertifikat/AJB (Surat Perjanjian jika beda nama), Gambar Batas Tanah, Uji Tanah/Sondir (bila > 2 lantai). 2. Data Umum - Konsultan: Jasa Perencana SKA/SBU, Laporan Pemeriksaan Kelaikan Fungsi Bangunan sesuai PP No. 16/2021, Surat Pernyataan Kelaikan Fungsi bermaterai (ahli sipil, arsitek, MEP). Data Umum - Pemilik: Rekomendasi Damkar (untuk hunian > 90 m²), Rekomendasi Jalan Masuk Bina Marga PUPR (bila perlu), KRK PUPR, KTP/KITAS, Dokumen Perizinan IMB/PBG lama. 3. Ketentuan Teknis (Konsultan): As Built Drawing Arsitektur, As Built Drawing Struktur (pondasi, kolom, balok, pelat, atap, perhitungan struktur), As Built Drawing MEP (sanitasi, listrik, spesifikasi & perhitungan teknis)."
+  },
+  {
+    "id": "doc-slf-reklame",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "SLF",
+    "title": "Persyaratan SLF Menara / Reklame / Billboard (Bangunan Prasarana)",
+    "keywords": [
+      "slf reklame",
+      "slf billboard",
+      "slf menara",
+      "syarat slf reklame",
+      "simbg slf reklame"
+    ],
+    "content": "Persyaratan SLF Menara / Reklame / Billboard via SIMBG (simbg.pu.go.id - Fungsi: Bangunan Prasarana, Sub Fungsi: Reklame/Papan Nama): 1. Data Tanah: Sertifikat/AJB (Surat Perjanjian jika beda nama), Gambar Batas Tanah, Uji Tanah/Sondir. 2. Data Umum - Konsultan: Jasa Perencana SKA/SBU, Laporan Pemeriksaan Kelaikan Fungsi (PP 16/2021), Surat Pernyataan Kelaikan Fungsi bermaterai, As Built Drawing lengkap (Struktur, Arsitektur, MEP). Data Umum - Pemilik: Rekomendasi Lingkungan DLH/OSS, Rekomendasi Dishub (bila perlu), Rekomendasi Rumija Bina Marga PUPR (bila perlu), KRK PUPR & KKPR OSS, KTP/KITAS, Dokumen IMB/PBG lama. 3. Ketentuan Teknis (Konsultan): Gambar dan perhitungan teknis prasarana."
+  },
+  {
+    "id": "doc-slf-non-hunian",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "SLF",
+    "title": "Persyaratan SLF Selain Fungsi Hunian dan Reklame (Usaha, Sosial, Pabrik, Hotel)",
+    "keywords": [
+      "slf gedung usaha",
+      "slf selain hunian",
+      "slf hotel",
+      "slf pabrik",
+      "slf rumah sakit",
+      "syarat slf usaha",
+      "selain hunian",
+      "non hunian",
+      "slf gedung usaha",
+      "slf hotel",
+      "slf pabrik",
+      "slf rumah sakit"
+    ],
+    "content": "Persyaratan SLF Selain Fungsi Hunian dan Reklame (Contoh: Usaha/Perdagangan) via SIMBG (simbg.pu.go.id): 1. Data Tanah: Sertifikat/AJB (Surat Perjanjian jika beda nama), Gambar Batas Tanah, Uji Tanah/Sondir. 2. Data Umum - Konsultan: Jasa Perencana SKA/SBU, Laporan Pemeriksaan Kelaikan Fungsi PP 16/2021, Surat Pernyataan Kelaikan Fungsi bermaterai (ahli sipil, arsitek, MEP). Data Umum - Pemilik: Saran Teknis Lingkungan DLH/OSS, Saran Teknis Damkar, Saran Teknis Jalan Masuk Bina Marga PUPR, Saran Teknis Izin Lalu Lintas Dishub & Polres, Saran Teknis Peil Banjir SDA PUPR, Site Plan PUPR, KRK PUPR & KKPR OSS, KTP/KITAS, Dokumen IMB/PBG lama. 3. Ketentuan Teknis (Konsultan): As Built Drawing Arsitektur, As Built Drawing Struktur (pondasi, kolom, balok, pelat, atap, perhitungan struktur), As Built Drawing MEP lengkap (sanitasi, listrik, pencahayaan, damkar, sampah, perhitungan MEP)."
+  },
+  {
+    "id": "doc-pbg-mbr-prototipe",
+    "bidang": "BANGUNAN_GEDUNG",
+    "layanan": "PBG",
+    "title": "SOP PBG Hunian MBR Prototipe vs Non-Prototipe",
+    "keywords": [
+      "pbg mbr",
+      "pbg prototipe",
+      "rumah mbr pbg",
+      "pbg rumah sederhana",
+      "sop pbg mbr",
+      "pbg murah",
+      "pbg gratis",
+      "rumah tipe 36"
+    ],
+    "content": "Dinas PUPR Kabupaten Garut menyediakan jalur khusus PBG Hunian MBR Prototipe bagi Masyarakat Berpenghasilan Rendah (MBR). Keunggulannya: menggunakan desain prototipe siap pakai yang telah teruji (contoh: rumah tipe 36 sederhana), pemohon tidak perlu membayar konsultan perencana arsitektur/struktur, pemeriksaan teknis lebih cepat, dan tarif retribusi sangat murah/disubsidi berdasarkan Perda Garut No. 1 Tahun 2024. Sedangkan PBG Hunian Non-Prototipe memerlukan gambar desain khusus yang disusun mandiri oleh arsitek/perencana bersertifikat."
+  },
+  {
+    "id": "doc-hotline-kontak-puri117",
+    "bidang": "SEKRETARIAT",
+    "layanan": "KONTAK",
+    "title": "Hotline PURI 117 dan Lokasi Pelayanan Dinas PUPR Garut",
+    "keywords": [
+      "hotline puri",
+      "puri 117",
+      "kontak pupr garut",
+      "alamat dinas pupr garut",
+      "jam buka pupr garut",
+      "telepon pupr garut",
+      "lokasi dinas pu",
+      "whatsapp pupr garut"
+    ],
+    "content": "Kontak Resmi Pelayanan Publik Dinas PUPR Kabupaten Garut: Hotline Terpadu PURI 117 (Pelayanan Umum Responsif & Informatif untuk pengaduan & konsultasi warga). Alamat Kantor: Jalan Raya Samarang No. 115, Tarogong Kaler, Kabupaten Garut, Jawa Barat 44151. Jam Pelayanan: Senin sampai Jumat pukul 08.00 - 15.30 WIB. Seluruh saluran konsultasi PURI tidak dipungut biaya (gratis)."
+  },
+  {
+    "id": "doc-regulasi-perda-1-2024",
+    "bidang": "SEKRETARIAT",
+    "layanan": "REGULASI",
+    "title": "Dasar Hukum & Peraturan Daerah Kabupaten Garut Nomor 1 Tahun 2024",
+    "keywords": [
+      "peraturan daerah nomor 1 tahun 2024",
+      "perda no 1 2024",
+      "retribusi daerah garut",
+      "dasar hukum pupr garut",
+      "regulasi tata ruang garut",
+      "pp 16 2021"
+    ],
+    "content": "Landasan Regulasi Pelayanan Publik Dinas PUPR Garut: 1. UU No. 6 Tahun 2023 tentang Cipta Kerja; 2. PP No. 16 Tahun 2021 tentang Peraturan Pelaksanaan UU No. 28 Tahun 2002 tentang Bangunan Gedung; 3. PP No. 21 Tahun 2021 tentang Penyelenggaraan Penataan Ruang; 4. Peraturan Daerah Kabupaten Garut Nomor 1 Tahun 2024 tentang Pajak Daerah dan Retribusi Daerah (mengatur struktur tarif retribusi PBG, pemanfaatan sempadan jalan, dan aset daerah); 5. Peraturan Daerah Kabupaten Garut Nomor 29 Tahun 2011 tentang RTRW Kabupaten Garut."
+  }
+]

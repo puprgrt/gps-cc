@@ -54,15 +54,32 @@ class RAGService {
     if (!query) return { found: false, snippets: [], primaryBidang: 'SEKRETARIAT' };
 
     const lowerQuery = query.toLowerCase();
-    const matchedSnippets = [];
+    const matchedItems = [];
     let detectedBidang = 'SEKRETARIAT';
     let highestScore = 0;
 
     for (const item of this.knowledgeBase) {
       let score = 0;
       for (const kw of item.keywords) {
-        if (lowerQuery.includes(kw.toLowerCase())) {
-          score += 1;
+        const kwLower = kw.toLowerCase();
+        if (lowerQuery.includes(kwLower)) {
+          score += 3;
+        } else {
+          const words = kwLower.split(/\s+/).filter((w) => w.length > 2);
+          if (words.length > 1 && words.every((w) => lowerQuery.includes(w))) {
+            score += 2;
+          }
+        }
+      }
+
+      if (item.title) {
+        const titleWords = item.title
+          .toLowerCase()
+          .replace(/[()/>,]/g, ' ')
+          .split(/\s+/)
+          .filter((w) => w.length > 3 && !['persyaratan', 'fungsi'].includes(w));
+        for (const tw of titleWords) {
+          if (lowerQuery.includes(tw)) score += 1;
         }
       }
 
@@ -71,7 +88,11 @@ class RAGService {
       }
 
       if (score > 0) {
-        matchedSnippets.push(`[SOP / Regulasi ${item.bidang} - ${item.title}]: ${item.content}`);
+        matchedItems.push({
+          score,
+          bidang: item.bidang,
+          snippet: `[SOP / Regulasi ${item.bidang} - ${item.title}]: ${item.content}`,
+        });
         if (score > highestScore) {
           highestScore = score;
           detectedBidang = item.bidang;
@@ -79,9 +100,12 @@ class RAGService {
       }
     }
 
+    // Sort by relevance score descending so the most specific snippets are used first
+    matchedItems.sort((a, b) => b.score - a.score);
+
     return {
-      found: matchedSnippets.length > 0,
-      snippets: matchedSnippets.slice(0, 3),
+      found: matchedItems.length > 0,
+      snippets: matchedItems.slice(0, 4).map((m) => m.snippet),
       primaryBidang: detectedBidang,
     };
   }

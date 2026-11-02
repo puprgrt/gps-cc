@@ -55,7 +55,7 @@ export const BIDANG_LIST: BidangConfig[] = [
   { id: 'SEKRETARIAT', label: 'Sekretariat', shortLabel: 'Sek', color: '#6366f1' },
   { id: 'BINA_MARGA', label: 'Bina Marga', shortLabel: 'BM', color: '#f59e0b' },
   { id: 'SDA', label: 'Sumber Daya Air', shortLabel: 'SDA', color: '#06b6d4' },
-  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan Gedung', shortLabel: 'BG', color: '#ef4444' },
+  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan', shortLabel: 'BG', color: '#ef4444' },
   { id: 'PENATAAN_RUANG', label: 'Penataan Ruang', shortLabel: 'PR', color: '#22c55e' },
   { id: 'JASA_KONSTRUKSI', label: 'Jasa Konstruksi', shortLabel: 'JK', color: '#a855f7' },
   { id: 'AMPL', label: 'Air Minum & Penyehatan Lingkungan', shortLabel: 'AMPL', color: '#0ea5e9' },

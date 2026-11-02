@@ -40,7 +40,7 @@ interface ForwardToBidangModalProps {
 const BIDANG_OPTIONS: { id: BidangPUPR; label: string; badge: string; color: string }[] = [
   { id: 'BINA_MARGA', label: 'Bina Marga (Jalan & Jembatan)', badge: '🛣️ Bina Marga', color: 'border-amber-500/40 text-amber-300' },
   { id: 'SDA', label: 'Sumber Daya Air (Irigasi & Banjir)', badge: '💧 SDA', color: 'border-blue-500/40 text-blue-300' },
-  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan Gedung (PBG & SLF)', badge: '🏢 Bangunan Gedung', color: 'border-emerald-500/40 text-emerald-300' },
+  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan (PBG & SLF)', badge: '🏢 Bangunan', color: 'border-emerald-500/40 text-emerald-300' },
   { id: 'PENATAAN_RUANG', label: 'Penataan Ruang (KRK & PKKPR)', badge: '🗺️ Penataan Ruang', color: 'border-purple-500/40 text-purple-300' },
   { id: 'AMPL', label: 'AMPL (SPAM & Sanitasi)', badge: '🚰 AMPL', color: 'border-cyan-500/40 text-cyan-300' },
   { id: 'JASA_KONSTRUKSI', label: 'Jasa Konstruksi (Jakon)', badge: '🏗️ Jasa Konstruksi', color: 'border-indigo-500/40 text-indigo-300' },

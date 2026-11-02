@@ -62,7 +62,7 @@ _Disinkronisasi oleh RAG Knowledge Base PURI Social Intelligence Center (PSIC)_`
     { id: 'ALL', label: 'Semua Bidang' },
     { id: 'BINA_MARGA', label: 'Bina Marga' },
     { id: 'SDA', label: 'SDA (Irigasi)' },
-    { id: 'BANGUNAN_GEDUNG', label: 'Bangunan Gedung (SIMBG)' },
+    { id: 'BANGUNAN_GEDUNG', label: 'Bangunan (SIMBG)' },
     { id: 'PENATAAN_RUANG', label: 'Penataan Ruang (RDTR)' },
     { id: 'AMPL', label: 'AMPL (Sanitasi)' },
   ];

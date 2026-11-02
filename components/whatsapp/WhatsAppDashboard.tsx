@@ -30,7 +30,7 @@ const BIDANG_PUPR_LIST = [
   { id: 'ALL', label: 'Semua Bidang', badge: '🏛️ Semua', color: 'bg-slate-500/20 text-slate-300 border-slate-500/30' },
   { id: 'BINA_MARGA', label: 'Bina Marga', badge: '🛣️ Bina Marga', color: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
   { id: 'SDA', label: 'SDA (Irigasi)', badge: '💧 SDA', color: 'bg-blue-500/20 text-blue-300 border-blue-500/30' },
-  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan Gedung', badge: '🏢 Bangunan Gedung', color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
+  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan', badge: '🏢 Bangunan', color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
   { id: 'PENATAAN_RUANG', label: 'Penataan Ruang', badge: '🗺️ Penataan Ruang', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' },
   { id: 'AMPL', label: 'AMPL (SPAM)', badge: '🚰 AMPL', color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' },
   { id: 'JASA_KONSTRUKSI', label: 'Jasa Konstruksi', badge: '🏗️ Jasa Konstruksi', color: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
@@ -38,8 +38,8 @@ const BIDANG_PUPR_LIST = [
 ];
 
 const PURI_SMART_LABELS = [
-  { name: 'PBG', color: 'bg-emerald-500', badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40', bidang: 'Bangunan Gedung' },
-  { name: 'SLF', color: 'bg-blue-500', badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/40', bidang: 'Bangunan Gedung' },
+  { name: 'PBG', color: 'bg-emerald-500', badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40', bidang: 'Bangunan' },
+  { name: 'SLF', color: 'bg-blue-500', badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/40', bidang: 'Bangunan' },
   { name: 'KRK', color: 'bg-amber-500', badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40', bidang: 'Penataan Ruang' },
   { name: 'PKKPR', color: 'bg-purple-500', badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40', bidang: 'Penataan Ruang' },
   { name: 'Siteplan', color: 'bg-violet-500', badgeColor: 'bg-violet-500/20 text-violet-300 border-violet-500/40', bidang: 'Penataan Ruang' },

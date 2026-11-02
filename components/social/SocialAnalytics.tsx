@@ -50,7 +50,7 @@ export function SocialAnalytics() {
           {[
             { topic: 'Bina Marga (Jalan & Jembatan)', percent: 38, color: 'bg-blue-500' },
             { topic: 'SDA (Irigasi, Drainase, Banjir)', percent: 24, color: 'bg-cyan-500' },
-            { topic: 'Bangunan Gedung (PBG & SLF)', percent: 18, color: 'bg-indigo-500' },
+            { topic: 'Bangunan (PBG & SLF)', percent: 18, color: 'bg-indigo-500' },
             { topic: 'Penataan Ruang (KRK & Tata Ruang)', percent: 10, color: 'bg-purple-500' },
             { topic: 'AMPL & Jasa Konstruksi / Sekretariat', percent: 10, color: 'bg-emerald-500' },
           ].map((item, i) => (

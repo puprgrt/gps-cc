@@ -22,7 +22,7 @@ const BIDANG_OPTIONS: { id: BidangPUPR | 'SEMUA'; label: string }[] = [
   { id: 'SEMUA', label: 'Semua Bidang' },
   { id: 'BINA_MARGA', label: 'Bina Marga (Jalan & Jembatan)' },
   { id: 'SDA', label: 'Sumber Daya Air (SDA)' },
-  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan Gedung' },
+  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan' },
   { id: 'AMPL', label: 'AMPL / Sanitasi' },
   { id: 'PENATAAN_RUANG', label: 'Penataan Ruang' },
   { id: 'JASA_KONSTRUKSI', label: 'Jasa Konstruksi' },

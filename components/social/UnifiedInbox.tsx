@@ -198,7 +198,7 @@ export function UnifiedInbox({ onSelectMessage }: UnifiedInboxProps) {
             <option value="all">Semua Bidang (7)</option>
             <option value="BINA_MARGA">Bina Marga</option>
             <option value="SDA">Sumber Daya Air</option>
-            <option value="BANGUNAN_GEDUNG">Bangunan Gedung</option>
+            <option value="BANGUNAN_GEDUNG">Bangunan</option>
             <option value="PENATAAN_RUANG">Penataan Ruang</option>
             <option value="AMPL">AMPL</option>
             <option value="JASA_KONSTRUKSI">Jasa Konstruksi</option>

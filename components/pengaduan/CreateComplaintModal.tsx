@@ -24,7 +24,7 @@ const KECAMATAN_GARUT = [
 const BIDANG_OPTIONS: { id: BidangPUPR; label: string }[] = [
   { id: 'BINA_MARGA', label: 'Bina Marga (Jalan & Jembatan)' },
   { id: 'SDA', label: 'Sumber Daya Air (SDA)' },
-  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan Gedung' },
+  { id: 'BANGUNAN_GEDUNG', label: 'Bangunan' },
   { id: 'AMPL', label: 'Air Minum & Penyehatan Lingkungan (AMPL)' },
   { id: 'PENATAAN_RUANG', label: 'Penataan Ruang' },
   { id: 'JASA_KONSTRUKSI', label: 'Jasa Konstruksi' },
@@ -187,7 +187,7 @@ export function CreateComplaintModal({
                   setBidang(b);
                   if (b === 'BINA_MARGA') setKategori('Kerusakan Jalan');
                   else if (b === 'SDA') setKategori('Sungai & Pengendalian Banjir');
-                  else if (b === 'BANGUNAN_GEDUNG') setKategori('Bangunan Gedung / PBG');
+                  else if (b === 'BANGUNAN_GEDUNG') setKategori('Bangunan / PBG');
                   else if (b === 'AMPL') setKategori('Drainase & Sanitasi');
                   else if (b === 'PENATAAN_RUANG') setKategori('Tata Ruang / KRK');
                 }}

@@ -43,7 +43,7 @@ export function ExecutiveBriefingModal({ isOpen, onClose }: ExecutiveBriefingMod
 *🚨 TOP 3 ISU INFRASTRUKTUR DARURAT HARI INI:*
 1. *[KRITIS - SLA 2 Jam]* Jembatan Penghubung Cikajang Amblas (Bidang SDA & Bina Marga) - Satgas Dalam Perjalanan
 2. *[TINGGI - SLA 6 Jam]* Jalan Raya Tarogong Depan Bundaran Berlubang (Bidang Bina Marga) - Dalam Jadwal Tambal
-3. *[NORMAL]* Pertanyaan Syarat PBG Rumah Tinggal (Bidang Bangunan Gedung) - Diselesaikan AI Bot (99.1% Akurat)
+3. *[NORMAL]* Pertanyaan Syarat PBG Rumah Tinggal (Bidang Bangunan) - Diselesaikan AI Bot (99.1% Akurat)
 
 *📊 STATISTIK PELAYANAN OMNICHANNEL (11 KANAL):*
 • Total Percakapan Masuk: 142 Tiket
@@ -228,7 +228,7 @@ _Dibuat otomatis oleh PURI Social Intelligence Center (PSIC) SMCC Dinas PUPR Kab
                 </div>
                 <div className="text-right">
                   <Badge className="bg-slate-800 text-slate-300 border-slate-700 text-[10px]">
-                    Bidang Bangunan Gedung
+                    Bidang Bangunan
                   </Badge>
                   <p className="text-[10px] text-purple-400 mt-1 font-semibold">
                     Diselesaikan Otomatis AI (99.1%)

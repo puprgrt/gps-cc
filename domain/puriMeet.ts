@@ -74,7 +74,7 @@ export const MEETING_PRIORITY_LABELS: Record<MeetingPriority, string> = {
 export const BIDANG_LABELS: Record<BidangPURIMeet, string> = {
   SEKRETARIAT: 'Sekretariat',
   PENATAAN_RUANG: 'Penataan Ruang',
-  BANGUNAN_GEDUNG: 'Bangunan Gedung',
+  BANGUNAN_GEDUNG: 'Bangunan',
   BINA_MARGA: 'Bina Marga',
   SDA: 'Sumber Daya Air',
   JASA_KONSTRUKSI: 'Jasa Konstruksi',

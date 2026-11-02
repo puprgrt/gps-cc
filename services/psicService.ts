@@ -231,7 +231,7 @@ const DEFAULT_MESSAGES: Record<string, PSICMessage[]> = {
       conversationId: 'conv-wa-102',
       senderType: 'AI_BOT',
       senderName: 'PURI (AI Bot)',
-      content: 'Wa alaikum salam Hj. Siti Rahma. 😊\n\nUntuk pengurusan **SLF Ruko 2 Lantai** via SIMBG, berikut syarat dokumen yang diperlukan (Sesuai Perda PUPR Garut):\n1. Bukti kepemilikan tanah & IMB/PBG asal.\n2. Gambar as-built drawing arsitektur & struktur.\n3. Laporan kajian teknis keandalan bangunan dari pengkaji teknis/konsultan bersertifikat.\n4. Sertifikat SLO instalasi listrik & damkar.\n\nJika butuh pendampingan langsung, Ibu dapat menjadwalkan **PURI Meet** dengan tim Bidang Bangunan Gedung.',
+      content: 'Wa alaikum salam Hj. Siti Rahma. 😊\n\nUntuk pengurusan **SLF Ruko 2 Lantai** via SIMBG, berikut syarat dokumen yang diperlukan (Sesuai Perda PUPR Garut):\n1. Bukti kepemilikan tanah & IMB/PBG asal.\n2. Gambar as-built drawing arsitektur & struktur.\n3. Laporan kajian teknis keandalan bangunan dari pengkaji teknis/konsultan bersertifikat.\n4. Sertifikat SLO instalasi listrik & damkar.\n\nJika butuh pendampingan langsung, Ibu dapat menjadwalkan **PURI Meet** dengan tim Bidang Bangunan.',
       attachmentType: 'text',
       sentiment: 'POSITIF',
       emotion: 'SENANG',

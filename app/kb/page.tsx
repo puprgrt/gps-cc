@@ -173,7 +173,7 @@ export default function KnowledgeBaseCommandCenter() {
     { id: 'SEMUA', name: 'Semua Bidang', icon: '🏛️' },
     { id: 'SEKRETARIAT', name: 'Sekretariat', icon: '📋' },
     { id: 'PENATAAN_RUANG', name: 'Penataan Ruang', icon: '🗺️' },
-    { id: 'BANGUNAN_GEDUNG', name: 'Bangunan Gedung', icon: '🏗️' },
+    { id: 'BANGUNAN_GEDUNG', name: 'Bangunan', icon: '🏗️' },
     { id: 'BINA_MARGA', name: 'Bina Marga', icon: '🛣️' },
     { id: 'SDA', name: 'Sumber Daya Air', icon: '🌊' },
     { id: 'AMPL', name: 'AMPL', icon: '🚰' },
@@ -512,7 +512,7 @@ export default function KnowledgeBaseCommandCenter() {
                     onChange={(e) => setNewBidang(e.target.value)}
                     className="w-full bg-slate-900 border border-slate-700 text-white h-11 rounded-xl px-3 text-sm focus:border-blue-500 outline-none"
                   >
-                    <option value="BANGUNAN_GEDUNG">Bangunan Gedung (PBG, SLF, Renovasi)</option>
+                    <option value="BANGUNAN_GEDUNG">Bangunan (PBG, SLF, Renovasi)</option>
                     <option value="PENATAAN_RUANG">Penataan Ruang (KRK, PKKPR, RTRW)</option>
                     <option value="BINA_MARGA">Bina Marga (Jalan Kabupaten, Jembatan)</option>
                     <option value="SDA">Sumber Daya Air (Irigasi, Drainase, Banjir)</option>

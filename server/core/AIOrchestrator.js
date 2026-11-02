@@ -387,21 +387,53 @@ class AIOrchestrator {
     // 1. Primary Bidang (from 7 official domains)
     const primaryBidang = ragResult.primaryBidang || 'SEKRETARIAT';
 
-    // 2. Layanan (PBG, SLF, KRK, Jalan, Irigasi, SPAM, dll.)
+    // 2. Layanan (8 Pelayanan Publik Resmi PUPR Garut & Turunannya)
     let layanan = 'Informasi Publik';
     let smartLabels = ['Informasi'];
     if (primaryBidang === 'BANGUNAN_GEDUNG') {
-      layanan = lower.includes('slf') ? 'Sertifikat Laik Fungsi (SLF)' : 'Persetujuan Bangunan Gedung (PBG)';
-      smartLabels = [lower.includes('slf') ? 'SLF' : 'PBG'];
+      if (lower.includes('slf') || lower.includes('laik fungsi')) {
+        layanan = 'Sertifikat Laik Fungsi (SLF)';
+        smartLabels = ['SLF', 'Bangunan Gedung'];
+      } else if (lower.includes('prototipe') || lower.includes('mbr')) {
+        layanan = 'PBG Hunian MBR Prototipe';
+        smartLabels = ['PBG', 'MBR', 'Prototipe'];
+      } else {
+        layanan = 'Persetujuan Bangunan Gedung (PBG)';
+        smartLabels = ['PBG', 'SIMBG'];
+      }
     } else if (primaryBidang === 'PENATAAN_RUANG') {
-      layanan = lower.includes('pkkpr') ? 'PKKPR' : 'Keterangan Rencana Kabupaten (KRK)';
-      smartLabels = [lower.includes('pkkpr') ? 'PKKPR' : 'KRK', 'Siteplan'];
+      if (lower.includes('pkkpr')) {
+        layanan = 'Persetujuan Kesesuaian Kegiatan Pemanfaatan Ruang (PKKPR)';
+        smartLabels = ['PKKPR', 'Tata Ruang'];
+      } else if (lower.includes('siteplan') || lower.includes('rencana tapak')) {
+        layanan = 'Pengesahan Siteplan';
+        smartLabels = ['Siteplan', 'Tata Ruang'];
+      } else {
+        layanan = 'Keterangan Rencana Kabupaten (KRK)';
+        smartLabels = ['KRK', 'Tata Ruang'];
+      }
     } else if (primaryBidang === 'BINA_MARGA') {
-      layanan = lower.includes('jembatan') ? 'Jembatan Kabupaten' : 'Jalan Kabupaten';
-      smartLabels = [lower.includes('jembatan') ? 'Jembatan' : 'Jalan', 'Pengaduan'];
+      if (lower.includes('sempadan') || lower.includes('akses') || lower.includes('bukaan') || lower.includes('rumija')) {
+        layanan = 'Ijin Pemanfaatan Sempadan Jalan';
+        smartLabels = ['Sempadan Jalan', 'Akses Masuk'];
+      } else if (lower.includes('jembatan')) {
+        layanan = 'Jembatan Kabupaten';
+        smartLabels = ['Jembatan', 'Bina Marga'];
+      } else {
+        layanan = 'Jalan Kabupaten';
+        smartLabels = ['Jalan', 'Bina Marga'];
+      }
     } else if (primaryBidang === 'SDA') {
-      layanan = lower.includes('banjir') ? 'Pengendalian Banjir' : 'Irigasi & Drainase';
-      smartLabels = ['Irigasi', 'Drainase'];
+      if (lower.includes('peil')) {
+        layanan = 'Rekomendasi Peil Banjir';
+        smartLabels = ['Peil Banjir', 'SDA'];
+      } else if (lower.includes('irigasi') || lower.includes('saluran') || lower.includes('rekomtek')) {
+        layanan = 'Rekomendasi Teknis Irigasi';
+        smartLabels = ['Irigasi', 'SDA'];
+      } else {
+        layanan = 'Pengendalian Banjir & Drainase';
+        smartLabels = ['Banjir', 'SDA'];
+      }
     } else if (primaryBidang === 'AMPL') {
       layanan = lower.includes('sanitasi') ? 'Sanitasi Lingkungan' : 'SPAM Air Minum';
       smartLabels = ['SPAM', 'Sanitasi'];
@@ -1546,7 +1578,23 @@ class AIOrchestrator {
     }
 
     // 7. Save to FAQ Cache if good general answer
-    if (!media && finalConfidence >= 95 && taskCategory === 'CHAT_GENERAL' && selectedResponse.text.length > 30) {
+    // GUARDRAIL: Jangan cache jawaban salam/greeting (inherently personal karena mengandung nama pengirim)
+    // GUARDRAIL: Jangan cache jawaban yang mengandung senderName (tidak bisa dipakai ulang untuk user lain)
+    const greetingCacheBlocklist = [
+      'halo', 'hai', 'hello', 'hi', 'assalamu', 'sampurasun', 'selamat pagi',
+      'selamat siang', 'selamat sore', 'selamat malam', 'terima kasih', 'hatur nuhun',
+      'pagi', 'siang', 'sore', 'malam', 'test', 'tes', 'cek', 'ping',
+    ];
+    const lowerInput = userText.toLowerCase().trim();
+    const isGreetingInput = greetingCacheBlocklist.some(gw =>
+      lowerInput === gw || (lowerInput.length < 30 && (lowerInput.startsWith(gw + ' ') || lowerInput.endsWith(' ' + gw)))
+    );
+    const senderName = request.senderName || '';
+    const responseContainsSenderName = senderName.length >= 3 &&
+      selectedResponse.text.toLowerCase().includes(senderName.toLowerCase());
+
+    if (!media && finalConfidence >= 95 && taskCategory === 'CHAT_GENERAL' && selectedResponse.text.length > 30
+        && !isGreetingInput && !responseContainsSenderName) {
       cacheService.set(userText, selectedResponse.text, taskCategory);
     }
 

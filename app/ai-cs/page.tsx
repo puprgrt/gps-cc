@@ -235,7 +235,7 @@ export default function AICustomerServicePage() {
               {[
                 { name: 'Sekretariat', tag: 'Administrasi & PPID' },
                 { name: 'Penataan Ruang', tag: 'KRK, PKKPR, RTRW' },
-                { name: 'Bangunan Gedung', tag: 'PBG, SLF, Renovasi' },
+                { name: 'Bangunan', tag: 'PBG, SLF, Renovasi' },
                 { name: 'Bina Marga', tag: 'Jalan & Jembatan' },
                 { name: 'SDA', tag: 'Irigasi & Drainase' },
                 { name: 'AMPL', tag: 'Air Minum & Sanitasi' },
